@@ -1462,7 +1462,29 @@ function switchTab(t, b) {
 function previewImg(inp) {
   const f = inp.files[0]; if (!f) return;
   const r = new FileReader();
-  r.onload = e => { imgUrl = e.target.result; const p = document.getElementById('imgPreview'); p.src = imgUrl; p.style.display = 'block'; };
+  r.onload = e => {
+    // Compress image via canvas before storing (Firestore 1MB field limit)
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 600; // max dimension px
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      imgUrl = canvas.toDataURL('image/jpeg', 0.75); // 75% quality JPEG
+      const p = document.getElementById('imgPreview');
+      p.src = imgUrl; p.style.display = 'block';
+      // Show compressed size hint
+      const kb = Math.round(imgUrl.length * 0.75 / 1024);
+      const area = document.querySelector('.upload-area p');
+      if (area) area.textContent = `✓ Imagem pronta (${kb} KB comprimida)`;
+    };
+    img.src = e.target.result;
+  };
   r.readAsDataURL(f);
 }
 function addEf() {
