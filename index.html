@@ -161,6 +161,88 @@
 .card.card-esgotado .btn-comprar{display:none}
 .sold-out-overlay{position:absolute;inset:0;background:rgba(16,24,40,.08);border-radius:inherit;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .sold-out-stamp{background:rgba(52,64,84,.82);color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+
+/* RANKING */
+.ranking-wrap{max-width:800px;margin:0 auto}
+.ranking-podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px;align-items:flex-end}
+.podium-card{background:var(--white);border-radius:var(--r-xl);padding:20px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--gray2);position:relative;overflow:hidden}
+.podium-card.p1{border-color:#f59e0b;box-shadow:0 0 0 2px #f59e0b,var(--shadow-lg)}
+.podium-card.p2{border-color:var(--gray3)}
+.podium-card.p3{border-color:#cd7f32}
+.podium-medal{font-size:2.2rem;margin-bottom:8px}
+.podium-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.podium-turma{font-size:11px;color:var(--gray5)}
+.podium-sales{font-size:2rem;font-weight:900;color:var(--primary);line-height:1;margin:10px 0 4px}
+.podium-lbl{font-size:10px;color:var(--gray4);text-transform:uppercase;letter-spacing:.08em}
+.podium-prize{margin-top:10px;font-size:12px;padding:4px 10px;border-radius:999px;background:var(--coin-bg);color:var(--coin);font-weight:600;display:inline-block}
+.ranking-list{display:flex;flex-direction:column;gap:8px}
+.rank-item{display:flex;align-items:center;gap:14px;background:var(--white);border-radius:var(--r-lg);padding:12px 16px;border:1px solid var(--gray2)}
+.rank-pos{font-size:16px;font-weight:900;color:var(--gray4);width:28px;text-align:center;flex-shrink:0}
+.rank-name{flex:1;font-size:13px;font-weight:700;color:var(--ink)}
+.rank-turma{font-size:11px;color:var(--gray5)}
+.rank-count{font-size:18px;font-weight:800;color:var(--primary)}
+.rank-lbl{font-size:10px;color:var(--gray4);text-align:right}
+/* TOKEN PAGE */
+.token-wrap{max-width:520px;margin:0 auto;padding:20px 0}
+.token-card{background:var(--white);border-radius:var(--r-xl);padding:32px;box-shadow:var(--shadow-lg);border:1px solid var(--gray2)}
+.token-input-big{width:100%;padding:16px 20px;font-size:22px;font-weight:800;letter-spacing:.18em;text-align:center;border:2.5px solid var(--gray2);border-radius:12px;color:var(--ink);transition:border-color .2s;margin:16px 0}
+.token-input-big:focus{border-color:var(--primary-mid);outline:none}
+/* PRICE INDICATOR */
+.price-indicator{background:var(--primary-bg);border:1.5px solid rgba(5,96,58,.2);border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pi-label{font-size:11px;color:var(--primary);font-weight:600}
+.pi-value{font-size:20px;font-weight:900;color:var(--primary)}
+.pi-bar-wrap{flex:1;height:6px;background:var(--gray2);border-radius:999px;overflow:hidden}
+.pi-bar{height:100%;border-radius:999px;background:var(--primary-mid);transition:width .4s}
+.pi-detail{font-size:10px;color:var(--gray5);margin-top:4px}
+/* TRANSFER */
+.transfer-modal{background:var(--white);border-radius:var(--r-xl);max-width:400px;width:100%;box-shadow:var(--shadow-xl);animation:slideUp .25s ease;overflow:hidden}
+@media(max-width:640px){.ranking-podium{grid-template-columns:1fr}.podium-card.p1{order:-1}}
+
+/* PENDING BADGE */
+.btn-admin{position:relative}
+.pending-badge{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 4px;display:none;border:2px solid #fff}
+.pending-badge.show{display:flex}
+/* STUDENT FORM */
+.student-form-wrap{max-width:720px;margin:0 auto}
+.student-form-header{background:linear-gradient(135deg,#0F172A,#1E3A5F);border-radius:var(--r-xl);padding:28px 32px;margin-bottom:24px}
+.student-form-header h2{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;margin-bottom:6px}
+.student-form-header p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6}
+.pending-item{border:1.5px solid var(--gray2);border-radius:var(--r-lg);padding:16px;margin-bottom:12px;background:var(--white)}
+.pending-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.pending-nome{font-size:14px;font-weight:700;color:var(--ink)}
+.pending-meta{font-size:11px;color:var(--gray5);margin-top:3px}
+.pending-btns{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.btn-aprovar{padding:6px 12px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:11px;font-weight:700}
+.btn-editar-aprovar{padding:6px 12px;border-radius:6px;background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:700}
+.btn-rejeitar{padding:6px 12px;border-radius:6px;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:700}
+.pending-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:var(--gray6)}
+.pf-item{background:var(--gray1);border-radius:6px;padding:5px 8px}
+.pf-lbl{font-weight:700;color:var(--gray5);font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.pf-val{color:var(--ink);line-height:1.4}
+
+/* PIN GATE */
+.pin-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:32px 16px}
+.pin-card{background:var(--white);border:1px solid var(--gray2);border-radius:var(--r-xl);padding:40px 36px;max-width:380px;width:100%;box-shadow:var(--shadow-lg);text-align:center}
+.pin-icon{font-size:3rem;margin-bottom:14px}
+.pin-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+.pin-desc{font-size:13px;color:var(--gray5);line-height:1.6;margin-bottom:24px}
+.pin-input{width:100%;padding:14px 16px;font-size:20px;font-weight:800;letter-spacing:.22em;text-align:center;border:2px solid var(--gray2);border-radius:10px;color:var(--ink);margin-bottom:12px;transition:border-color .2s}
+.pin-input:focus{border-color:var(--primary-mid);outline:none}
+.pin-error{font-size:12px;color:var(--red);font-weight:600;margin-bottom:10px;min-height:18px}
+/* PIN CONFIG TABLE */
+.pin-config-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.pin-config-table th{background:var(--gray1);padding:7px 10px;text-align:left;font-weight:700;color:var(--gray6);font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--gray2)}
+.pin-config-table td{padding:6px 10px;border-bottom:1px solid var(--gray1);vertical-align:middle}
+.pin-config-table input{width:90px;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.1em;text-align:center}
+
+/* PRICE BADGE IN PENDING */
+.price-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800}
+.price-badge.p20{background:var(--primary-bg);color:var(--primary)}
+.price-badge.p40{background:var(--coin-bg);color:var(--coin)}
+.price-badge.p60{background:var(--red-bg);color:var(--red)}
+.price-fields-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;padding:8px 12px;background:var(--gray1);border-radius:8px}
+/* STUDENT MODAL */
+
 </style>
 
 <style>
@@ -385,9 +467,9 @@ nav{background:var(--white);border-bottom:1px solid var(--gray2)}
 .btn-login:hover{opacity:.88}
 .login-err{color:var(--red);font-size:11px;margin-top:6px;display:none}
 .admin-panel{display:none;padding:18px 22px 26px}
-.a-tabs{display:flex;gap:4px;border-bottom:1px solid var(--gray2);margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.a-tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--gray2);margin-bottom:16px;padding-bottom:4px}
 .a-tabs::-webkit-scrollbar{display:none}
-.a-tab{padding:9px 14px;border-radius:6px 6px 0 0;border-bottom:2px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--gray5);transition:all .15s;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.a-tab{padding:6px 10px;border-radius:var(--r);font-size:11.5px;font-weight:600;color:var(--gray5);transition:all .15s;white-space:nowrap;background:none;border:none;cursor:pointer}
 .a-tab.active{color:var(--primary);border-bottom-color:var(--primary-mid)}
 .tab-pane{display:none}.tab-pane.active{display:block}
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -473,7 +555,7 @@ footer strong{color:rgba(255,255,255,.85)}
       <input type="text" id="searchInput" placeholder="Buscar droga, autor, categoria..." oninput="buscar(this.value)">
     </div>
     <div class="header-actions">
-      <button class="btn-admin" onclick="abrirAdmin()">⚙️ Admin</button>
+      <button class="btn-admin" onclick="abrirAdmin()">⚙️ Admin<span class="pending-badge" id="pendingBadge"></span></button>
     </div>
   </div>
 </header>
@@ -483,6 +565,7 @@ footer strong{color:rgba(255,255,255,.85)}
     <button class="nav-btn active" onclick="showScreen('sobre',this)">📖 Sobre o Projeto</button>
     <button class="nav-btn" onclick="showScreen('moeda',this)">💰 FLiSS Coin</button>
     <button class="nav-btn" onclick="showScreen('farmacia',this)">🏪 Farmácia</button>
+    <button class="nav-btn" onclick="showScreen('token',this)">🎫 Token</button>
   </div>
 </nav>
 
@@ -517,6 +600,92 @@ footer strong{color:rgba(255,255,255,.85)}
     <div class="grid" id="grid">
       <div class="empty"><div class="empty-ico">⏳</div><p>Carregando medicamentos...</p></div>
     </div>
+
+    <!-- ALUNO SECTION: inline expandable -->
+    <div style="margin-top:32px;border-top:1px dashed var(--gray2);padding-top:20px">
+      <button id="alunoToggleBtn" onclick="toggleAlunoSection()"
+        style="display:flex;align-items:center;gap:10px;background:none;border:1.5px dashed var(--gray3);border-radius:10px;padding:12px 20px;cursor:pointer;color:var(--gray5);font-size:13px;font-weight:600;width:100%;transition:all .2s"
+        onmouseover="this.style.background='var(--primary-bg)';this.style.borderColor='var(--primary-mid)';this.style.color='var(--primary)'"
+        onmouseout="this.style.background='none';this.style.borderColor='var(--gray3)';this.style.color='var(--gray5)'">
+        <span style="font-size:1.1rem">🔬</span>
+        <span id="alunoToggleLabel">Sou aluno — cadastrar minha droga</span>
+        <span id="alunoToggleArrow" style="margin-left:auto;font-size:10px;transition:transform .25s">▼</span>
+      </button>
+
+      <div id="alunoSection" style="display:none;margin-top:16px">
+
+        <!-- PIN GATE -->
+        <div id="sf-pin-gate" class="pin-gate" style="min-height:auto;padding:0">
+          <div class="pin-card" style="max-width:100%;box-shadow:none;border:1.5px solid var(--gray2)">
+            <div class="pin-icon">🔐</div>
+            <div class="pin-title">Acesso dos Alunos</div>
+            <div class="pin-desc">Digite o PIN do seu grupo para acessar o formulário de cadastro.<br>O PIN foi fornecido pelo seu professor.</div>
+            <input class="pin-input" type="text" id="sf-pin-input" placeholder="••••••" maxlength="20"
+              oninput="this.value=this.value.toUpperCase()"
+              onkeydown="if(event.key==='Enter')verificarPinAluno()">
+            <div class="pin-error" id="sf-pin-error"></div>
+            <button class="btn-confirmar" onclick="verificarPinAluno()" style="width:100%">🔓 Entrar</button>
+          </div>
+        </div>
+
+        <!-- FORM (hidden until PIN ok) -->
+        <div id="sf-form-wrap" style="display:none">
+          <div class="student-form-header">
+            <h2>➕ Cadastrar sua Droga</h2>
+            <p>Preencha todos os campos que conseguir. Quanto mais completo, mais barato e competitivo será seu medicamento!<br>
+            <strong style="color:#fde68a">Atenção:</strong> sua droga ficará <strong style="color:#fde68a">pendente de aprovação</strong> pelo professor antes de aparecer na vitrine.</p>
+          </div>
+          <div class="sobre-card" style="margin-bottom:20px">
+            <div class="fg">
+              <div class="fl ff"><label>Nome da Droga *</label><input type="text" id="sf-nome" placeholder="Ex: Neurocienzol 500mg"></div>
+              <div class="fl ff"><label>Subtítulo / Forma farmacêutica</label><input type="text" id="sf-sub" placeholder="Ex: Comprimido de liberação prolongada"></div>
+              <div class="fl"><label>Turma *</label>
+                <select id="sf-turma" onchange="atualizarGruposSF()">
+                  <option value="">— Selecione —</option>
+                  <option value="7A">7º Ano A</option>
+                  <option value="7B">7º Ano B</option>
+                  <option value="Outros">Outros</option>
+                </select>
+              </div>
+              <div class="fl"><label>Grupo *</label>
+                <select id="sf-grupo">
+                  <option value="">— Selecione a turma primeiro —</option>
+                </select>
+              </div>
+              <div class="fl ff"><label>Nome do(s) integrante(s) presentes *</label><input type="text" id="sf-autor" placeholder="Ex: Ana, Bruno, Carla, Diego"></div>
+              <div class="fl"><label>Categoria</label><input type="text" id="sf-cat" placeholder="Ex: Estimulante, Calmante…"></div>
+              <div class="fl"><label>📦 Estoque *</label><input type="number" id="sf-estoque" placeholder="Ex: 10" min="0"></div>
+              <div class="fl ff">
+                <label>Imagem da embalagem</label>
+                <div class="upload-area"><input type="file" accept="image/*" id="sf-imgFile" onchange="previewImgSF(this)"><div class="u-ico">🖼️</div><p>Foto da caixinha desenhada pelo grupo</p></div>
+                <img id="sf-imgPreview" class="img-prev" src="" alt="preview">
+              </div>
+              <div class="fl ff"><label>Indicação *</label><textarea id="sf-ind" rows="2" placeholder="Para que serve? Que sintomas trata?"></textarea></div>
+              <div class="fl ff"><label>Composição</label><textarea id="sf-comp" rows="2" placeholder="Princípios ativos e ingredientes…"></textarea></div>
+              <div class="fl ff"><label>💊 Dose *</label><textarea id="sf-dose" rows="2" placeholder="Ex: 1 comprimido para adultos, ½ para crianças"></textarea></div>
+              <div class="fl ff"><label>⏰ Frequência *</label><textarea id="sf-frequencia" rows="2" placeholder="Ex: 3 vezes ao dia, de 8 em 8 horas"></textarea></div>
+              <div class="fl ff"><label>📋 Modo de Uso *</label><textarea id="sf-modouso" rows="2" placeholder="Ex: Tomar com água em jejum…"></textarea></div>
+              <div class="fl ff">
+                <label>Efeitos colaterais</label>
+                <div class="ef-row"><input type="text" id="sf-ef" placeholder="Adicionar efeito…" onkeydown="if(event.key==='Enter'){event.preventDefault();addEfSF()}"><button class="btn-add-ef" onclick="addEfSF()">+ Add</button></div>
+                <div class="ef-chips" id="sfEfChips"></div>
+              </div>
+              <div class="fl ff"><label>⛔ Quem não deve usar</label><textarea id="sf-contra-quem" rows="2" placeholder="Ex: Gestantes, crianças menores de 12 anos…"></textarea></div>
+              <div class="fl ff"><label>⚠️ Avisos e precauções</label><textarea id="sf-contra-avisos" rows="2" placeholder="Ex: Não dirigir após uso…"></textarea></div>
+              <div class="fl ff"><label>🔄 Interações</label><textarea id="sf-contra-interacoes" rows="2" placeholder="Ex: Não combinar com cafeína…"></textarea></div>
+              <div class="fl ff"><label>Fabricante / Laboratório</label><input type="text" id="sf-fab" placeholder="Ex: Laboratório 7º Ano A"></div>
+              <div class="fl ff"><label>📝 Observações (opcional)</label><textarea id="sf-obs" rows="2" placeholder="Curiosidades, dedicatória, notas…"></textarea></div>
+            </div>
+            <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--gray2)">
+              <button class="btn-confirmar" onclick="submeterDroga()" style="max-width:340px">📤 Enviar para revisão do professor</button>
+              <div id="sf-msg" style="font-size:12px;margin-top:10px;display:none"></div>
+            </div>
+          </div>
+        </div><!-- /sf-form-wrap -->
+
+      </div><!-- /alunoSection -->
+    </div><!-- /aluno expandable -->
+
   </div>
 
   <div id="screen-sobre" class="screen active">
@@ -625,44 +794,49 @@ footer strong{color:rgba(255,255,255,.85)}
           <h3>⚙️ Como funciona</h3>
           <div class="coin-step">
             <div class="coin-step-num">1</div>
-            <div class="coin-step-text"><strong>Receba suas moedas</strong><br>
-              Ao fazer sua primeira compra, sua carteira é criada automaticamente com as moedas iniciais definidas pelo professor.</div>
+            <div class="coin-step-text"><strong>Receba 🪙 100 moedas iniciais</strong><br>
+              Todo usuário recebe 100 FLiSS Coins automaticamente na primeira interação com o sistema.</div>
           </div>
           <div class="coin-step">
             <div class="coin-step-num">2</div>
-            <div class="coin-step-text"><strong>Explore a Farmácia</strong><br>
-              Navegue pelos medicamentos criados pelos colegas. Cada um tem um preço em FLiSS Coins e uma bula única.</div>
+            <div class="coin-step-text"><strong>Some mais moedas com tokens</strong><br>
+              Resgate tokens distribuídos pelos alunos para acumular ainda mais moedas ao seu saldo.</div>
           </div>
           <div class="coin-step">
             <div class="coin-step-num">3</div>
-            <div class="coin-step-text"><strong>Verifique seu saldo</strong><br>
-              Ao clicar em "Comprar", digite seu nome. O sistema mostra seu saldo atual, o custo e o que sobrará.</div>
+            <div class="coin-step-text"><strong>Explore a Farmácia e compre</strong><br>
+              Navegue pelos medicamentos, veja a bula de cada um e escolha onde gastar suas moedas. Cada compra desconta do saldo.</div>
           </div>
           <div class="coin-step">
             <div class="coin-step-num">4</div>
-            <div class="coin-step-text"><strong>Confirme e retire</strong><br>
-              Com saldo suficiente, confirme a compra e retire seu medicamento no balcão da Farmácia Literária!</div>
+            <div class="coin-step-text"><strong>Retire no balcão</strong><br>
+              Após confirmar a compra, retire seu medicamento no stand da Farmácia Literária. Boa escolha! 💊</div>
           </div>
         </div>
 
-        <!-- Tabela de preços exemplo -->
+        <!-- Fluxo dos tokens -->
         <div class="coin-card">
-          <h3>💊 Tabela de preços típica</h3>
-          <table class="coin-table">
-            <thead>
-              <tr><th>Tipo de medicamento</th><th>Preço médio</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>🌿 Xarope / Poção</td><td>🪙 3–5 moedas</td></tr>
-              <tr><td>💊 Comprimido simples</td><td>🪙 4–7 moedas</td></tr>
-              <tr><td>⚗️ Fórmula especial</td><td>🪙 6–10 moedas</td></tr>
-              <tr><td>✨ Droga rara / única</td><td>🪙 10–15 moedas</td></tr>
-              <tr><td>🌟 Edição limitada</td><td>🪙 15+ moedas</td></tr>
-            </tbody>
-          </table>
-          <p style="font-size:11px;color:var(--gray4);margin-top:12px;line-height:1.5">
-            ℹ️ Os preços são definidos pelo professor no cadastro de cada medicamento. A tabela acima é ilustrativa.
-          </p>
+          <h3>🎫 Como funcionam os tokens</h3>
+          <div class="coin-step">
+            <div class="coin-step-num">1</div>
+            <div class="coin-step-text"><strong>Professor gera os tokens</strong><br>
+              No painel admin, o professor cria lotes de tokens com valor definido e os imprime para distribuir aos grupos.</div>
+          </div>
+          <div class="coin-step">
+            <div class="coin-step-num">2</div>
+            <div class="coin-step-text"><strong>Alunos distribuem no Festival</strong><br>
+              Cada grupo recebe seus tokens físicos e os entrega a visitantes, familiares e amigos, convidando-os ao stand.</div>
+          </div>
+          <div class="coin-step">
+            <div class="coin-step-num">3</div>
+            <div class="coin-step-text"><strong>Visitante resgata na aba 🎫 Token</strong><br>
+              O visitante digita seu nome e o código do token — as moedas são creditadas automaticamente. O token é desativado após o uso.</div>
+          </div>
+          <div class="coin-step">
+            <div class="coin-step-num">4</div>
+            <div class="coin-step-text"><strong>Moedas somam ao saldo existente</strong><br>
+              Usuários novos recebem 🪙 100 iniciais + as moedas do token. Quem já tem conta recebe as moedas do token por cima do saldo atual.</div>
+          </div>
         </div>
 
         <!-- Regras -->
@@ -670,7 +844,8 @@ footer strong{color:rgba(255,255,255,.85)}
           <h3>📋 Regras da FLiSS Coin</h3>
           <ul class="rules-list">
             <li><span class="ri">🪪</span><div><strong>Seu nome é sua carteira.</strong> O sistema usa o nome informado na compra para identificar sua conta. Use sempre o mesmo nome completo para manter o saldo.</div></li>
-            <li><span class="ri">🎁</span><div><strong>Moedas iniciais automáticas.</strong> Novos usuários recebem moedas automaticamente na primeira interação. O professor pode alterar esse valor na aba ⚙️ Config do painel admin.</div></li>
+            <li><span class="ri">🎁</span><div><strong>Saldo inicial.</strong> Todo usuário recebe 🪙 100 FLiSS Coins automaticamente ao interagir com o sistema pela primeira vez. O professor pode ajustar esse valor no painel admin → aba ⚙️ Config.</div></li>
+            <li><span class="ri">🎫</span><div><strong>Tokens somam ao saldo.</strong> Cada token só pode ser usado uma vez. Ao resgatar, as moedas são adicionadas ao saldo já existente — incluindo os 🪙 100 iniciais.</div></li>
             <li><span class="ri">📉</span><div><strong>Saldo insuficiente?</strong> Se você não tiver moedas suficientes, a compra será bloqueada. Peça ao professor para adicionar moedas na aba 💰 Carteiras do painel administrativo.</div></li>
             <li><span class="ri">🔄</span><div><strong>Cancelamento de reserva.</strong> O professor pode cancelar uma reserva pelo painel admin. O estoque volta automaticamente, mas as moedas precisam ser devolvidas manualmente na aba Carteiras.</div></li>
             <li><span class="ri">👨‍🏫</span><div><strong>Gerenciamento pelo professor.</strong> O professor pode adicionar ou remover moedas de qualquer aluno individualmente, zerar todos os saldos, ou remover contas pelo painel admin → aba 💰 Carteiras.</div></li>
@@ -694,6 +869,40 @@ footer strong{color:rgba(255,255,255,.85)}
 
     </div><!-- /coin-page -->
   </div><!-- /screen-moeda -->
+
+
+
+  <div id="screen-token" class="screen">
+    <div class="token-wrap">
+      <div class="sec-head"><span class="sec-title">🎫 Resgatar Token</span></div>
+      <div class="token-card">
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:3rem;margin-bottom:8px">🎫</div>
+          <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--ink);margin-bottom:6px">Tem um token?</h2>
+          <p style="font-size:13px;color:var(--gray5);line-height:1.6">Digite seu nome e o código do token recebido para ganhar FLiSS Coins!</p>
+        </div>
+        <div class="fl" style="margin-bottom:12px">
+          <label>Seu nome completo</label>
+          <input class="reserva-input" type="text" id="tok-nome" placeholder="Como você quer ser identificado..." maxlength="80"
+            style="margin:6px 0 0;padding:12px 14px;font-size:14px">
+        </div>
+        <div class="fl" style="margin-bottom:6px">
+          <label>Código do token</label>
+          <input class="token-input-big" type="text" id="tok-codigo" placeholder="000000" maxlength="12"
+            oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"
+            onkeydown="if(event.key==='Enter')resgatarToken()">
+        </div>
+        <button class="btn-confirmar" onclick="resgatarToken()" style="margin-top:8px">🎫 Resgatar agora</button>
+        <div id="tok-result" style="margin-top:14px"></div>
+      </div>
+      <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--gray4);line-height:1.7">
+        Tokens são distribuídos pelos alunos do Festival.<br>Cada token só pode ser usado uma vez.
+      </div>
+    </div>
+  </div>
+
+
+
 
 </main>
 
@@ -728,8 +937,12 @@ footer strong{color:rgba(255,255,255,.85)}
         <button class="a-tab" onclick="switchTab('gerenciar',this)">📋 Gerenciar</button>
         <button class="a-tab" onclick="switchTab('reservas',this)">🛒 Reservas</button>
         <button class="a-tab" onclick="switchTab('carteiras',this)">💰 Carteiras</button>
+        <button class="a-tab" onclick="switchTab('pendentes',this)">⏳ Pendentes<span id="pendingTabBadge" style="display:none;background:var(--red);color:#fff;font-size:9px;font-weight:800;border-radius:999px;padding:1px 6px;margin-left:5px"></span></button>
+        <button class="a-tab" onclick="switchTab('tokens',this)">🎫 Tokens</button>
+        <button class="a-tab" onclick="switchTab('ranking',this)">🏆 Ranking</button>
+        <button class="a-tab" onclick="switchTab('grupos',this)">👥 Grupos & PINs</button>
+        <button class="a-tab" onclick="switchTab('config',this)">🔧 Config</button>
         <button class="a-tab" onclick="switchTab('personalizar',this)">🎨 Personalizar</button>
-        <button class="a-tab" onclick="switchTab('config',this)">⚙️ Config</button>
       </div>
 
       <!-- CADASTRAR -->
@@ -740,7 +953,24 @@ footer strong{color:rgba(255,255,255,.85)}
           <div class="fl"><label>Turma</label><select id="f-turma"><option value="">— Sem turma —</option><option value="7A">7º Ano A</option><option value="7B">7º Ano B</option><option value="Outros">Outros</option></select></div>
           <div class="fl"><label>Categoria</label><input type="text" id="f-cat" placeholder="Ex: Estimulante, Sedativo…"></div>
           <div class="fl ff"><label>Autor(es) *</label><input type="text" id="f-autor" placeholder="Nome do aluno ou grupo"></div>
-          <div class="fl"><label>💰 Preço (moeda) *</label><input type="number" id="f-preco" placeholder="Ex: 5" min="0"></div>
+          <div class="fl ff">
+            <label>💰 Preço automático</label>
+            <div class="price-indicator" id="priceIndicator">
+              <div>
+                <div class="pi-label">Completude do cadastro</div>
+                <div class="pi-detail" id="piDetail">Preencha os campos para ver o preço</div>
+              </div>
+              <div style="text-align:right">
+                <div class="pi-value" id="piValue">—</div>
+                <div class="pi-lbl" style="font-size:10px;color:var(--gray4)">FLiSS Coins</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+              <input type="checkbox" id="f-preco-override" onchange="togglePrecoOverride()">
+              <label for="f-preco-override" style="font-size:11px;color:var(--gray5);cursor:pointer">Definir preço manualmente</label>
+            </div>
+            <input type="number" id="f-preco" placeholder="Preço manual" min="0" style="display:none;margin-top:6px;padding:9px 12px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;width:100%">
+          </div>
           <div class="fl"><label>📦 Estoque *</label><input type="number" id="f-estoque" placeholder="Ex: 10" min="0"></div>
           <div class="fl ff">
             <label>Imagem do Remédio</label>
@@ -761,6 +991,7 @@ footer strong{color:rgba(255,255,255,.85)}
           <div class="fl ff"><label>⚠️ Avisos e precauções</label><textarea id="f-contra-avisos" rows="2" placeholder="Ex: Não dirigir após uso, evitar exposição solar..."></textarea></div>
           <div class="fl ff"><label>🔄 Interações</label><textarea id="f-contra-interacoes" rows="2" placeholder="Ex: Não combinar com anti-inflamatórios, evitar cafeína..."></textarea></div>
           <div class="fl ff"><label>Fabricante / Laboratório</label><input type="text" id="f-fab" placeholder="Ex: Laboratório 7º Ano A — FLiSS"></div>
+          <div class="fl ff"><label>📝 Observações <span style="color:var(--gray4);font-weight:400">(opcional)</span></label><textarea id="f-obs" rows="2" placeholder="Observações adicionais, curiosidades, notas do grupo..."></textarea></div>
         </div>
         <div style="display:flex;gap:9px">
           <button class="btn-save" id="btnSalvar" onclick="salvar()">💾 Cadastrar</button>
@@ -788,7 +1019,20 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <!-- CARTEIRAS -->
       <div class="tab-pane" id="tab-carteiras">
-        <div class="wallet-bar">
+        
+        <div style="background:var(--primary-bg);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:16px;border:1.5px solid rgba(5,96,58,.2)">
+          <h4 style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px">📚 Adicionar moedas por livros lidos</h4>
+          <div class="fg">
+            <div class="fl ff"><label>Nome do aluno</label><input type="text" id="livro-nome" placeholder="Nome completo do aluno"></div>
+            <div class="fl"><label>Livros lidos</label><input type="number" id="livro-qtd" value="1" min="1" placeholder="Ex: 3"></div>
+            <div class="fl"><label>Moedas por livro</label><input type="number" id="livro-moedas" value="30" min="1" placeholder="Ex: 30"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+            <button onclick="adicionarMoedasLivros()" style="padding:9px 18px;border-radius:8px;background:var(--primary);color:#fff;font-size:12px;font-weight:700">📚 Adicionar moedas</button>
+            <span id="livro-msg" style="font-size:11px;display:none"></span>
+          </div>
+        </div>
+<div class="wallet-bar">
           <div id="carteirasStats" style="font-size:12px;color:var(--gray5)">Carregando...</div>
           <div style="display:flex;gap:8px">
             <button onclick="renderCarteiras()" style="padding:6px 14px;border-radius:8px;background:var(--gray1);color:var(--gray6);font-size:11px;font-weight:600;border:1.5px solid var(--gray2)">🔄 Atualizar</button>
@@ -796,6 +1040,136 @@ footer strong{color:rgba(255,255,255,.85)}
           </div>
         </div>
         <div id="carteirasList"></div>
+      </div>
+
+      <!-- TOKENS -->
+      <div class="tab-pane" id="tab-tokens">
+        <div style="margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">🎫 Gerar Tokens</div>
+          <div style="font-size:11px;color:var(--gray5)">Tokens são códigos que os alunos distribuem aos visitantes. Ao resgatar, o visitante recebe moedas para comprar medicamentos.</div>
+        </div>
+
+        <!-- GERAR POR GRUPO -->
+        <div style="background:var(--primary-bg);border:1.5px solid rgba(5,96,58,.2);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:12px">📋 Gerar tokens por grupo</div>
+          <div id="tok-grupos-wrap">
+            <div style="font-size:11px;color:var(--gray4);padding:12px;text-align:center">
+              Cadastre os grupos na aba 👥 Grupos & PINs primeiro.
+            </div>
+          </div>
+          <div class="fg" style="margin-top:12px">
+            <div class="fl"><label>Moedas por token</label><input type="number" id="tok-valor-grupo" value="50" min="1" placeholder="50"></div>
+            <div class="fl"><label>Tokens por grupo</label><input type="number" id="tok-qtd-grupo" value="10" min="1" max="100" placeholder="10"></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn-save" style="max-width:220px;margin-top:0" onclick="gerarTokensPorGrupos()">🎫 Gerar para todos os grupos</button>
+            <button onclick="imprimirTokensPorGrupo()" style="padding:11px 14px;border-radius:8px;background:var(--blue-bg);color:var(--blue);font-size:12px;font-weight:700;border:1.5px solid rgba(29,78,216,.2)">🖨️ Imprimir por grupo</button>
+          </div>
+        </div>
+
+        <!-- GERAR LIVRE -->
+        <details style="margin-bottom:14px">
+          <summary style="font-size:12px;font-weight:700;color:var(--gray6);cursor:pointer;padding:8px 0;user-select:none">
+            ➕ Gerar tokens avulsos (livre)
+          </summary>
+          <div class="fg" style="margin-top:10px">
+            <div class="fl"><label>Quantidade</label><input type="number" id="tok-qtd" value="10" min="1" max="200" placeholder="Ex: 20"></div>
+            <div class="fl"><label>Moedas por token</label><input type="number" id="tok-valor" value="50" min="1" placeholder="Ex: 50"></div>
+            <div class="fl ff"><label>Identificação (opcional)</label><input type="text" id="tok-grupo" placeholder="Ex: Turma A, visitantes VIP…"></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn-save" style="max-width:200px;margin-top:0" onclick="gerarTokens()">🎫 Gerar tokens avulsos</button>
+            <button onclick="imprimirTokens()" style="padding:11px 14px;border-radius:8px;background:var(--blue-bg);color:var(--blue);font-size:12px;font-weight:700;border:1.5px solid rgba(29,78,216,.2)">🖨️ Imprimir lista</button>
+          </div>
+        </details>
+        <div id="tok-msg" style="font-size:11px;margin-bottom:12px;display:none"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:12px;font-weight:700;color:var(--ink)" id="tokCount">—</span>
+          <div style="display:flex;gap:6px">
+            <button onclick="renderTokenAdmin()" style="padding:5px 12px;border-radius:6px;background:var(--gray1);color:var(--gray6);font-size:11px;font-weight:600;border:1.5px solid var(--gray2)">🔄 Atualizar</button>
+            <button onclick="apagarTokensUsados()" style="padding:5px 12px;border-radius:6px;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600">🗑️ Limpar usados</button>
+          </div>
+        </div>
+        <div id="tokList"></div>
+      </div>
+
+
+      <!-- PENDENTES -->
+      <div class="tab-pane" id="tab-pendentes">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">⏳ Drogas aguardando aprovação</div>
+            <div style="font-size:11px;color:var(--gray5)" id="pendentesCount">—</div>
+          </div>
+          <button onclick="renderPendentes()" style="padding:5px 12px;border-radius:6px;background:var(--gray1);color:var(--gray6);font-size:11px;font-weight:600;border:1.5px solid var(--gray2)">🔄 Atualizar</button>
+        </div>
+        <div id="pendentesList"></div>
+        <div id="pendentesEmpty" style="text-align:center;padding:40px 20px;display:none">
+          <div style="font-size:2.5rem;opacity:.3;margin-bottom:10px">✅</div>
+          <p style="color:var(--gray4);font-size:13px">Nenhuma droga aguardando aprovação.</p>
+        </div>
+      </div>
+
+      <!-- GRUPOS E PINS -->
+      <div class="tab-pane" id="tab-grupos">
+        <div style="margin-bottom:20px">
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">👥 Grupos e PINs de acesso</div>
+          <div style="font-size:12px;color:var(--gray5);line-height:1.6;margin-bottom:16px">
+            Aqui você define os nomes dos grupos e os PINs que os alunos usarão para acessar
+            o formulário de cadastro de drogas. Cada grupo recebe um PIN exclusivo.<br>
+            <strong style="color:var(--ink)">O aluno digita o PIN → o sistema identifica automaticamente a turma e o grupo.</strong>
+          </div>
+
+          <div style="background:var(--primary-bg);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:var(--primary);border:1px solid rgba(5,96,58,.15)">
+            🔑 <strong>PIN mestre (professor):</strong> <code style="background:rgba(5,96,58,.1);padding:2px 8px;border-radius:4px;font-weight:800;letter-spacing:.1em">FLISS2025</code>
+            — funciona sempre, deixa turma e grupo livres para testes.
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--primary)">7º Ano A</div>
+            <table class="pin-config-table" style="width:100%">
+              <thead><tr><th>Grupo</th><th>Nome do grupo</th><th>PIN de acesso</th></tr></thead>
+              <tbody id="pinConfigBody7A"></tbody>
+            </table>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--blue)">7º Ano B</div>
+            <table class="pin-config-table" style="width:100%">
+              <thead><tr><th>Grupo</th><th>Nome do grupo</th><th>PIN de acesso</th></tr></thead>
+              <tbody id="pinConfigBody7B"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <button class="btn-save" style="max-width:220px;margin-top:0" onclick="salvarGruposEPins()">💾 Salvar grupos e PINs</button>
+          <button onclick="gerarPinsAleatorios()" style="padding:11px 16px;border-radius:8px;background:var(--coin-bg);color:var(--coin);font-size:12px;font-weight:700;border:1.5px solid rgba(202,138,4,.2)">🎲 Gerar PINs aleatórios</button>
+          <button onclick="imprimirGuiaPins()" style="padding:11px 16px;border-radius:8px;background:var(--gray1);color:var(--gray6);font-size:12px;font-weight:700;border:1.5px solid var(--gray2)">🖨️ Imprimir guia</button>
+        </div>
+        <div id="pinConfigMsg" style="font-size:11px;margin-top:8px;display:none"></div>
+      </div>
+      <!-- RANKING -->
+      <div class="tab-pane" id="tab-ranking">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <span id="rankBadge" style="font-size:12px;font-weight:700;color:var(--ink)">—</span>
+          <button onclick="renderRanking()" style="padding:5px 12px;border-radius:6px;background:var(--gray1);color:var(--gray6);font-size:11px;font-weight:600;border:1.5px solid var(--gray2)">🔄 Atualizar</button>
+        </div>
+        <div id="rankPodium" class="ranking-podium"></div>
+        <div id="rankList" class="ranking-list"></div>
+        <div id="rankEmpty" style="text-align:center;padding:60px 20px;display:none">
+          <div style="font-size:3rem;opacity:.3;margin-bottom:12px">🏆</div>
+          <p style="color:var(--gray4);font-size:13px">Nenhuma venda registrada ainda.</p>
+        </div>
+        <div style="background:linear-gradient(135deg,#0F172A,#1E3A5F);border-radius:var(--r-xl);padding:22px 28px;margin-top:24px">
+          <h3 style="font-family:'Playfair Display',serif;color:#fde68a;font-size:1.1rem;margin-bottom:14px">🎁 Prêmios</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:1.5rem">🥇</span><div><div style="color:#fff;font-size:13px;font-weight:700">1º Lugar</div><div style="color:rgba(255,255,255,.6);font-size:12px">Caixas de chocolate 🍫</div></div></div>
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:1.5rem">🥈</span><div><div style="color:#fff;font-size:13px;font-weight:700">2º Lugar</div><div style="color:rgba(255,255,255,.6);font-size:12px">Chocolates 🍫</div></div></div>
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:1.5rem">🥉</span><div><div style="color:#fff;font-size:13px;font-weight:700">3º Lugar</div><div style="color:rgba(255,255,255,.6);font-size:12px">Balas e pirulitos 🍬</div></div></div>
+          </div>
+        </div>
       </div>
       <!-- PERSONALIZAR -->
       <div class="tab-pane" id="tab-personalizar">
@@ -928,6 +1302,7 @@ footer strong{color:rgba(255,255,255,.85)}
           <button class="btn-save" style="max-width:240px;margin-top:10px" onclick="salvarSaldoInicial()">💾 Salvar saldo inicial</button>
           <div id="cfg-saldo-msg" style="font-size:11px;margin-top:6px;display:none"></div>
         </div>
+
         <div class="cfg-group">
           <h4>🔥 Firebase</h4>
           <p style="font-size:12px;color:var(--gray5);margin-bottom:6px">Status da conexão com o banco de dados:</p>
@@ -976,6 +1351,20 @@ window.addEventListener('fb-ready', async () => {
       drogas = data;
       render();
     });
+    // Real-time listener for pending drugs (badge counter)
+    window.FB.fbListen('drogas_pendentes', (data) => {
+      const count = data.length;
+      const badge = document.getElementById('pendingBadge');
+      const tabBadge = document.getElementById('pendingTabBadge');
+      if (badge) {
+        badge.textContent = count > 0 ? count : '';
+        badge.classList.toggle('show', count > 0);
+      }
+      if (tabBadge) {
+        tabBadge.textContent = count > 0 ? count : '';
+        tabBadge.style.display = count > 0 ? 'inline' : 'none';
+      }
+    });
     // Carrega configurações
     await carregarConfig();
     document.getElementById('fbStatus').textContent = '✅ Conectado ao Firebase';
@@ -997,6 +1386,7 @@ async function carregarConfig() {
   if (!data) return;
   cfg = data;
   aplicarConfig(cfg);
+  if (cfg.grupos) atualizarNomesGrupos(cfg.grupos);
 }
 
 function aplicarConfig(c) {
@@ -1292,6 +1682,7 @@ function abrirBula(id) {
       ${d.efeitos&&d.efeitos.length?`<div class="bsec"><div class="bsec-lbl">Efeitos</div><div class="efeitos-wrap">${d.efeitos.map(e=>`<span class="ef-tag">✓ ${e}</span>`).join('')}</div></div>`:''}
       ${contraHtml ? `<div class="bsec"><div class="bsec-lbl">Contraindicações</div>${contraHtml}</div>` : ''}
       ${d.fab?`<div class="bsec"><div class="bsec-lbl">Fabricante</div><p>${d.fab}</p></div>`:''}
+      ${d.obs?`<div class="bsec"><div class="bsec-lbl">Observações</div><p>${d.obs}</p></div>`:''}
     </div>
     ${p!==null?`<div class="bula-price-bar">
       <div class="bula-price-info">
@@ -1451,10 +1842,15 @@ function switchTab(t, b) {
   if (t === 'gerenciar') renderAList();
   if (t === 'reservas') renderReservas();
   if (t === 'carteiras') renderCarteiras();
+  if (t === 'pendentes') renderPendentes();
+  if (t === 'tokens') { renderTokGruposWrap(); renderTokenAdmin(); }
+  if (t === 'grupos') renderGruposEPins();
+  if (t === 'ranking') renderRanking();
   if (t === 'personalizar') popularFormPersonalizar();
   if (t === 'config') {
     const el = document.getElementById('cfg-saldo');
-    if(el) el.value = cfg.saldoInicial !== undefined ? cfg.saldoInicial : 20;
+    if(el) el.value = cfg.saldoInicial !== undefined ? cfg.saldoInicial : 100;
+    renderPinConfigTable();
   }
 }
 
@@ -1505,18 +1901,27 @@ async function salvar() {
   const dose = document.getElementById('f-dose').value.trim();
   const frequencia = document.getElementById('f-frequencia').value.trim();
   const modouso = document.getElementById('f-modouso').value.trim();
-  const preco = parseInt(document.getElementById('f-preco').value);
   const estoque = parseInt(document.getElementById('f-estoque').value);
   const hasPos = dose || frequencia || modouso;
-  if (!nome || !autor || !ind || !hasPos || isNaN(preco) || isNaN(estoque)) {
-    mostrarMsg('formMsg', '⚠️ Preencha: nome, autor, indicação, pelo menos um campo de posologia, preço e estoque.', 'var(--red)'); return;
+  if (!nome || !autor || !ind || !hasPos || isNaN(estoque)) {
+    mostrarMsg('formMsg', '⚠️ Preencha: nome, autor, indicação, pelo menos um campo de posologia e estoque.', 'var(--red)'); return;
   }
   if (!window.FB) {
     mostrarMsg('formMsg', '❌ Banco de dados não disponível. Aguarde e tente novamente.', 'var(--red)');
     return;
   }
+  // Auto-price or manual
+  const override = document.getElementById('f-preco-override')?.checked;
+  let preco;
+  if (override) {
+    preco = parseInt(document.getElementById('f-preco').value);
+    if (isNaN(preco)) { mostrarMsg('formMsg', '⚠️ Informe o preço manual.', 'var(--red)'); return; }
+  } else {
+    preco = calcularPrecoAuto();
+  }
   mostrarLoading(true);
   try {
+    const obs = document.getElementById('f-obs')?.value.trim() || '';
     const d = {
       nome, sub: document.getElementById('f-sub').value.trim(),
       turma: document.getElementById('f-turma').value,
@@ -1528,6 +1933,7 @@ async function salvar() {
       contraAvisos: document.getElementById('f-contra-avisos').value.trim(),
       contraInteracoes: document.getElementById('f-contra-interacoes').value.trim(),
       fab: document.getElementById('f-fab').value.trim(),
+      obs,
       updatedAt: new Date().toISOString()
     };
     if (editId) {
@@ -1537,7 +1943,7 @@ async function salvar() {
       await window.FB.fbAdd('drogas', d);
     }
     limpar();
-    mostrarMsg('formMsg', '✅ Droga cadastrada com sucesso!', 'var(--primary)');
+    mostrarMsg('formMsg', `✅ Droga cadastrada com sucesso! Preço: 🪙 ${preco} FLiSS Coins`, 'var(--primary)');
   } catch(e) {
     mostrarMsg('formMsg', '❌ Erro ao salvar: ' + e.message + ' — Verifique as regras do Firebase.', 'var(--red)');
     console.error('Erro ao salvar droga:', e);
@@ -1546,16 +1952,19 @@ async function salvar() {
 }
 
 function limpar() {
-  ['f-nome','f-sub','f-cat','f-autor','f-preco','f-estoque',
+  ['f-nome','f-sub','f-cat','f-autor','f-estoque',
    'f-ind','f-comp','f-dose','f-frequencia','f-modouso',
-   'f-contra-quem','f-contra-avisos','f-contra-interacoes','f-fab']
+   'f-contra-quem','f-contra-avisos','f-contra-interacoes','f-fab','f-obs','f-preco']
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('f-turma').value = '';
+  const ov = document.getElementById('f-preco-override');
+  if(ov) { ov.checked = false; togglePrecoOverride(); }
   efs = []; imgUrl = ''; renderEfChips();
   const p = document.getElementById('imgPreview'); p.style.display = 'none'; p.src = '';
   document.getElementById('imgFile').value = '';
   document.getElementById('formMsg').style.display = 'none';
   editId = null; document.getElementById('btnSalvar').textContent = '💾 Cadastrar';
+  atualizarPrecoIndicator();
 }
 
 function renderAList() {
@@ -1584,35 +1993,26 @@ function editarDroga(id) {
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
   document.querySelector('.a-tab').classList.add('active');
   document.getElementById('tab-cadastrar').classList.add('active');
-
   const setF = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
-
-  setF('f-nome', d.nome);
-  setF('f-sub', d.sub);
-  setF('f-cat', d.cat);
-  setF('f-autor', d.autor);
-  setF('f-ind', d.ind);
-  setF('f-comp', d.comp);
-  setF('f-fab', d.fab);
-
-  // Posologia: new fields (backward compat: fall back to old d.pos in modouso)
-  setF('f-dose', d.dose || '');
-  setF('f-frequencia', d.frequencia || '');
+  setF('f-nome', d.nome); setF('f-sub', d.sub); setF('f-cat', d.cat); setF('f-autor', d.autor);
+  setF('f-ind', d.ind); setF('f-comp', d.comp); setF('f-fab', d.fab); setF('f-obs', d.obs);
+  setF('f-dose', d.dose || ''); setF('f-frequencia', d.frequencia || '');
   setF('f-modouso', d.modouso || d.pos || '');
-
-  // Contraindicações: new fields (backward compat: fall back to old d.contra in quem)
   setF('f-contra-quem', d.contraQuem || d.contra || '');
   setF('f-contra-avisos', d.contraAvisos || '');
   setF('f-contra-interacoes', d.contraInteracoes || '');
-
   document.getElementById('f-turma').value = d.turma || '';
-  document.getElementById('f-preco').value = d.preco !== undefined ? d.preco : '';
   document.getElementById('f-estoque').value = d.estoque !== undefined ? d.estoque : '';
+  // Price: show as manual override with saved price
+  const ov = document.getElementById('f-preco-override');
+  if(ov) { ov.checked = true; togglePrecoOverride(); }
+  setF('f-preco', d.preco);
   efs = [...(d.efeitos||[])]; renderEfChips();
   imgUrl = d.img || '';
   const p = document.getElementById('imgPreview');
   if (imgUrl) { p.src = imgUrl; p.style.display = 'block'; } else { p.style.display = 'none'; }
   document.getElementById('btnSalvar').textContent = '💾 Salvar alterações';
+  atualizarPrecoIndicator();
 }
 
 async function deletarDroga(id) {
@@ -1722,6 +2122,7 @@ function showScreen(id, btn) {
   document.querySelector('.hero').style.display = isFarmacia ? 'block' : 'none';
   if (isFarmacia) render();
   if (id === 'moeda') atualizarStatsMoeda();
+
 }
 
 document.addEventListener('keydown', e => {
@@ -1891,6 +2292,1067 @@ function goToFarmacia() {
   const btn = document.querySelector('.nav-btn[onclick*="farmacia"]');
   if (btn) showScreen('farmacia', btn);
 }
+
+// ── AUTO-PRICE ────────────────────────────────────────────────
+function getFieldVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function calcularPrecoAuto() {
+  // Required fields (always filled for a valid save)
+  // Enrichment fields that raise quality (each adds to completeness)
+  const enrichment = [
+    getFieldVal('f-comp'),          // composição
+    getFieldVal('f-contra-quem'),   // contraindicações - quem
+    getFieldVal('f-contra-avisos'), // avisos/precauções
+    getFieldVal('f-contra-interacoes'), // interações
+    efs.length > 0 ? 'x' : '',     // efeitos colaterais
+    getFieldVal('f-fab'),           // fabricante
+    getFieldVal('f-obs'),           // observações
+    imgUrl ? 'x' : '',              // logotipo/imagem
+  ];
+  const filled = enrichment.filter(v => v.length > 0).length;
+  const total = enrichment.length; // 8
+  if (filled >= 7) return 20;       // quase tudo = mais barato = mais vendas
+  if (filled >= 4) return 40;       // metade
+  return 60;                        // pouco preenchido = mais caro = menos vendas
+}
+
+function atualizarPrecoIndicator() {
+  const override = document.getElementById('f-preco-override')?.checked;
+  const ind = document.getElementById('priceIndicator');
+  const valEl = document.getElementById('piValue');
+  const detEl = document.getElementById('piDetail');
+  if (!ind) return;
+  if (override) {
+    if(valEl) valEl.textContent = '— (manual)';
+    if(detEl) detEl.textContent = 'Preço definido manualmente';
+    return;
+  }
+  const enrichment = [
+    getFieldVal('f-comp'), getFieldVal('f-contra-quem'),
+    getFieldVal('f-contra-avisos'), getFieldVal('f-contra-interacoes'),
+    efs.length > 0 ? 'x' : '', getFieldVal('f-fab'),
+    getFieldVal('f-obs'), imgUrl ? 'x' : '',
+  ];
+  const filled = enrichment.filter(v => v.length > 0).length;
+  const total = 8;
+  const pct = Math.round(filled / total * 100);
+  const preco = filled >= 7 ? 20 : filled >= 4 ? 40 : 60;
+  const labels = ['Poucos campos', 'Campos básicos', 'Metade preenchida', 'Bem preenchida', 'Quase completa', 'Completa!'];
+  const lbl = filled >= 7 ? 'Completa — preço mínimo 🎉' : filled >= 4 ? 'Metade preenchida' : 'Poucos campos — preço alto';
+  if(valEl) valEl.textContent = preco;
+  if(detEl) detEl.textContent = `${filled}/${total} campos extras · ${pct}% · ${lbl}`;
+  // Color
+  ind.style.background = preco === 20 ? 'var(--primary-bg)' : preco === 40 ? 'var(--coin-bg)' : 'var(--red-bg)';
+  ind.style.borderColor = preco === 20 ? 'rgba(5,96,58,.2)' : preco === 40 ? 'rgba(202,138,4,.2)' : 'rgba(180,35,24,.2)';
+  if(valEl) valEl.style.color = preco === 20 ? 'var(--primary)' : preco === 40 ? 'var(--coin)' : 'var(--red)';
+}
+
+function togglePrecoOverride() {
+  const cb = document.getElementById('f-preco-override');
+  const inp = document.getElementById('f-preco');
+  if(!cb || !inp) return;
+  inp.style.display = cb.checked ? 'block' : 'none';
+  atualizarPrecoIndicator();
+}
+
+// Attach live update to enrichment fields
+document.addEventListener('DOMContentLoaded', () => {
+  const ids = ['f-comp','f-contra-quem','f-contra-avisos','f-contra-interacoes','f-fab','f-obs'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', atualizarPrecoIndicator);
+  });
+});
+
+// ── RANKING ───────────────────────────────────────────────────
+async function renderRanking() {
+  if (!window.FB) {
+    document.getElementById('rankList').innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray4);font-size:12px">⏳ Aguardando conexão...</div>';
+    return;
+  }
+  try {
+    const reservas = await window.FB.fbGetAll('reservas');
+    // Count sales per drug
+    const salesMap = {};
+    reservas.forEach(r => {
+      if (!salesMap[r.droId]) salesMap[r.droId] = { nome: r.droNome, turma: r.turma || '', count: 0, receita: 0 };
+      salesMap[r.droId].count++;
+      salesMap[r.droId].receita += Number(r.preco) || 0;
+    });
+    // Merge with drogas for extra info
+    drogas.forEach(d => {
+      if (salesMap[d.id]) { salesMap[d.id].autor = d.autor; salesMap[d.id].turma = d.turma || ''; }
+    });
+    const sorted = Object.entries(salesMap)
+      .map(([id, v]) => ({ id, ...v }))
+      .sort((a, b) => b.count - a.count);
+
+    const badge = document.getElementById('rankBadge');
+    if(badge) badge.textContent = sorted.length + ' grupo' + (sorted.length !== 1 ? 's' : '');
+
+    const empty = document.getElementById('rankEmpty');
+    const podium = document.getElementById('rankPodium');
+    const list = document.getElementById('rankList');
+
+    if (!sorted.length) {
+      if(podium) podium.innerHTML = '';
+      if(list) list.innerHTML = '';
+      if(empty) empty.style.display = 'block';
+      return;
+    }
+    if(empty) empty.style.display = 'none';
+
+    const medals = ['🥇','🥈','🥉'];
+    const prizes = ['Caixas de chocolate 🍫','Chocolates 🍫','Balas e pirulitos 🍬'];
+    const pClasses = ['p1','p2','p3'];
+
+    // Podium (top 3)
+    if(podium) {
+      const top3 = sorted.slice(0,3);
+      // Visual order: 2nd, 1st, 3rd
+      const order = top3.length === 1 ? [0] : top3.length === 2 ? [1,0] : [1,0,2];
+      podium.innerHTML = order.map(i => {
+        const d = top3[i];
+        if(!d) return '';
+        return `<div class="podium-card ${pClasses[i]}">
+          <div class="podium-medal">${medals[i]}</div>
+          <div class="podium-name">${d.nome}</div>
+          <div class="podium-turma">${TL[d.turma]||d.turma||'—'} · ${d.autor||'—'}</div>
+          <div class="podium-sales">${d.count}</div>
+          <div class="podium-lbl">vendas</div>
+          ${i < prizes.length ? `<div class="podium-prize">${prizes[i]}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    // Full list
+    if(list) {
+      list.innerHTML = sorted.map((d, idx) => `
+        <div class="rank-item">
+          <div class="rank-pos">${idx < 3 ? medals[idx] : idx+1}</div>
+          <div style="flex:1">
+            <div class="rank-name">${d.nome}</div>
+            <div class="rank-turma">${TL[d.turma]||d.turma||'—'} · ${d.autor||'—'} · 🪙 ${d.receita} arrecadados</div>
+          </div>
+          <div style="text-align:right">
+            <div class="rank-count">${d.count}</div>
+            <div class="rank-lbl">vendas</div>
+          </div>
+        </div>`).join('');
+    }
+  } catch(e) {
+    console.error('Erro no ranking:', e);
+  }
+}
+
+// ── TOKEN SYSTEM ──────────────────────────────────────────────
+function gerarCodigoToken() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+async function gerarTokens() {
+  if (!window.FB) { alert('Banco de dados não disponível.'); return; }
+  const qtd = parseInt(document.getElementById('tok-qtd').value) || 10;
+  const valor = parseInt(document.getElementById('tok-valor').value) || 50;
+  const grupo = document.getElementById('tok-grupo').value.trim();
+  if (qtd < 1 || qtd > 200) { alert('Quantidade entre 1 e 200.'); return; }
+  mostrarLoading(true);
+  const existentes = await window.FB.fbGetAll('tokens');
+  const usados = new Set(existentes.map(t => t.codigo));
+  let criados = 0;
+  const promises = [];
+  for (let i = 0; i < qtd; i++) {
+    let cod;
+    do { cod = gerarCodigoToken(); } while (usados.has(cod));
+    usados.add(cod);
+    promises.push(window.FB.fbSet('tokens', cod, {
+      codigo: cod, valor, grupo, usado: false,
+      criadoEm: new Date().toISOString()
+    }));
+    criados++;
+  }
+  await Promise.all(promises);
+  mostrarLoading(false);
+  const msg = document.getElementById('tok-msg');
+  if(msg) { msg.style.display='block'; msg.style.color='var(--primary)'; msg.textContent=`✅ ${criados} tokens gerados!`; }
+  renderTokenAdmin();
+}
+
+async function renderTokenAdmin() {
+  if (!window.FB) return;
+  const tokens = await window.FB.fbGetAll('tokens');
+  const el = document.getElementById('tokList');
+  const cnt = document.getElementById('tokCount');
+  const livres = tokens.filter(t => !t.usado).length;
+  const usados = tokens.filter(t => t.usado).length;
+  if(cnt) cnt.textContent = `${tokens.length} tokens · ${livres} disponíveis · ${usados} usados`;
+  if(!el) return;
+  if(!tokens.length) { el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--gray4);font-size:12px">Nenhum token gerado ainda.</div>'; return; }
+  const sorted = [...tokens].sort((a,b) => a.usado - b.usado || a.codigo.localeCompare(b.codigo));
+  el.innerHTML = sorted.map(t => `
+    <div class="a-item" style="${t.usado ? 'opacity:.5' : ''}">
+      <div class="a-item-img" style="background:${t.usado ? 'var(--gray1)':'var(--coin-bg)'};font-size:1rem">${t.usado ? '✓' : '🎫'}</div>
+      <div class="a-item-info">
+        <div class="a-item-name" style="font-size:16px;font-weight:900;letter-spacing:.12em">${t.codigo}</div>
+        <div class="a-item-meta">🪙 ${t.valor} moedas · ${t.grupo || 'Sem grupo'} · ${t.usado ? `Usado por: ${t.usadoPor||'?'} em ${t.usadoEm||'?'}` : 'Disponível'}</div>
+      </div>
+      <div class="a-item-btns">
+        <button onclick="deletarToken('${t.codigo}')" style="padding:5px 10px;border-radius:6px;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+async function deletarToken(cod) {
+  if (!window.FB) return;
+  if (!confirm(`Deletar token ${cod}?`)) return;
+  await window.FB.fbDelete('tokens', cod);
+  renderTokenAdmin();
+}
+
+async function apagarTokensUsados() {
+  if (!window.FB) return;
+  if (!confirm('Apagar todos os tokens já usados?')) return;
+  mostrarLoading(true);
+  const tokens = await window.FB.fbGetAll('tokens');
+  await Promise.all(tokens.filter(t => t.usado).map(t => window.FB.fbDelete('tokens', t.codigo)));
+  mostrarLoading(false);
+  renderTokenAdmin();
+}
+
+function imprimirTokens() {
+  const items = document.querySelectorAll('#tokList .a-item:not([style*="opacity:.5"])');
+  if (!items.length) { alert('Nenhum token disponível para imprimir.'); return; }
+  let html = '<html><head><title>Tokens FLiSS</title><style>body{font-family:monospace;columns:3;column-gap:12px;padding:16px} .tok{border:2px dashed #ccc;border-radius:8px;padding:10px;margin:0 0 10px;break-inside:avoid;text-align:center} .cod{font-size:24px;font-weight:900;letter-spacing:.2em;color:#1a1a2e} .val{font-size:12px;color:#888;margin-top:4px} .grp{font-size:10px;color:#aaa}</style></head><body>';
+  items.forEach(item => {
+    const cod = item.querySelector('.a-item-name').textContent;
+    const meta = item.querySelector('.a-item-meta').textContent;
+    const val = (meta.match(/(\d+) moedas/) || [])[1] || '?';
+    const grp = (meta.match(/moedas · (.+?) ·/) || [])[1] || '';
+    html += `<div class="tok"><div class="cod">${cod}</div><div class="val">🪙 ${val} FLiSS Coins</div>${grp ? `<div class="grp">${grp}</div>` : ''}</div>`;
+  });
+  html += '</body></html>';
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.print();
+}
+
+async function resgatarToken() {
+  const nome = document.getElementById('tok-nome')?.value.trim();
+  const cod = document.getElementById('tok-codigo')?.value.trim().toUpperCase();
+  const res = document.getElementById('tok-result');
+  if (!nome) { if(res) res.innerHTML = '<p style="color:var(--red);font-size:12px">⚠️ Digite seu nome.</p>'; return; }
+  if (!cod || cod.length < 4) { if(res) res.innerHTML = '<p style="color:var(--red);font-size:12px">⚠️ Digite o código do token.</p>'; return; }
+  if (!window.FB) { if(res) res.innerHTML = '<p style="color:var(--red);font-size:12px">⏳ Aguardando conexão...</p>'; return; }
+  mostrarLoading(true);
+  try {
+    const token = await window.FB.fbGetDoc('tokens', cod);
+    if (!token) {
+      mostrarLoading(false);
+      if(res) res.innerHTML = '<div style="background:var(--red-bg);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;margin-bottom:6px">❌</div><div style="font-weight:700;color:var(--red)">Token inválido</div><div style="font-size:12px;color:var(--gray5);margin-top:4px">Verifique o código e tente novamente.</div></div>';
+      return;
+    }
+    if (token.usado) {
+      mostrarLoading(false);
+      if(res) res.innerHTML = '<div style="background:var(--gray1);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;margin-bottom:6px">⚠️</div><div style="font-weight:700;color:var(--gray6)">Token já utilizado</div><div style="font-size:12px;color:var(--gray5);margin-top:4px">Este token foi resgatado anteriormente.</div></div>';
+      return;
+    }
+    // Credit user and mark token as used
+    const user = await getOrCreateUser(nome);
+    const novoSaldo = (Number(user.moedas)||0) + Number(token.valor);
+    await window.FB.fbUpdate('usuarios', user.id, { moedas: novoSaldo });
+    await window.FB.fbSet('tokens', cod, { ...token, usado: true, usadoPor: nome, usadoEm: new Date().toLocaleString('pt-BR') });
+    mostrarLoading(false);
+    if(res) res.innerHTML = `<div style="background:var(--primary-bg);border-radius:10px;padding:18px;text-align:center"><div style="font-size:2rem;margin-bottom:8px">🎉</div><div style="font-weight:700;color:var(--primary);font-size:15px">+${token.valor} FLiSS Coins!</div><div style="font-size:13px;color:var(--gray5);margin-top:6px">Olá, <strong>${nome}</strong>!<br>Você agora tem <strong style="color:var(--coin)">🪙 ${novoSaldo}</strong> FLiSS Coins.</div><button onclick="goToFarmacia()" style="margin-top:14px;padding:10px 24px;border-radius:8px;background:var(--primary);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer">🏪 Ir à Farmácia</button></div>`;
+    // Clear inputs
+    if(document.getElementById('tok-codigo')) document.getElementById('tok-codigo').value = '';
+  } catch(e) {
+    mostrarLoading(false);
+    if(res) res.innerHTML = `<p style="color:var(--red);font-size:12px">❌ Erro: ${e.message}</p>`;
+  }
+}
+
+// ── BOOKS REWARD ──────────────────────────────────────────────
+async function adicionarMoedasLivros() {
+  if (!window.FB) { alert('Banco de dados não disponível.'); return; }
+  const nome = document.getElementById('livro-nome')?.value.trim();
+  const qtd = parseInt(document.getElementById('livro-qtd')?.value) || 0;
+  const moedasPorLivro = parseInt(document.getElementById('livro-moedas')?.value) || 30;
+  const msg = document.getElementById('livro-msg');
+  if (!nome || qtd < 1) {
+    if(msg) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='⚠️ Informe nome e quantidade de livros.'; }
+    return;
+  }
+  mostrarLoading(true);
+  try {
+    const user = await getOrCreateUser(nome);
+    const bonus = qtd * moedasPorLivro;
+    const novoSaldo = (Number(user.moedas)||0) + bonus;
+    await window.FB.fbUpdate('usuarios', user.id, { moedas: novoSaldo });
+    // Register in history
+    await window.FB.fbAdd('historico', {
+      tipo: 'livros', usuario: nome, userId: user.id,
+      qtdLivros: qtd, moedasPorLivro, bonus, saldoApos: novoSaldo,
+      data: new Date().toLocaleString('pt-BR')
+    });
+    mostrarLoading(false);
+    if(msg) { msg.style.display='block'; msg.style.color='var(--primary)'; msg.textContent=`✅ +${bonus} moedas para ${nome} (${qtd} livro${qtd!==1?'s':''} × 🪙${moedasPorLivro})`; }
+    if(document.getElementById('livro-nome')) document.getElementById('livro-nome').value = '';
+    if(document.getElementById('livro-qtd')) document.getElementById('livro-qtd').value = '1';
+    renderCarteiras();
+  } catch(e) {
+    mostrarLoading(false);
+    if(msg) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='❌ Erro: '+e.message; }
+  }
+}
+
+
+// ── STUDENT GROUPS ────────────────────────────────────────────
+const GRUPOS = {
+  '7A': ['Grupo 1 — 7A','Grupo 2 — 7A','Grupo 3 — 7A','Grupo 4 — 7A','Grupo 5 — 7A','Grupo 6 — 7A'],
+  '7B': ['Grupo 1 — 7B','Grupo 2 — 7B','Grupo 3 — 7B','Grupo 4 — 7B','Grupo 5 — 7B','Grupo 6 — 7B'],
+  'Outros': ['Grupo 1','Grupo 2','Grupo 3','Grupo 4','Grupo 5','Grupo 6'],
+};
+
+
+
+let sfEfs = [];
+let sfImgUrl = '';
+
+function addEfSF() {
+  const i = document.getElementById('sf-ef');
+  const v = i?.value.trim();
+  if (!v) return;
+  sfEfs.push(v); i.value = '';
+  renderEfChipsSF();
+}
+function removeEfSF(i) { sfEfs.splice(i, 1); renderEfChipsSF(); }
+function renderEfChipsSF() {
+  const el = document.getElementById('sfEfChips');
+  if (!el) return;
+  el.innerHTML = sfEfs.map((e, i) =>
+    `<span class="ef-chip">${e}<button onclick="removeEfSF(${i})">✕</button></span>`).join('');
+}
+
+function previewImgSF(inp) {
+  const f = inp.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 600;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      sfImgUrl = canvas.toDataURL('image/jpeg', 0.75);
+      const p = document.getElementById('sf-imgPreview');
+      if (p) { p.src = sfImgUrl; p.style.display = 'block'; }
+    };
+    img.src = e.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+function getFieldSF(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+async function submeterDroga() {
+  const nome = getFieldSF('sf-nome');
+  const turma = getFieldSF('sf-turma');
+  const grupo = getFieldSF('sf-grupo');
+  const autor = getFieldSF('sf-autor');
+  const ind = getFieldSF('sf-ind');
+  const dose = getFieldSF('sf-dose');
+  const frequencia = getFieldSF('sf-frequencia');
+  const modouso = getFieldSF('sf-modouso');
+  const estoque = parseInt(document.getElementById('sf-estoque')?.value);
+  const msg = document.getElementById('sf-msg');
+
+  const showMsg = (txt, cor) => {
+    if(msg) { msg.textContent = txt; msg.style.color = cor; msg.style.display = 'block'; }
+  };
+
+  if (!nome || !turma || !grupo || !autor || !ind || (!dose && !frequencia && !modouso) || isNaN(estoque)) {
+    showMsg('⚠️ Preencha os campos obrigatórios: nome, turma, grupo, integrantes, indicação, ao menos um campo de posologia e estoque.', 'var(--red)');
+    return;
+  }
+  if (!window.FB) { showMsg('❌ Banco de dados não disponível. Tente novamente.', 'var(--red)'); return; }
+
+  mostrarLoading(true);
+  try {
+    const d = {
+      nome, sub: getFieldSF('sf-sub'),
+      turma, grupo, autor,
+      cat: getFieldSF('sf-cat'),
+      estoque, img: sfImgUrl, emoji: '💊',
+      ind, comp: getFieldSF('sf-comp'),
+      dose, frequencia, modouso,
+      efeitos: [...sfEfs],
+      contraQuem: getFieldSF('sf-contra-quem'),
+      contraAvisos: getFieldSF('sf-contra-avisos'),
+      contraInteracoes: getFieldSF('sf-contra-interacoes'),
+      fab: getFieldSF('sf-fab'),
+      obs: getFieldSF('sf-obs'),
+      enviadoEm: new Date().toLocaleString('pt-BR'),
+      status: 'pendente'
+    };
+    await window.FB.fbAdd('drogas_pendentes', d);
+    mostrarLoading(false);
+    // Success: clear form and show message
+    limparFormSF();
+    showMsg('✅ Droga enviada com sucesso! Aguarde a aprovação do professor para aparecer na vitrine.', 'var(--primary)');
+    // Scroll to message
+    msg?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch(e) {
+    mostrarLoading(false);
+    showMsg('❌ Erro ao enviar: ' + e.message, 'var(--red)');
+  }
+}
+
+
+
+// ── ADMIN: PENDING DRUGS ──────────────────────────────────────
+async function renderPendentes() {
+  if (!window.FB) {
+    document.getElementById('pendentesList').innerHTML = '<div style="text-align:center;padding:24px;color:var(--gray4);font-size:12px">⏳ Aguardando conexão...</div>';
+    return;
+  }
+  mostrarLoading(true);
+  try {
+    const pendentes = await window.FB.fbGetAll('drogas_pendentes');
+    mostrarLoading(false);
+    const el = document.getElementById('pendentesList');
+    const empty = document.getElementById('pendentesEmpty');
+    const cnt = document.getElementById('pendentesCount');
+    if(cnt) cnt.textContent = pendentes.length + ' droga' + (pendentes.length !== 1 ? 's' : '') + ' aguardando aprovação';
+    if (!pendentes.length) {
+      if(el) el.innerHTML = '';
+      if(empty) empty.style.display = 'block';
+      return;
+    }
+    if(empty) empty.style.display = 'none';
+
+    const sorted = [...pendentes].sort((a,b) => (b.enviadoEm||'').localeCompare(a.enviadoEm||''));
+
+    el.innerHTML = sorted.map(d => {
+      const fields = [
+        ['Indicação', d.ind],
+        ['Grupo', d.grupo],
+        ['Turma', TL[d.turma]||d.turma||'—'],
+        ['Dose', d.dose],
+        ['Frequência', d.frequencia],
+        ['Modo de uso', d.modouso],
+        ['Composição', d.comp],
+        ['Fabricante', d.fab],
+      ].filter(([,v]) => v).slice(0,6);
+
+      // Calculate suggested price for this pending drug
+      const pEnrich = [
+        d.comp, d.contraQuem, d.contraAvisos, d.contraInteracoes,
+        d.efeitos?.length > 0 ? 'x' : '', d.fab, d.obs, d.img ? 'x' : ''
+      ];
+      const pFilled = pEnrich.filter(v => v && v.length > 0).length;
+      const pPreco = pFilled >= 7 ? 20 : pFilled >= 4 ? 40 : 60;
+      const pClass = pPreco === 20 ? 'p20' : pPreco === 40 ? 'p40' : 'p60';
+      const pLabel = pPreco === 20 ? 'Completo — preço mínimo' : pPreco === 40 ? 'Metade preenchida' : 'Poucos campos';
+      const pPct = Math.round(pFilled / 8 * 100);
+      return `<div class="pending-item">
+        <div class="price-fields-bar">
+          <span class="price-badge ${pClass}">🪙 ${pPreco} FLiSS Coins</span>
+          <span style="font-size:11px;color:var(--gray5)">${pFilled}/8 campos extras · ${pPct}% · ${pLabel}</span>
+          <div style="flex:1;height:5px;background:var(--gray2);border-radius:999px;min-width:60px;overflow:hidden">
+            <div style="height:100%;width:${pPct}%;border-radius:999px;background:${pPreco===20?'var(--primary)':pPreco===40?'var(--coin)':'var(--red)'}"></div>
+          </div>
+        </div>
+        <div class="pending-item-top">
+          <div style="flex:1;min-width:0">
+            ${d.img ? `<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--gray2);float:right;margin:0 0 8px 12px"><img src="${d.img}" style="width:100%;height:100%;object-fit:contain"></div>` : ''}
+            <div class="pending-nome">💊 ${d.nome}</div>
+            <div class="pending-meta">
+              por <strong>${d.autor||'—'}</strong> · ${d.grupo||'—'} · ${TL[d.turma]||d.turma||'—'} · enviado em ${d.enviadoEm||'—'}
+            </div>
+          </div>
+          <div class="pending-btns">
+            <button class="btn-aprovar" onclick="aprovarDroga('${d.id}')">✅ Aprovar (🪙 ${pPreco})</button>
+            <button class="btn-editar-aprovar" onclick="aprovarComEdicao('${d.id}')">✏️ Editar e aprovar</button>
+            <button class="btn-rejeitar" onclick="rejeitarDroga('${d.id}')">❌ Rejeitar</button>
+          </div>
+        </div>
+        ${fields.length ? `<div class="pending-fields">${fields.map(([l,v]) =>
+          `<div class="pf-item"><div class="pf-lbl">${l}</div><div class="pf-val">${v.substring(0,80)}${v.length>80?'…':''}</div></div>`
+        ).join('')}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    mostrarLoading(false);
+    document.getElementById('pendentesList').innerHTML = `<div style="color:var(--red);font-size:12px;padding:16px">Erro: ${e.message}</div>`;
+  }
+}
+
+async function aprovarDroga(id) {
+  if (!window.FB) return;
+  const pendentes = await window.FB.fbGetAll('drogas_pendentes');
+  const d = pendentes.find(x => x.id === id);
+  if (!d) { alert('Droga não encontrada.'); return; }
+  mostrarLoading(true);
+  try {
+    // Calculate auto-price
+    const enrichment = [
+      d.comp, d.contraQuem, d.contraAvisos, d.contraInteracoes,
+      d.efeitos?.length > 0 ? 'x' : '', d.fab, d.obs, d.img ? 'x' : ''
+    ];
+    const filled = enrichment.filter(v => v && v.length > 0).length;
+    const preco = filled >= 7 ? 20 : filled >= 4 ? 40 : 60;
+    const { id: _id, status: _s, enviadoEm: _e, ...droData } = d;
+    await window.FB.fbAdd('drogas', { ...droData, preco, aprovadoEm: new Date().toLocaleString('pt-BR') });
+    await window.FB.fbDelete('drogas_pendentes', id);
+    mostrarLoading(false);
+    renderPendentes();
+    alert(`✅ Droga "${d.nome}" aprovada! Preço calculado: 🪙 ${preco} FLiSS Coins.`);
+  } catch(e) {
+    mostrarLoading(false);
+    alert('Erro ao aprovar: ' + e.message);
+  }
+}
+
+function aprovarComEdicao(id) {
+  if (!window.FB) return;
+  window.FB.fbGetAll('drogas_pendentes').then(pendentes => {
+    const d = pendentes.find(x => x.id === id);
+    if (!d) { alert('Droga não encontrada.'); return; }
+    // Switch to cadastrar tab and fill form
+    const tab = document.querySelector(".a-tab[onclick*='cadastrar']");
+    if (tab) switchTab('cadastrar', tab);
+    // Fill admin form
+    const setF = (fid, val) => { const el = document.getElementById(fid); if(el) el.value = val || ''; };
+    setF('f-nome', d.nome); setF('f-sub', d.sub); setF('f-cat', d.cat);
+    setF('f-autor', `${d.autor} (${d.grupo||''})`);
+    setF('f-ind', d.ind); setF('f-comp', d.comp); setF('f-fab', d.fab); setF('f-obs', d.obs);
+    setF('f-dose', d.dose); setF('f-frequencia', d.frequencia); setF('f-modouso', d.modouso);
+    setF('f-contra-quem', d.contraQuem); setF('f-contra-avisos', d.contraAvisos);
+    setF('f-contra-interacoes', d.contraInteracoes);
+    document.getElementById('f-turma').value = d.turma || '';
+    document.getElementById('f-estoque').value = d.estoque || '';
+    efs = [...(d.efeitos||[])]; renderEfChips();
+    imgUrl = d.img || '';
+    const p = document.getElementById('imgPreview');
+    if(imgUrl) { p.src = imgUrl; p.style.display = 'block'; } else { p.style.display = 'none'; }
+    // Store pending id to delete after save
+    window._pendingApprovalId = id;
+    document.getElementById('btnSalvar').textContent = '✅ Aprovar e publicar';
+    atualizarPrecoIndicator();
+    // Override save to also delete from pendentes
+    window._savingFromPending = true;
+  });
+}
+
+// pending approval handled in aprovarComEdicao
+
+async function rejeitarDroga(id) {
+  if (!window.FB) return;
+  const motivo = prompt('Motivo da rejeição (opcional — será registrado):') ?? '';
+  if (motivo === null) return; // cancelled
+  mostrarLoading(true);
+  try {
+    const pendentes = await window.FB.fbGetAll('drogas_pendentes');
+    const d = pendentes.find(x => x.id === id);
+    if (d) {
+      await window.FB.fbSet('drogas_rejeitadas', id, {
+        ...d, rejeitadoEm: new Date().toLocaleString('pt-BR'), motivo
+      });
+    }
+    await window.FB.fbDelete('drogas_pendentes', id);
+    mostrarLoading(false);
+    renderPendentes();
+  } catch(e) {
+    mostrarLoading(false);
+    alert('Erro ao rejeitar: ' + e.message);
+  }
+}
+
+
+// ── PIN SYSTEM ────────────────────────────────────────────────
+// cfg.pins = { 'Grupo 1 — 7A': 'PIN123', 'Grupo 2 — 7A': 'PIN456', ... }
+let _sfUnlocked = false;
+let _sfGrupo = '';
+let _sfTurma = '';
+
+function renderPinConfigTable() {
+  const body = document.getElementById('pinConfigBody');
+  if (!body) return;
+  const grupos7A = ['Grupo 1','Grupo 2','Grupo 3','Grupo 4','Grupo 5','Grupo 6'].map(g => g + ' — 7A');
+  const grupos7B = ['Grupo 1','Grupo 2','Grupo 3','Grupo 4','Grupo 5','Grupo 6'].map(g => g + ' — 7B');
+  const todos = [...grupos7A, ...grupos7B];
+  body.innerHTML = todos.map(g => {
+    const turma = g.includes('7A') ? '7º Ano A' : '7º Ano B';
+    const saved = (cfg.pins && cfg.pins[g]) ? cfg.pins[g] : '';
+    return `<tr>
+      <td style="font-weight:600;color:var(--ink)">${g}</td>
+      <td style="color:var(--gray5)">${turma}</td>
+      <td><input type="text" id="pin-${g.replace(/ /g,'_').replace(/—/g,'dash')}"
+        value="${saved}" placeholder="Ex: FLISS7A1" maxlength="20"
+        oninput="this.value=this.value.toUpperCase()"></td>
+    </tr>`;
+  }).join('');
+}
+
+async function salvarPins() {
+  if (!window.FB) { alert('Banco de dados não disponível.'); return; }
+  const grupos7A = ['Grupo 1','Grupo 2','Grupo 3','Grupo 4','Grupo 5','Grupo 6'].map(g => g + ' — 7A');
+  const grupos7B = ['Grupo 1','Grupo 2','Grupo 3','Grupo 4','Grupo 5','Grupo 6'].map(g => g + ' — 7B');
+  const todos = [...grupos7A, ...grupos7B];
+  const pins = {};
+  todos.forEach(g => {
+    const inputId = 'pin-' + g.replace(/ /g,'_').replace(/—/g,'dash');
+    const el = document.getElementById(inputId);
+    if (el && el.value.trim()) pins[g] = el.value.trim();
+  });
+  cfg.pins = pins;
+  await window.FB.fbSet('config', 'site', { pins });
+  const msg = document.getElementById('pinConfigMsg');
+  if(msg) { msg.style.display='block'; msg.style.color='var(--primary)'; msg.textContent=`✅ ${Object.keys(pins).length} PINs salvos!`; }
+  setTimeout(() => { if(msg) msg.style.display='none'; }, 4000);
+}
+
+function verificarPinAluno() {
+  const input = document.getElementById('sf-pin-input');
+  const err = document.getElementById('sf-pin-error');
+  const pin = input?.value.trim().toUpperCase();
+  if (!pin) { if(err) err.textContent = 'Digite o PIN do seu grupo.'; return; }
+
+  // Master PIN for testing (professor access)
+  if (pin === 'FLISS2025') {
+    _sfUnlocked = true;
+    _sfGrupo = '';
+    _sfTurma = '';
+    document.getElementById('sf-pin-gate').style.display = 'none';
+    document.getElementById('sf-form-wrap').style.display = 'block';
+    // Leave turma/grupo unlocked for master access
+    const turmaEl = document.getElementById('sf-turma');
+    const grupoEl = document.getElementById('sf-grupo');
+    if(turmaEl) turmaEl.disabled = false;
+    if(grupoEl) grupoEl.disabled = false;
+    if(err) { err.style.color = 'var(--primary)'; err.textContent = '✅ Acesso mestre — professor. Turma e grupo livres.'; }
+    return;
+  }
+
+  // Find which group this PIN belongs to
+  const pins = cfg.pins || {};
+  const grupo = Object.keys(pins).find(g => pins[g].toUpperCase() === pin);
+
+  if (!grupo) {
+    if(err) err.textContent = 'PIN inválido. Verifique com seu professor.';
+    if(input) { input.style.borderColor = 'var(--red)'; setTimeout(() => { input.style.borderColor = 'var(--gray2)'; }, 3000); }
+    return;
+  }
+
+  // Unlock
+  _sfUnlocked = true;
+  _sfGrupo = grupo;
+  _sfTurma = grupo.includes('7A') ? '7A' : grupo.includes('7B') ? '7B' : 'Outros';
+
+  // Show form, hide gate
+  document.getElementById('sf-pin-gate').style.display = 'none';
+  document.getElementById('sf-form-wrap').style.display = 'block';
+
+  // Pre-fill and lock turma + grupo
+  const turmaEl = document.getElementById('sf-turma');
+  if(turmaEl) { turmaEl.value = _sfTurma; turmaEl.disabled = true; atualizarGruposSF(); }
+  const grupoEl = document.getElementById('sf-grupo');
+  if(grupoEl) {
+    // Find matching option
+    setTimeout(() => {
+      const nomeGrupo = grupo.replace(' — 7A','').replace(' — 7B','') + ' — ' + _sfTurma;
+      [...grupoEl.options].forEach(opt => { if(opt.value === grupo || opt.value === nomeGrupo || opt.text.includes(grupo.split(' — ')[0])) opt.selected = true; });
+      grupoEl.disabled = true;
+    }, 50);
+  }
+  // Show welcome
+  if(err) { err.style.color = 'var(--primary)'; err.textContent = `✅ Bem-vindo(a)! ${grupo} — acesso liberado.`; }
+}
+
+// Override atualizarGruposSF to use full group names matching pins
+function atualizarGruposSF() {
+  const turma = document.getElementById('sf-turma')?.value;
+  const sel = document.getElementById('sf-grupo');
+  if (!sel) return;
+  // Use full names like "Grupo 1 — 7A" to match PIN keys
+  const suffix = turma === '7A' ? ' — 7A' : turma === '7B' ? ' — 7B' : '';
+  const opts = turma && GRUPOS[turma]
+    ? GRUPOS[turma].map(g => {
+        const fullName = g.replace(/ — 7[AB]$/,'') + suffix;
+        return `<option value="${fullName}">${g}</option>`;
+      })
+    : [];
+  sel.innerHTML = opts.length
+    ? opts.join('')
+    : '<option value="">— Selecione a turma primeiro —</option>';
+}
+
+// Patch switchTab to render PIN config table when opening config
+
+
+
+// Reset PIN gate when navigating back to cadastro screen
+
+
+
+// Reset after successful submission
+
+function limparFormSF() {
+  // Clear all student form fields
+  ['sf-nome','sf-sub','sf-cat','sf-autor','sf-ind','sf-comp',
+   'sf-dose','sf-frequencia','sf-modouso',
+   'sf-contra-quem','sf-contra-avisos','sf-contra-interacoes',
+   'sf-fab','sf-obs','sf-estoque','sf-ef']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  sfEfs = []; sfImgUrl = ''; renderEfChipsSF();
+  const p = document.getElementById('sf-imgPreview');
+  if(p) { p.style.display = 'none'; p.src = ''; }
+  const fi = document.getElementById('sf-imgFile');
+  if(fi) fi.value = '';
+  // Re-lock turma+grupo after submit (keep PIN unlocked for group to submit again)
+  const turmaEl = document.getElementById('sf-turma');
+  const grupoEl = document.getElementById('sf-grupo');
+  if(_sfUnlocked) {
+    if(turmaEl) { turmaEl.value = _sfTurma; turmaEl.disabled = true; atualizarGruposSF(); }
+    setTimeout(() => {
+      if(grupoEl) {
+        [...grupoEl.options].forEach(opt => { if(opt.value === _sfGrupo) opt.selected = true; });
+        grupoEl.disabled = true;
+      }
+    }, 60);
+  }
+}
+
+
+// ── STUDENT INLINE SECTION ───────────────────────────────────
+let _alunoOpen = false;
+function toggleAlunoSection() {
+  _alunoOpen = !_alunoOpen;
+  const section = document.getElementById('alunoSection');
+  const arrow = document.getElementById('alunoToggleArrow');
+  const label = document.getElementById('alunoToggleLabel');
+  if (section) section.style.display = _alunoOpen ? 'block' : 'none';
+  if (arrow) arrow.style.transform = _alunoOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+  if (_alunoOpen && label) {
+    label.textContent = 'Fechar formulário de cadastro';
+    section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else if (label) {
+    label.textContent = 'Sou aluno — cadastrar minha droga';
+    // Reset to PIN gate if closing
+    if (!_sfUnlocked) {
+      const gate = document.getElementById('sf-pin-gate');
+      const form = document.getElementById('sf-form-wrap');
+      if(gate) gate.style.display = 'flex';
+      if(form) form.style.display = 'none';
+    }
+  }
+}
+
+// Patch showScreen: no longer needs to handle 'cadastro' screen
+
+
+// ── GRUPOS & PINS TAB ────────────────────────────────────────
+const NUM_GRUPOS = 6;
+const TURMAS = ['7A', '7B'];
+
+function renderGruposEPins() {
+  TURMAS.forEach(turma => {
+    const tbody = document.getElementById(`pinConfigBody${turma}`);
+    if (!tbody) return;
+    const gruposData = (cfg.grupos && cfg.grupos[turma]) || {};
+    const pinsData = (cfg.pins) || {};
+    let rows = '';
+    for (let i = 1; i <= NUM_GRUPOS; i++) {
+      const key = `Grupo ${i} — ${turma}`;
+      const nomeSalvo = gruposData[i] || '';
+      const pinSalvo = pinsData[key] || '';
+      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
+      rows += `<tr>
+        <td style="font-weight:700;color:var(--gray5);font-size:11px;white-space:nowrap">Grupo ${i}</td>
+        <td><input type="text" id="nome-${safeKey}" value="${nomeSalvo}"
+          placeholder="Ex: Os Neurocientistas"
+          style="width:100%;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px"></td>
+        <td><input type="text" id="pin-${safeKey}" value="${pinSalvo}"
+          placeholder="Ex: G${i}${turma}"
+          oninput="this.value=this.value.toUpperCase()"
+          style="width:90px;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center"></td>
+      </tr>`;
+    }
+    tbody.innerHTML = rows;
+  });
+}
+
+async function salvarGruposEPins() {
+  if (!window.FB) { alert('Banco de dados não disponível.'); return; }
+  const pins = {};
+  const grupos = { '7A': {}, '7B': {} };
+
+  TURMAS.forEach(turma => {
+    for (let i = 1; i <= NUM_GRUPOS; i++) {
+      const key = `Grupo ${i} — ${turma}`;
+      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
+      const nomeEl = document.getElementById(`nome-${safeKey}`);
+      const pinEl = document.getElementById(`pin-${safeKey}`);
+      if (nomeEl) grupos[turma][i] = nomeEl.value.trim();
+      if (pinEl && pinEl.value.trim()) pins[key] = pinEl.value.trim();
+    }
+  });
+
+  cfg.pins = pins;
+  cfg.grupos = grupos;
+  await window.FB.fbSet('config', 'site', { pins, grupos });
+
+  // Update GRUPOS constant with custom names
+  atualizarNomesGrupos(grupos);
+
+  const msg = document.getElementById('pinConfigMsg');
+  if(msg) {
+    msg.style.display = 'block';
+    msg.style.color = 'var(--primary)';
+    msg.textContent = `✅ ${Object.keys(pins).length} PINs e nomes de grupos salvos!`;
+    setTimeout(() => msg.style.display='none', 4000);
+  }
+}
+
+function atualizarNomesGrupos(grupos) {
+  // Update the GRUPOS map with custom names for display
+  if (!grupos) return;
+  ['7A','7B'].forEach(turma => {
+    if (!grupos[turma]) return;
+    GRUPOS[turma] = [];
+    for (let i = 1; i <= NUM_GRUPOS; i++) {
+      const nome = grupos[turma][i];
+      const label = nome ? `${nome} (G${i})` : `Grupo ${i} — ${turma}`;
+      GRUPOS[turma].push(`Grupo ${i} — ${turma}`); // keep key consistent for PIN matching
+    }
+  });
+}
+
+function gerarPinsAleatorios() {
+  if (!confirm('Gerar PINs aleatórios para todos os grupos? Isso substituirá os PINs atuais nos campos.')) return;
+  TURMAS.forEach(turma => {
+    for (let i = 1; i <= NUM_GRUPOS; i++) {
+      const key = `Grupo ${i} — ${turma}`;
+      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
+      const pinEl = document.getElementById(`pin-${safeKey}`);
+      if (pinEl) {
+        // Generate readable PIN: G1A-XXXX
+        const rand = Math.floor(1000 + Math.random() * 9000);
+        pinEl.value = `G${i}${turma}-${rand}`;
+      }
+    }
+  });
+}
+
+function imprimirGuiaPins() {
+  const rows7A = [], rows7B = [];
+  ['7A','7B'].forEach(turma => {
+    const arr = turma === '7A' ? rows7A : rows7B;
+    for (let i = 1; i <= NUM_GRUPOS; i++) {
+      const key = `Grupo ${i} — ${turma}`;
+      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
+      const nome = document.getElementById(`nome-${safeKey}`)?.value || '—';
+      const pin = document.getElementById(`pin-${safeKey}`)?.value || '—';
+      arr.push({ num: i, nome, pin });
+    }
+  });
+
+  const makeTable = (rows, turma, color) => `
+    <h2 style="color:${color};border-bottom:2px solid ${color};padding-bottom:6px;margin:24px 0 12px">7º Ano ${turma}</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="background:${color};color:#fff">
+        <th style="padding:8px 12px;text-align:left">Nº</th>
+        <th style="padding:8px 12px;text-align:left">Nome do grupo</th>
+        <th style="padding:8px 12px;text-align:left">PIN de acesso</th>
+      </tr></thead>
+      <tbody>${rows.map((r,i) => `<tr style="background:${i%2?'#f9f9f9':'#fff'}">
+        <td style="padding:7px 12px;font-weight:700">${r.num}</td>
+        <td style="padding:7px 12px">${r.nome}</td>
+        <td style="padding:7px 12px;font-weight:900;letter-spacing:.12em;font-family:monospace">${r.pin}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+
+  const html = `<html><head><title>Guia de PINs — FLiSS Farmácia Literária</title>
+    <style>body{font-family:Arial,sans-serif;padding:32px;max-width:700px;margin:0 auto}
+    h1{font-size:20px;color:#0F172A} .note{font-size:12px;color:#888;margin:8px 0 20px}</style>
+    </head><body>
+    <h1>🔐 Guia de PINs — Farmácia Literária FLiSS</h1>
+    <p class="note">Distribua o PIN correto para cada grupo. O aluno digita o PIN no site para acessar o formulário de cadastro da droga.</p>
+    <p class="note"><strong>PIN mestre (professor):</strong> FLISS2025</p>
+    ${makeTable(rows7A,'A','#05603A')}
+    ${makeTable(rows7B,'B','#1D4ED8')}
+    </body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.print();
+}
+
+
+// ── TOKENS POR GRUPO ─────────────────────────────────────────
+function renderTokGruposWrap() {
+  const wrap = document.getElementById('tok-grupos-wrap');
+  if (!wrap) return;
+  const pins = cfg.pins || {};
+  const grupos = cfg.grupos || {};
+  const grupoKeys = Object.keys(pins);
+  if (!grupoKeys.length) {
+    wrap.innerHTML = '<div style="font-size:11px;color:var(--gray4);padding:12px;text-align:center">Cadastre os grupos na aba 👥 Grupos & PINs primeiro.</div>';
+    return;
+  }
+  // Group by turma
+  const por7A = grupoKeys.filter(g => g.includes('— 7A'));
+  const por7B = grupoKeys.filter(g => g.includes('— 7B'));
+
+  const makeRow = (key, turma) => {
+    const num = key.match(/Grupo (\d+)/)?.[1] || '?';
+    const nomeCustom = grupos[turma]?.[num] || '';
+    const label = nomeCustom ? `${nomeCustom} <span style="color:var(--gray4);font-size:10px">(G${num})</span>` : key;
+    const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash').replace(/\s/g,'_');
+    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(5,96,58,.08)">
+      <input type="checkbox" id="chk-${safeKey}" checked style="accent-color:var(--primary);width:14px;height:14px;flex-shrink:0">
+      <label for="chk-${safeKey}" style="flex:1;font-size:12px;color:var(--ink);cursor:pointer">${label}</label>
+      <span style="font-size:10px;color:var(--gray4)">${turma === '7A' ? '7º Ano A' : '7º Ano B'}</span>
+    </div>`;
+  };
+
+  wrap.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">7º Ano A</div>
+        ${por7A.map(k => makeRow(k, '7A')).join('') || '<div style="font-size:11px;color:var(--gray4)">—</div>'}
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">7º Ano B</div>
+        ${por7B.map(k => makeRow(k, '7B')).join('') || '<div style="font-size:11px;color:var(--gray4)">—</div>'}
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--gray4);margin-top:4px">
+      <label style="cursor:pointer"><input type="checkbox" id="chk-all-grupos" checked onchange="toggleAllGrupos(this.checked)" style="accent-color:var(--primary)"> Selecionar / desselecionar todos</label>
+    </div>`;
+}
+
+function toggleAllGrupos(checked) {
+  const pins = cfg.pins || {};
+  Object.keys(pins).forEach(key => {
+    const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash').replace(/\s/g,'_');
+    const cb = document.getElementById(`chk-${safeKey}`);
+    if (cb) cb.checked = checked;
+  });
+}
+
+async function gerarTokensPorGrupos() {
+  if (!window.FB) { alert('Banco de dados não disponível.'); return; }
+  const pins = cfg.pins || {};
+  const grupos = cfg.grupos || {};
+  const valor = parseInt(document.getElementById('tok-valor-grupo')?.value) || 50;
+  const qtdPorGrupo = parseInt(document.getElementById('tok-qtd-grupo')?.value) || 10;
+
+  // Collect checked groups
+  const selecionados = Object.keys(pins).filter(key => {
+    const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash').replace(/\s/g,'_');
+    return document.getElementById(`chk-${safeKey}`)?.checked;
+  });
+
+  if (!selecionados.length) { alert('Selecione ao menos um grupo.'); return; }
+
+  mostrarLoading(true);
+  const existentes = await window.FB.fbGetAll('tokens');
+  const usados = new Set(existentes.map(t => t.codigo));
+  const promises = [];
+  let total = 0;
+
+  for (const key of selecionados) {
+    const turma = key.includes('7A') ? '7A' : '7B';
+    const num = key.match(/Grupo (\d+)/)?.[1] || '?';
+    const nomeCustom = grupos[turma]?.[num] || '';
+    const grupoLabel = nomeCustom ? `${nomeCustom} — ${key}` : key;
+
+    for (let i = 0; i < qtdPorGrupo; i++) {
+      let cod;
+      do { cod = Math.floor(100000 + Math.random() * 900000).toString(); } while (usados.has(cod));
+      usados.add(cod);
+      promises.push(window.FB.fbSet('tokens', cod, {
+        codigo: cod, valor, grupo: grupoLabel, usado: false,
+        criadoEm: new Date().toISOString()
+      }));
+      total++;
+    }
+  }
+
+  await Promise.all(promises);
+  mostrarLoading(false);
+  const msg = document.getElementById('tok-msg');
+  if(msg) { msg.style.display='block'; msg.style.color='var(--primary)'; msg.textContent=`✅ ${total} tokens gerados para ${selecionados.length} grupo(s)!`; }
+  renderTokenAdmin();
+}
+
+async function imprimirTokensPorGrupo() {
+  if (!window.FB) { alert('Banco de dados não disponível.'); return; }
+  mostrarLoading(true);
+  const tokens = await window.FB.fbGetAll('tokens');
+  mostrarLoading(false);
+  const pins = cfg.pins || {};
+  const grupos = cfg.grupos || {};
+  const disponiveis = tokens.filter(t => !t.usado);
+
+  if (!disponiveis.length) { alert('Nenhum token disponível para imprimir.'); return; }
+
+  // Group by grupo label
+  const porGrupo = {};
+  disponiveis.forEach(t => {
+    const g = t.grupo || 'Sem grupo';
+    if (!porGrupo[g]) porGrupo[g] = [];
+    porGrupo[g].push(t.codigo);
+  });
+
+  let html = `<html><head><title>Tokens por Grupo — FLiSS</title>
+    <style>
+      body{font-family:Arial,sans-serif;padding:24px;font-size:12px}
+      h1{font-size:16px;color:#0F172A;margin-bottom:4px}
+      .subtitle{color:#888;font-size:11px;margin-bottom:20px}
+      .grupo-block{margin-bottom:24px;page-break-inside:avoid}
+      .grupo-title{font-size:13px;font-weight:700;color:#05603A;border-bottom:2px solid #05603A;padding-bottom:4px;margin-bottom:10px}
+      .tokens-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+      .tok{border:1.5px dashed #ccc;border-radius:6px;padding:8px;text-align:center}
+      .tok-code{font-size:16px;font-weight:900;letter-spacing:.15em;font-family:monospace;color:#0F172A}
+      .tok-val{font-size:10px;color:#888;margin-top:2px}
+    </style></head><body>
+    <h1>🎫 Tokens da Farmácia Literária — FLiSS</h1>
+    <div class="subtitle">Distribua cada token para um visitante. Cada código só funciona uma vez.</div>`;
+
+  Object.entries(porGrupo).sort((a,b) => a[0].localeCompare(b[0])).forEach(([grupo, codigos]) => {
+    html += `<div class="grupo-block">
+      <div class="grupo-title">📋 ${grupo} — ${codigos.length} token(s)</div>
+      <div class="tokens-grid">${codigos.map(cod => {
+        const t = disponiveis.find(x => x.codigo === cod);
+        return `<div class="tok"><div class="tok-code">${cod}</div><div class="tok-val">🪙 ${t?.valor || '?'} FLiSS Coins</div></div>`;
+      }).join('')}</div>
+    </div>`;
+  });
+
+  html += '</body></html>';
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.print();
+}
+
+// renderTokGruposWrap is called from switchTab when 'tokens' tab opens
+
 </script>
 </body>
 </html>
