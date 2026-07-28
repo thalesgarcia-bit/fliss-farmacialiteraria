@@ -801,6 +801,7 @@ footer strong{color:rgba(255,255,255,.85)}
 .fliss-buy-box b{font-size:17px}
 .fliss-buy-extra{margin-top:10px;font-size:9px;color:var(--gray5);display:flex;gap:8px;flex-wrap:wrap}
 .fliss-buy-extra span{display:inline-flex;padding:5px 8px;border-radius:999px;background:#f4f7f6;border:1px solid #e3e9e6;font-weight:800}
+.fliss-buy-quantity{margin-top:14px;border:1px solid #e2e7ea;border-radius:12px;padding:12px;background:#fbfcfc}.fliss-buy-quantity label{display:block;font-size:9px;color:var(--gray5);font-weight:900;text-transform:uppercase;margin-bottom:7px}.fliss-buy-quantity select{width:100%;padding:11px 12px;border:1.5px solid var(--gray2);border-radius:9px;background:#fff;font-size:13px;font-weight:800;color:var(--ink)}.fliss-buy-quantity small{display:block;margin-top:7px;font-size:9px;color:var(--gray5);line-height:1.45}
 #flissReceiptOverlay .f3-modal{width:min(92vw,520px)!important;max-width:520px!important}
 .fliss-receipt{display:grid;gap:12px}
 .fliss-success-mark{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:#e8f8f1;color:#087f5b;font-size:32px;margin:0 auto;animation:flissSuccessPop .28s ease-out}@keyframes flissSuccessPop{from{transform:scale(.78);opacity:0}to{transform:scale(1);opacity:1}}
@@ -6413,20 +6414,27 @@ function abrirConfirmacaoCompraFliss(id){
   const saldo=Number(f3Carteira?.saldo||0);
   const preco=Number(d.preco||0);
   const estoque=Number(d.estoque||0);
-  const podeComprar=saldo>=preco&&estoque>0;
+  const max=Math.min(estoque,preco>0?Math.floor(Math.max(0,saldo)/preco):0);
+  const podeComprar=max>0;
   const imagem=imagemMedicamentoPortalFliss(d);
   const grupo=d.turma||d.categoria||f3GrupoNome(d)||'Catálogo FLiSS';
+  const opcoes=Array.from({length:max},(_,i)=>`<option value="${i+1}">${i+1} ${i===0?'unidade':'unidades'}</option>`).join('');
   document.getElementById('flissCompraBody').innerHTML=`
     <div class="fliss-buy-summary">
       <div class="fliss-buy-visual">${imagem?`<img src="${escFliss(imagem)}" alt="${escFliss(d.nome||'Medicamento')}" style="width:100%;height:100%;object-fit:cover;border-radius:17px">`:'💊'}</div>
       <div><h3 class="fliss-buy-title">${escFliss(d.nome||'Medicamento')}</h3><p class="fliss-buy-desc">${escFliss(descricaoMedicamentoPortalFliss(d))}</p></div>
     </div>
     <div class="fliss-buy-extra"><span>${escFliss(grupo)}</span>${d.autorNome?`<span>por ${escFliss(d.autorNome)}</span>`:''}</div>
+    ${podeComprar?`<div class="fliss-buy-quantity">
+      <label for="flissCompraQuantidade">Quantidade desejada</label>
+      <select id="flissCompraQuantidade" onchange="atualizarResumoCompraFliss('${id}')">${opcoes}</select>
+      <small>Você pode comprar até ${max} unidade(s), considerando seu saldo e o estoque disponível.</small>
+    </div>`:''}
     <div class="fliss-buy-info">
-      <div class="fliss-buy-box"><span>Custo</span><b>🪙 ${preco}</b></div>
+      <div class="fliss-buy-box"><span>Preço unitário</span><b>🪙 ${preco}</b></div>
       <div class="fliss-buy-box"><span>Estoque</span><b>${pluralUnidadesFliss(estoque)}</b></div>
-      <div class="fliss-buy-box"><span>Seu saldo</span><b>🪙 ${saldo}</b></div>
-      <div class="fliss-buy-box"><span>Saldo após</span><b>🪙 ${saldo-preco}</b></div>
+      <div class="fliss-buy-box"><span>Total da compra</span><b id="flissCompraTotal">🪙 ${preco}</b></div>
+      <div class="fliss-buy-box"><span>Saldo após</span><b id="flissCompraSaldoApos">🪙 ${saldo-preco}</b></div>
     </div>
     ${!podeComprar?`<div class="f3-result" style="margin-top:12px;color:#b42318">Não é possível concluir esta compra com o saldo ou estoque atual.</div>`:''}
     <div class="fliss-buy-actions">
@@ -6435,7 +6443,18 @@ function abrirConfirmacaoCompraFliss(id){
     </div>`;
   abrirF3('flissCompraOverlay');
 }
-
+function atualizarResumoCompraFliss(id){
+  const d=(f3Drogas||[]).find(x=>x.id===id);
+  const seletor=document.getElementById('flissCompraQuantidade');
+  if(!d||!seletor)return;
+  const quantidade=Math.max(1,Number(seletor.value||1));
+  const total=quantidade*Number(d.preco||0);
+  const saldoApos=Number(f3Carteira?.saldo||0)-total;
+  const totalEl=document.getElementById('flissCompraTotal');
+  const saldoEl=document.getElementById('flissCompraSaldoApos');
+  if(totalEl)totalEl.textContent=`🪙 ${total}`;
+  if(saldoEl)saldoEl.textContent=`🪙 ${saldoApos}`;
+}
 function statusPedidoPortalFliss(status){
   const s=WorkflowPedidosFliss.normalizar(status);
   const mapa={
@@ -6490,8 +6509,9 @@ async function confirmarCompraPremiumFliss(id){
   const btn=document.querySelector('#flissCompraBody .f3-btn.primary');
   if(btn){btn.disabled=true;btn.textContent='Processando...'}
   try{
+    const quantidade=Math.max(1,Number(document.getElementById('flissCompraQuantidade')?.value||1));
     const resultado=await comprarF3(id,{
-      quantidade:1,
+      quantidade,
       confirmado:true,
       silencioso:true
     });
