@@ -29,7 +29,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-  import { getFirestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, onSnapshot, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   // ══════════════════════════════════════════════════════════
   //  ⚠️  COLE AQUI AS CONFIGURAÇÕES DO SEU PROJETO FIREBASE
@@ -49,6 +50,7 @@
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
   const db  = getFirestore(app);
+  const auth = getAuth(app);
 
   // ── Helpers Firestore ─────────────────────────────────────
   async function fbGetAll(col) {
@@ -80,8 +82,32 @@
     });
   }
 
+  // ── Firebase Authentication ───────────────────────────────
+  async function authSignIn(email, password) {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    return { uid: cred.user.uid, email: cred.user.email };
+  }
+  async function authSignOut() { await signOut(auth); }
+  function authCurrent() {
+    const u=auth.currentUser;
+    return u ? {uid:u.uid,email:u.email} : null;
+  }
+  function authListen(cb) {
+    return onAuthStateChanged(auth,u=>cb(u?{uid:u.uid,email:u.email}:null));
+  }
+  async function authChangePassword(currentPassword,newPassword){
+    const user=auth.currentUser;
+    if(!user?.email)throw new Error('Nenhuma conta da equipe está autenticada.');
+    const credential=EmailAuthProvider.credential(user.email,currentPassword);
+    await reauthenticateWithCredential(user,credential);
+    await updatePassword(user,newPassword);
+  }
+  async function authTouchLastLogin(uid){
+    await updateDoc(doc(db,'equipe_fliss',uid),{ultimoLogin:serverTimestamp()});
+  }
+
   // ── Expõe para o código global ────────────────────────────
-  window.FB = { fbGetAll, fbSet, fbAdd, fbUpdate, fbDelete, fbGetDoc, fbListen };
+  window.FB = { fbGetAll, fbSet, fbAdd, fbUpdate, fbDelete, fbGetDoc, fbListen, authSignIn, authSignOut, authCurrent, authListen, authChangePassword, authTouchLastLogin };
   window.dispatchEvent(new Event('fb-ready'));
 
 
@@ -264,6 +290,27 @@
 .manual-code-box{max-width:460px;margin:5px auto}.manual-code-box input{width:100%;padding:13px;border:1.5px solid var(--gray2);border-radius:9px;font-size:15px;text-transform:uppercase;letter-spacing:.04em}.manual-code-box .f3-btn{width:100%;margin-top:9px;padding:12px}
 .print-help{padding:11px 13px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:9px;font-size:10px;line-height:1.55;color:#1e3a8a;margin-top:10px}
 @media(max-width:880px){.f3-operation-actions{grid-template-columns:1fr}.f3-dashboard-grid{grid-template-columns:1fr}.f3-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Fase 7.10 — acesso individual e recuperação assistida */
+.admin-modal.login-mode{width:min(640px,calc(100vw - 28px));height:auto;max-height:calc(100vh - 28px)}
+.admin-modal.login-mode .admin-top{padding:18px 22px}
+.admin-modal.login-mode .team-login{width:100%;max-width:none!important;margin:0!important;padding:28px 32px!important;border:0;border-radius:0;box-shadow:none}
+.team-identity-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:18px 0 12px}
+.team-identity-grid label{font-size:10px;font-weight:900;color:var(--ink)}
+.team-identity-grid input{width:100%;padding:13px 14px;border:1.5px solid var(--gray2);border-radius:10px;font-size:13px;background:#fff}
+.team-auth-user{font-size:10px;color:var(--gray5);margin-top:4px}
+.invite-detail-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(15,23,42,.62);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:16px}
+.invite-detail-overlay.open{display:flex}
+.invite-detail-modal{width:min(520px,calc(100vw - 28px));max-height:calc(100vh - 28px);overflow:auto;background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.25)}
+.invite-detail-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--gray2)}
+.invite-detail-head h3{margin:0;font-size:16px}.invite-detail-body{padding:20px}
+.invite-detail-code{font-family:monospace;font-size:20px;font-weight:900;letter-spacing:.08em;color:var(--ink);padding:12px;border-radius:10px;background:var(--gray1);word-break:break-all}
+.invite-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.invite-detail-field{border:1px solid var(--gray2);border-radius:10px;padding:11px}.invite-detail-field span{display:block;font-size:8px;text-transform:uppercase;font-weight:900;color:var(--gray5);margin-bottom:4px}.invite-detail-field b{font-size:12px;color:var(--ink)}
+.invite-pin-card{margin-top:14px;border:1.5px solid rgba(5,96,58,.2);background:var(--primary-bg);border-radius:12px;padding:15px;text-align:center}.invite-pin-card span{display:block;font-size:9px;text-transform:uppercase;font-weight:900;color:var(--primary)}.invite-pin-card b{display:block;font-size:28px;letter-spacing:.18em;color:var(--primary);margin-top:5px}
+.lot-invite{cursor:pointer}.lot-invite:hover{border-color:rgba(5,96,58,.28);background:#f7fbf9}
+@media(max-width:650px){.admin-modal.login-mode{width:100vw;max-height:100vh}.invite-detail-grid{grid-template-columns:1fr}}
 
 </style>
 
@@ -1025,6 +1072,102 @@ footer strong{color:rgba(255,255,255,.85)}
 }
 </style>
 
+
+<style id="fliss-fase7-11-account-css">
+.team-user-wrap{display:flex;align-items:center;border:1px solid var(--gray2);border-radius:10px;background:#fff;overflow:hidden}
+.team-user-wrap>span{padding-left:14px;font-size:13px}
+.team-user-wrap input{border:0!important;box-shadow:none!important;flex:1;min-width:0}
+.team-account-actions{display:flex;align-items:center;gap:8px}
+.team-account-actions button{border:1px solid var(--gray2);background:#fff;color:var(--ink);border-radius:9px;padding:8px 12px;font-weight:800;font-size:10px;cursor:pointer}
+.team-account-actions button:last-child{color:var(--red);background:var(--red-bg);border-color:transparent}
+.team-password-overlay{position:fixed;inset:0;z-index:10050;background:rgba(10,22,32,.58);display:none;align-items:center;justify-content:center;padding:18px}
+.team-password-overlay.open{display:flex}
+.team-password-modal{width:min(92vw,460px);background:#fff;border-radius:18px;box-shadow:0 28px 80px rgba(15,23,42,.28);overflow:hidden}
+.team-password-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 22px;border-bottom:1px solid var(--gray2)}
+.team-password-head h3{margin:0;color:var(--ink);font-size:18px}
+.team-password-head p{margin:5px 0 0;color:var(--gray5);font-size:10px}
+.team-password-body{padding:20px 22px;display:grid;gap:9px}
+.team-password-body label{font-size:10px;font-weight:800;color:var(--ink);margin-top:3px}
+.team-password-body .team-password-wrap{border:1px solid var(--gray2);border-radius:10px}
+.team-password-body .team-password-wrap input{height:46px}
+.team-password-hint{font-size:9px;color:var(--gray5);line-height:1.45;margin:3px 0 2px}
+.team-password-body .login-err{margin:0}
+@media(max-width:620px){
+  .team-rolebar{align-items:flex-start!important;gap:10px;flex-direction:column}
+  .team-account-actions{width:100%}
+  .team-account-actions button{flex:1}
+}
+</style>
+
+
+<style id="fliss-fase7-11-1-convites-login-css">
+/* Convites: impede textos e ações de se sobreporem */
+.lot-preview{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))!important}
+.lot-invite{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  min-height:74px!important;
+  padding:10px!important;
+  overflow:hidden!important;
+}
+.lot-invite-main{
+  min-width:0!important;
+  overflow:hidden!important;
+  padding-right:4px!important;
+}
+.lot-invite-main code{
+  display:block!important;
+  max-width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  line-height:1.25!important;
+}
+.lot-invite-meta{
+  display:block!important;
+  max-width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  line-height:1.35!important;
+  margin-top:3px!important;
+}
+.lot-invite-actions{
+  display:grid!important;
+  grid-template-columns:auto auto!important;
+  align-items:center!important;
+  justify-items:end!important;
+  gap:7px!important;
+  min-width:190px!important;
+}
+.lot-invite-actions>span{
+  grid-column:1/-1!important;
+  justify-self:end!important;
+  font-size:9px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+.copy-invite-btn{
+  white-space:nowrap!important;
+  min-height:30px!important;
+}
+.team-user-wrap input::placeholder{color:#8a94a6!important;opacity:1!important}
+@media(max-width:760px){
+  .lot-preview{grid-template-columns:1fr!important}
+  .lot-invite{grid-template-columns:1fr!important}
+  .lot-invite-actions{
+    width:100%!important;
+    min-width:0!important;
+    grid-template-columns:1fr 1fr!important;
+    justify-items:stretch!important;
+  }
+  .lot-invite-actions>span{justify-self:start!important}
+  .copy-invite-btn{width:100%!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -1439,9 +1582,37 @@ footer strong{color:rgba(255,255,255,.85)}
 </div>
 <div class="f3-overlay" id="f3PedidoOverlay"><div class="f3-modal"><div class="f3-head"><b>Pedido</b><button onclick="fecharF3('f3PedidoOverlay')" style="background:none;color:#fff;font-size:20px">×</button></div><div class="f3-body" id="f3PedidoBody"></div></div></div>
 
+<div class="invite-detail-overlay" id="inviteDetailOverlay" onclick="fecharDetalhesConviteFliss(event)">
+  <div class="invite-detail-modal" onclick="event.stopPropagation()">
+    <div class="invite-detail-head"><h3>Convite e carteira do visitante</h3><button class="btn-x" onclick="fecharDetalhesConviteFliss()">✕</button></div>
+    <div class="invite-detail-body" id="inviteDetailBody"></div>
+  </div>
+</div>
+
+
+<div class="team-password-overlay" id="teamPasswordOverlay" onclick="fecharAlteracaoSenhaEquipeFliss(event)">
+  <div class="team-password-modal" onclick="event.stopPropagation()">
+    <div class="team-password-head">
+      <div><h3>Alterar senha</h3><p id="teamPasswordAccount">Conta da equipe</p></div>
+      <button type="button" class="btn-x" onclick="fecharAlteracaoSenhaEquipeFliss()">✕</button>
+    </div>
+    <div class="team-password-body">
+      <label>Senha atual</label>
+      <div class="team-password-wrap"><span>🔒</span><input type="password" id="teamCurrentPassword" autocomplete="current-password" placeholder="Digite a senha atual"><button type="button" onclick="alternarSenhaEquipeFliss(this)">👁</button></div>
+      <label>Nova senha</label>
+      <div class="team-password-wrap"><span>🔑</span><input type="password" id="teamNewPassword" autocomplete="new-password" placeholder="Mínimo de 8 caracteres"><button type="button" onclick="alternarSenhaEquipeFliss(this)">👁</button></div>
+      <label>Confirmar nova senha</label>
+      <div class="team-password-wrap"><span>✓</span><input type="password" id="teamConfirmPassword" autocomplete="new-password" placeholder="Repita a nova senha"><button type="button" onclick="alternarSenhaEquipeFliss(this)">👁</button></div>
+      <div class="team-password-hint">A alteração será aplicada somente à conta atualmente autenticada.</div>
+      <div class="login-err" id="teamPasswordError"></div>
+      <button type="button" class="btn-login" id="teamPasswordSaveBtn" onclick="salvarNovaSenhaEquipeFliss()">Salvar nova senha <span>→</span></button>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN -->
 <div class="admin-overlay" id="adminOverlay">
-  <div class="admin-modal">
+  <div class="admin-modal login-mode" id="adminModal">
     <div class="admin-top">
       <div><h2 id="teamPanelTitle">🔐 Área da equipe</h2><p id="teamPanelSubtitle">O sistema abre somente as ferramentas permitidas para o seu perfil</p></div>
       <div style="display:flex;align-items:center;gap:8px"><button id="teamHeaderLogout" class="f3-btn danger" onclick="sairEquipeFliss()" style="display:none">Sair do perfil</button><button class="btn-x" onclick="fecharAdmin()">✕</button></div>
@@ -1449,16 +1620,24 @@ footer strong{color:rgba(255,255,255,.85)}
     <div class="login-box team-login" id="loginBox">
       <div class="team-login-brand"><div class="team-login-mark">FL</div><div><span>FARMÁCIA LITERÁRIA</span><b>Área da equipe</b></div></div>
       <h3>Bem-vindo de volta</h3>
-      <p>Use sua credencial. O sistema reconhece automaticamente as permissões vinculadas ao acesso.</p>
+      <p>Entre com sua conta individual. As ações ficarão vinculadas ao responsável autenticado.</p>
       <div class="team-login-roles"><span>👨‍🏫 Professor</span><span>📷 Monitor</span><span>⚙️ Administrador</span></div>
-      <label class="team-login-label" for="senhaInput">Senha de acesso</label>
-      <div class="team-password-wrap"><span>🔒</span><input type="password" id="senhaInput" placeholder="Digite sua senha" onkeydown="if(event.key==='Enter')tentarLogin()"><button type="button" onclick="alternarSenhaEquipeFliss(this)" aria-label="Mostrar senha">👁</button></div>
+      <div class="team-identity-grid">
+        <div><label for="emailEquipeInput">Usuário</label><div class="team-user-wrap"><span>👤</span><input type="text" id="emailEquipeInput" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Digite seu usuário"></div></div>
+        <div><label for="senhaInput">Senha</label><div class="team-password-wrap"><span>🔒</span><input type="password" id="senhaInput" autocomplete="current-password" placeholder="Digite sua senha" onkeydown="if(event.key==='Enter')tentarLogin()"><button type="button" onclick="alternarSenhaEquipeFliss(this)" aria-label="Mostrar senha">👁</button></div></div>
+      </div>
       <button class="btn-login" onclick="tentarLogin()">Entrar na área da equipe <span>→</span></button>
-      <div class="team-login-note">A tela exibirá somente as ferramentas autorizadas para o seu perfil.</div>
-      <div class="login-err" id="loginErr">Senha não reconhecida. Confira e tente novamente.</div>
+      <div class="team-login-note">O sistema exibirá apenas as ferramentas autorizadas para esta conta.</div>
+      <div class="login-err" id="loginErr">Não foi possível entrar. Confira o usuário, a senha e o cadastro do perfil.</div>
     </div>
     <div class="admin-panel" id="adminPanel">
-      <div class="team-rolebar"><div><span>Perfil ativo</span><b id="teamRoleBadge">—</b></div><button onclick="sairEquipeFliss()">Sair</button></div>
+      <div class="team-rolebar">
+        <div><span>Conta ativa</span><b id="teamRoleBadge">—</b></div>
+        <div class="team-account-actions">
+          <button type="button" onclick="abrirAlteracaoSenhaEquipeFliss()">Alterar senha</button>
+          <button type="button" onclick="sairEquipeFliss()">Sair</button>
+        </div>
+      </div>
       <div class="a-tabs">
         <button class="a-tab active" data-roles="admin,professor" onclick="switchTab('cadastrar',this)">➕ Cadastrar</button>
         <button class="a-tab" data-roles="admin,professor" onclick="switchTab('gerenciar',this)">📋 Gerenciar</button>
@@ -1618,9 +1797,7 @@ footer strong{color:rgba(255,255,255,.85)}
           </div>
           <div style="display:flex;align-items:center;gap:7px">
             <label style="font-size:10px;font-weight:800;color:var(--gray5)">RESPONSÁVEL:</label>
-            <select id="fliss-operador" onchange="salvarOperadorFliss()" style="padding:7px 9px;border:1.5px solid var(--gray2);border-radius:7px;font-size:11px">
-              <option value="">Selecionar</option><option value="Thales">Thales</option><option value="Thamiris">Thamiris</option>
-            </select>
+            <input id="fliss-operador" readonly style="padding:7px 9px;border:1.5px solid var(--gray2);border-radius:7px;font-size:11px;background:var(--gray1);min-width:180px" placeholder="Conta autenticada">
           </div>
         </div>
 
@@ -1730,7 +1907,7 @@ footer strong{color:rgba(255,255,255,.85)}
       <div class="tab-pane" id="tab-tokens">
         <div style="margin-bottom:16px">
           <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">🎫 Gerar Tokens</div>
-          <div style="font-size:11px;color:var(--gray5)">Tokens são códigos que os alunos distribuem aos visitantes. Ao resgatar, o visitante recebe moedas para comprar medicamentos.</div>
+          <div style="font-size:11px;color:var(--gray5)">Tokens avulsos são créditos livres. Os convites também usam a coleção técnica “tokens”, mas são identificados como convite_visitante e administrados exclusivamente na aba Convites e Carteiras.</div>
         </div>
 
         <!-- GERAR POR GRUPO -->
@@ -2297,12 +2474,8 @@ footer strong{color:rgba(255,255,255,.85)}
 
 <script>
 // ── Estado global ────────────────────────────────────────────
-const SENHA_KEY = 'fliss_senha';
-const DEFAULT_PW = 'fliss2025';
-const PROFESSOR_PW = 'professor2026';
-const MONITOR_PW = 'balcao2026';
-const getSenha = () => localStorage.getItem(SENHA_KEY) || DEFAULT_PW;
 let perfilEquipeFliss = sessionStorage.getItem('fliss_perfil_equipe') || '';
+let usuarioEquipeFliss = JSON.parse(sessionStorage.getItem('fliss_usuario_equipe') || 'null');
 let ultimoLoteConvitesFliss = [];
 
 let drogas = [];        // carregadas do Firestore
@@ -2792,35 +2965,124 @@ function fecharReserva(e) {
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
+function ajustarModoModalEquipeFliss(logado){
+  const modal=document.getElementById('adminModal');
+  if(modal)modal.classList.toggle('login-mode',!logado);
+}
 function abrirAdmin() {
   document.getElementById('adminOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  if (!adminOk && perfilEquipeFliss) { adminOk=true; document.getElementById('loginBox').style.display='none'; document.getElementById('adminPanel').style.display='block'; aplicarPerfilEquipeFliss(); return; }
-  if (!adminOk) {
-    document.getElementById('loginBox').style.display = 'block';
-    document.getElementById('adminPanel').style.display = 'none';
-  }
+  const autenticado=Boolean(adminOk&&perfilEquipeFliss&&usuarioEquipeFliss);
+  ajustarModoModalEquipeFliss(autenticado);
+  document.getElementById('loginBox').style.display=autenticado?'none':'block';
+  document.getElementById('adminPanel').style.display=autenticado?'block':'none';
+  if(autenticado)aplicarPerfilEquipeFliss();
+  else setTimeout(()=>document.getElementById('emailEquipeInput')?.focus(),80);
 }
 function fecharAdmin() {
   document.getElementById('adminOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-function tentarLogin() {
-  const senha=document.getElementById('senhaInput').value;
-  let perfil='';
-  if(senha===getSenha()) perfil='admin';
-  else if(senha===(localStorage.getItem('fliss_senha_professor')||PROFESSOR_PW)) perfil='professor';
-  else if(senha===(localStorage.getItem('fliss_senha_monitor')||MONITOR_PW)) perfil='monitor';
-  if(perfil){
-    adminOk=true; perfilEquipeFliss=perfil; sessionStorage.setItem('fliss_perfil_equipe',perfil);
-    document.getElementById('loginBox').style.display='none'; document.getElementById('adminPanel').style.display='block';
-    document.getElementById('loginErr').style.display='none'; document.getElementById('senhaInput').value='';
-    aplicarPerfilEquipeFliss();
-  }else document.getElementById('loginErr').style.display='block';
+function mensagemErroLoginFliss(msg){
+  const el=document.getElementById('loginErr');
+  if(el){el.textContent=msg;el.style.display='block'}
 }
+function emailEquipePorUsuarioFliss(valor){
+  const usuario=String(valor||'').trim().toLowerCase().replace(/\s+/g,'');
+  if(!usuario)return '';
+  return usuario.includes('@')?usuario:`${usuario}@fliss.com.br`;
+}
+function normalizarPerfilEquipeFliss(perfil){
+  const p=String(perfil||'').trim().toLowerCase();
+  return p==='administrador'?'admin':p;
+}
+async function tentarLogin() {
+  const usuarioDigitado=document.getElementById('emailEquipeInput')?.value.trim();
+  const email=emailEquipePorUsuarioFliss(usuarioDigitado);
+  const senha=document.getElementById('senhaInput')?.value||'';
+  if(!usuarioDigitado||!senha){mensagemErroLoginFliss('Informe o usuário e a senha.');return}
+  const btn=document.querySelector('#loginBox .btn-login');
+  if(btn){btn.disabled=true;btn.textContent='Entrando…'}
+  try{
+    const authUser=await window.FB.authSignIn(email,senha);
+    const perfil=await window.FB.fbGetDoc('equipe_fliss',authUser.uid);
+    const perfilNormalizado=normalizarPerfilEquipeFliss(perfil?.perfil);
+    if(!perfil||perfil.ativo===false||!['admin','professor','monitor'].includes(perfilNormalizado)){
+      await window.FB.authSignOut();
+      throw new Error('A conta foi autenticada, mas não possui um perfil ativo na coleção equipe_fliss. Verifique se o documento usa exatamente o UID da conta, se ativo é boolean true e se perfil é admin, administrador, professor ou monitor.');
+    }
+    adminOk=true;
+    perfilEquipeFliss=perfilNormalizado;
+    usuarioEquipeFliss={
+      uid:authUser.uid,
+      email:authUser.email,
+      usuario:perfil.usuario||String(authUser.email||'').split('@')[0],
+      nome:perfil.nome||authUser.email,
+      perfil:perfilNormalizado
+    };
+    try{await window.FB.authTouchLastLogin(authUser.uid)}catch(e){console.warn('Não foi possível atualizar o último login.',e)}
+    sessionStorage.setItem('fliss_perfil_equipe',perfilEquipeFliss);
+    sessionStorage.setItem('fliss_usuario_equipe',JSON.stringify(usuarioEquipeFliss));
+    document.getElementById('loginBox').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    document.getElementById('loginErr').style.display='none';
+    document.getElementById('senhaInput').value='';
+    ajustarModoModalEquipeFliss(true);
+    aplicarPerfilEquipeFliss();
+  }catch(e){
+    console.error(e);
+    const mapa={'auth/invalid-credential':'Usuário ou senha incorretos.','auth/invalid-email':'Informe um usuário válido.','auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos e tente novamente.'};
+    mensagemErroLoginFliss(mapa[e.code]||e.message||'Não foi possível entrar.');
+  }finally{if(btn){btn.disabled=false;btn.innerHTML='Entrar na área da equipe <span>→</span>'}}
+}
+function abrirAlteracaoSenhaEquipeFliss(){
+  const overlay=document.getElementById('teamPasswordOverlay');
+  if(!overlay||!usuarioEquipeFliss)return;
+  document.getElementById('teamPasswordAccount').textContent=`${usuarioEquipeFliss.nome} · ${usuarioEquipeFliss.usuario||usuarioEquipeFliss.email}`;
+  ['teamCurrentPassword','teamNewPassword','teamConfirmPassword'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+  const err=document.getElementById('teamPasswordError');if(err){err.style.display='none';err.textContent=''}
+  overlay.classList.add('open');
+  setTimeout(()=>document.getElementById('teamCurrentPassword')?.focus(),80);
+}
+function fecharAlteracaoSenhaEquipeFliss(event){
+  if(event&&event.target!==document.getElementById('teamPasswordOverlay'))return;
+  document.getElementById('teamPasswordOverlay')?.classList.remove('open');
+}
+async function salvarNovaSenhaEquipeFliss(){
+  const atual=document.getElementById('teamCurrentPassword')?.value||'';
+  const nova=document.getElementById('teamNewPassword')?.value||'';
+  const confirmar=document.getElementById('teamConfirmPassword')?.value||'';
+  const err=document.getElementById('teamPasswordError');
+  const mostrarErro=msg=>{if(err){err.textContent=msg;err.style.display='block'}};
+  if(!atual||!nova||!confirmar){mostrarErro('Preencha os três campos.');return}
+  if(nova.length<8){mostrarErro('A nova senha deve ter pelo menos 8 caracteres.');return}
+  if(nova!==confirmar){mostrarErro('A confirmação não corresponde à nova senha.');return}
+  if(atual===nova){mostrarErro('Escolha uma senha diferente da atual.');return}
+  const btn=document.getElementById('teamPasswordSaveBtn');
+  if(btn){btn.disabled=true;btn.textContent='Salvando…'}
+  try{
+    await window.FB.authChangePassword(atual,nova);
+    fecharAlteracaoSenhaEquipeFliss();
+    alert('Senha alterada com sucesso.');
+  }catch(e){
+    const mapa={
+      'auth/invalid-credential':'A senha atual está incorreta.',
+      'auth/wrong-password':'A senha atual está incorreta.',
+      'auth/weak-password':'A nova senha é muito fraca.',
+      'auth/requires-recent-login':'Entre novamente na conta antes de alterar a senha.',
+      'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos.'
+    };
+    mostrarErro(mapa[e.code]||e.message||'Não foi possível alterar a senha.');
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='Salvar nova senha <span>→</span>'}
+  }
+}
+
 function aplicarPerfilEquipeFliss(){
  const labels={admin:'Administrador',professor:'Professor',monitor:'Monitor de balcão'};
- const badge=document.getElementById('teamRoleBadge'); if(badge)badge.textContent=labels[perfilEquipeFliss]||'—';
+ const logoutHeader=document.getElementById('teamHeaderLogout');if(logoutHeader)logoutHeader.style.display='';
+ const op=document.getElementById('fliss-operador');if(op){op.value=operadorFliss();op.disabled=true}
+ const badge=document.getElementById('teamRoleBadge'); if(badge)badge.textContent=`${usuarioEquipeFliss?.nome||labels[perfilEquipeFliss]||'—'} · ${labels[perfilEquipeFliss]||'—'}`;
  document.querySelectorAll('.a-tab').forEach(b=>{const roles=(b.dataset.roles||'admin').split(',');b.style.display=roles.includes(perfilEquipeFliss)?'':'none';b.classList.remove('active')});
  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
  const target=perfilEquipeFliss==='monitor'?'operacao-fliss':(perfilEquipeFliss==='professor'?'operacao-fliss':'cadastrar');
@@ -2828,7 +3090,7 @@ function aplicarPerfilEquipeFliss(){
  if(btn){btn.style.display='';switchTab(target,btn)}
  const title=document.getElementById('teamPanelTitle'); if(title)title.textContent=perfilEquipeFliss==='admin'?'🔐 Painel administrativo':perfilEquipeFliss==='professor'?'👨‍🏫 Painel do professor':'📷 Painel do balcão';
 }
-function sairEquipeFliss(){adminOk=false;perfilEquipeFliss='';sessionStorage.removeItem('fliss_perfil_equipe');document.getElementById('adminPanel').style.display='none';document.getElementById('loginBox').style.display='block';const b=document.getElementById('teamHeaderLogout');if(b)b.style.display='none';document.getElementById('senhaInput').value=''}
+async function sairEquipeFliss(){try{await window.FB?.authSignOut?.()}catch{}adminOk=false;perfilEquipeFliss='';usuarioEquipeFliss=null;sessionStorage.removeItem('fliss_perfil_equipe');sessionStorage.removeItem('fliss_usuario_equipe');document.getElementById('adminPanel').style.display='none';document.getElementById('loginBox').style.display='block';ajustarModoModalEquipeFliss(false);const b=document.getElementById('teamHeaderLogout');if(b)b.style.display='none';document.getElementById('senhaInput').value='';document.getElementById('emailEquipeInput')?.focus()}
 function switchTab(t, b) {
   if(t==='fluxos-fliss' && typeof perfilEquipeFliss!=='undefined' && perfilEquipeFliss!=='admin'){
     t='operacao-fliss';
@@ -3488,7 +3750,8 @@ async function gerarTokens() {
 
 async function renderTokenAdmin() {
   if (!window.FB) return;
-  const tokens = await window.FB.fbGetAll('tokens');
+  const todosTokens = await window.FB.fbGetAll('tokens');
+  const tokens = todosTokens.filter(t=>t.tipo!=='convite_visitante'&&!String(t.codigo||t.id||'').startsWith('CVT-'));
   const el = document.getElementById('tokList');
   const cnt = document.getElementById('tokCount');
   const livres = tokens.filter(t => !t.usado).length;
@@ -4369,10 +4632,10 @@ let flissSemanasCache = [];
 
 function escFliss(v='') { return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 function moedaFliss(v){ return `${Number(v||0).toLocaleString('pt-BR')} FLiSS Coins`; }
-function operadorFliss(){ return document.getElementById('fliss-operador')?.value || localStorage.getItem('fliss_operador') || ''; }
-function salvarOperadorFliss(){ const v=document.getElementById('fliss-operador')?.value||''; localStorage.setItem('fliss_operador',v); }
+function operadorFliss(){ return usuarioEquipeFliss?.nome || usuarioEquipeFliss?.email || ''; }
+function salvarOperadorFliss(){ const op=document.getElementById('fliss-operador');if(op){op.value=operadorFliss();op.disabled=true} }
 function msgFliss(texto, erro=false){ const el=document.getElementById('fliss-msg'); if(!el)return; el.style.display='block'; el.style.color=erro?'var(--red)':'var(--primary)'; el.textContent=texto; clearTimeout(window._flissMsgT); window._flissMsgT=setTimeout(()=>el.style.display='none',5000); }
-function exigirOperadorFliss(){ if(!operadorFliss()){ alert('Selecione Thales ou Thamiris como responsável nesta sessão.'); return false; } return true; }
+function exigirOperadorFliss(){ if(!operadorFliss()){ alert('Entre com sua conta individual da equipe para continuar.'); return false; } return true; }
 function grupoLabelFliss(turma,grupo){ const nome=cfg?.grupos?.[turma]?.[grupo]; return nome ? `${nome} (Grupo ${grupo} — ${turma})` : `Grupo ${grupo} — ${turma}`; }
 function idAlunoFliss(turma,numero,nome){ const base=`${turma}-${numero||nome}`.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9-]/g,'-').replace(/-+/g,'-').toLowerCase(); return base.replace(/^-|-$/g,''); }
 function gerarPinFliss(){ return String(Math.floor(1000+Math.random()*9000)); }
@@ -4388,7 +4651,7 @@ async function renderGestaoFliss(){
     [flissAlunosCache,flissSemanasCache]=await Promise.all([window.FB.fbGetAll('alunos_fliss'),window.FB.fbGetAll('semanas_fliss')]);
     flissAlunosCache.sort((a,b)=>(a.turma||'').localeCompare(b.turma||'')||(Number(a.numero)||999)-(Number(b.numero)||999)||(a.nome||'').localeCompare(b.nome||''));
     flissSemanasCache.sort((a,b)=>(a.inicio||a.criadoEm||'').localeCompare(b.inicio||b.criadoEm||''));
-    const op=document.getElementById('fliss-operador'); if(op)op.value=localStorage.getItem('fliss_operador')||'';
+    const op=document.getElementById('fliss-operador'); if(op){op.value=operadorFliss();op.disabled=true}
     popularGruposAlunoFliss(); renderAlunosFliss(); renderSemanasFliss(); popularSelectsFliss();
     const ativos=flissAlunosCache.filter(a=>a.ativo!==false), saldo=ativos.reduce((t,a)=>t+Number(a.saldo||0),0), deb=ativos.filter(a=>Number(a.saldo||0)<0).length, sem=flissSemanasCache.filter(x=>x.status==='creditada').length;
     const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v}; set('fd-alunos',ativos.length);set('fd-saldo',Number(saldo).toLocaleString('pt-BR'));set('fd-debito',deb);set('fd-semanas',sem);
@@ -6101,16 +6364,50 @@ function conviteCorrespondePesquisaFliss(c,termo){
 function htmlConviteItemFliss(c){
   const codigo=codigoConviteFliss(c);
   const meta=[c.turma||'Institucional',c.grupo?`Grupo ${c.grupo}`:'',statusConviteFliss(c)].filter(Boolean).join(' · ');
-  return `<div class="lot-invite" title="Clique no botão para copiar o código">
+  return `<div class="lot-invite" title="Abrir detalhes do convite" onclick="abrirDetalhesConviteFliss('${escaparAttrFliss(codigo)}')">
     <div class="lot-invite-main">
       <code>${escFliss(codigo)}</code>
       <span class="lot-invite-meta">${escFliss(meta)}</span>
     </div>
     <div class="lot-invite-actions">
       <span style="color:${conviteCorStatusFliss(c)}">${escFliss(statusConviteFliss(c))}</span>
-      <button type="button" class="copy-invite-btn" onclick="copiarCodigoConviteFliss('${escaparAttrFliss(codigo)}',this)" title="Copiar código">📋 Copiar</button>
+      <button type="button" class="copy-invite-btn" onclick="event.stopPropagation();copiarCodigoConviteFliss('${escaparAttrFliss(codigo)}',this)" title="Copiar código">📋 Copiar</button>
+      <button type="button" class="copy-invite-btn" onclick="event.stopPropagation();abrirDetalhesConviteFliss('${escaparAttrFliss(codigo)}')" title="Ver convite e PIN">Ver detalhes</button>
     </div>
   </div>`;
+}
+
+function fecharDetalhesConviteFliss(e){
+  if(e&&e.target!==document.getElementById('inviteDetailOverlay'))return;
+  document.getElementById('inviteDetailOverlay')?.classList.remove('open');
+}
+async function abrirDetalhesConviteFliss(codigo){
+  const overlay=document.getElementById('inviteDetailOverlay'),body=document.getElementById('inviteDetailBody');
+  if(!overlay||!body)return;
+  overlay.classList.add('open');
+  body.innerHTML='<div class="fliss-empty">Carregando convite e carteira...</div>';
+  try{
+    const convite=await window.FB.fbGetDoc('tokens',codigo);
+    if(!convite){body.innerHTML='<div class="fliss-empty">Convite não encontrado.</div>';return}
+    const wallets=await window.FB.fbGetAll('carteiras_visitantes');
+    const wallet=wallets.find(w=>String(w.token||w.conviteId||'').toUpperCase()===String(codigo).toUpperCase()||String(w.codigo||w.id||'').toUpperCase()===String(convite.usadoPor||'').toUpperCase());
+    const status=statusConviteFliss({...convite,id:codigo});
+    body.innerHTML=`
+      <div class="invite-detail-code">${escFliss(codigo)}</div>
+      <div class="invite-detail-grid">
+        <div class="invite-detail-field"><span>Status</span><b>${escFliss(status)}</b></div>
+        <div class="invite-detail-field"><span>Lote</span><b>${escFliss(convite.lote||'Sem lote')}</b></div>
+        <div class="invite-detail-field"><span>Turma / grupo</span><b>${escFliss([convite.turma,convite.grupo].filter(Boolean).join(' · ')||'Institucional')}</b></div>
+        <div class="invite-detail-field"><span>Crédito inicial</span><b>🪙 ${Number(convite.valor||0)} FLiSS Coins</b></div>
+        <div class="invite-detail-field"><span>Carteira</span><b>${escFliss(wallet?.codigo||wallet?.id||'Ainda não ativada')}</b></div>
+        <div class="invite-detail-field"><span>Saldo atual</span><b>${wallet?`🪙 ${Number(wallet.saldo||0)} FLiSS Coins`:'—'}</b></div>
+      </div>
+      ${wallet?`<div class="invite-pin-card"><span>PIN de recuperação</span><b>${escFliss(wallet.pin||'—')}</b></div><p style="font-size:10px;color:var(--gray5);line-height:1.5;margin:10px 0 0">Informe o PIN somente após confirmar o código da carteira ou o convite apresentado pelo visitante.</p>`:`<div class="hyb-result" style="margin-top:14px">Este convite ainda não foi ativado. O PIN será criado no primeiro acesso e continuará fora do convite impresso.</div>`}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+        <button class="f3-btn" onclick="copiarCodigoConviteFliss('${escaparAttrFliss(codigo)}',this)">📋 Copiar convite</button>
+        ${wallet?`<button class="f3-btn primary" onclick="abrirCompraAssistidaFliss('${escaparAttrFliss(wallet.id||wallet.codigo)}');fecharDetalhesConviteFliss()">Abrir carteira</button>`:''}
+      </div>`;
+  }catch(e){body.innerHTML=`<div class="fliss-empty">Erro ao carregar: ${escFliss(e.message)}</div>`}
 }
 
 function renderListaConvitesFliss(){
@@ -7089,7 +7386,7 @@ async function executarDiagnosticoFluxosFliss(){
  const box=document.getElementById('flow-issues-list');box.innerHTML='<div class="fliss-empty">Analisando integrações...</div>';
  try{
   const [alunos,semanas,movs,drogas,tokens,carteiras,pedidos,cfg]=await Promise.all([window.FB.fbGetAll('alunos_fliss'),window.FB.fbGetAll('semanas_fliss'),window.FB.fbGetAll('movimentacoes_fliss'),window.FB.fbGetAll('drogas'),window.FB.fbGetAll('tokens'),window.FB.fbGetAll('carteiras_visitantes'),window.FB.fbGetAll('pedidos_fliss'),window.FB.fbGetDoc('config','evento_fliss').catch(()=>null)]);
-  const ativos=alunos.filter(a=>a.ativo!==false),semPin=ativos.filter(a=>!a.pin),semGrupo=ativos.filter(a=>!a.grupo),conv=tokens.filter(x=>x.tipo==='convite_visitante'||String(x.id||'').startsWith('CVT-')),meds=drogas.filter(d=>d.ativo!==false&&!d.pausado),disp=meds.filter(d=>Number(d.quantidade??d.estoque??d.stock??0)>0&&Number(d.preco??d.valor??0)>0),pend=pedidos.filter(p=>!p.entregue&&!p.cancelado);
+  const ativos=alunos.filter(a=>a.ativo!==false),semPin=ativos.filter(a=>!a.pin),semGrupo=ativos.filter(a=>!a.grupo),conv=tokens.filter(x=>x.tipo==='convite_visitante'||String(x.id||'').startsWith('CVT-')),meds=drogas.filter(d=>d.ativo!==false&&!d.pausado),disp=meds.filter(d=>Number(d.quantidade??d.estoque??d.stock??0)>0&&Number(d.preco??d.valor??0)>0),pend=pedidos.filter(p=>WorkflowPedidosFliss.normalizar(p.status)==='aguardando');
   const results=[
    setFlow('aluno',[['Alunos ativos',ativos.length?'ok':'error',String(ativos.length)],['PIN individual',semPin.length?'error':'ok',semPin.length?`${semPin.length} sem PIN`:'completo'],['Turma e grupo',semGrupo.length?'warn':'ok',semGrupo.length?`${semGrupo.length} sem grupo`:'completo'],['Movimentações',movs.length?'ok':'warn',`${movs.length} registro(s)`],['Medicamentos compráveis',disp.length?'ok':'error',String(disp.length)]]),
    setFlow('visitante',[['Convites',conv.length?'ok':'error',String(conv.length)],['Carteiras anônimas',carteiras.length?'ok':'warn',String(carteiras.length)],['Check-in autônomo',typeof abrirPortalComprasFliss==='function'?'ok':'error','rota disponível'],['Compra assistida',disp.length?'ok':'error',disp.length?'catálogo disponível':'sem medicamentos']]),
