@@ -54,6 +54,7 @@ button{font:inherit}
 .empty{display:grid;place-items:center;min-height:90px;text-align:center;color:var(--muted);font-size:11px}
 .opening{position:fixed;inset:0;z-index:20;background:#061815;display:grid;place-items:center;animation:openingOut .8s ease 2.5s forwards;pointer-events:none}
 .opening-inner{text-align:center;animation:openingIn .8s ease}.opening-title{font-family:Playfair Display,serif;font-size:clamp(40px,6vw,78px);font-weight:700}.opening-line{width:180px;height:1px;background:rgba(255,255,255,.36);margin:22px auto}.opening-sub{font-size:16px;color:#b9d8d1;font-style:italic}
+.editorial-stack{height:calc(100% - 34px);display:grid;grid-template-rows:minmax(0,1fr) auto;gap:12px;min-height:0}.editorial-stack .editorial{height:auto;min-height:0}.editorial-stack.has-queue{grid-template-rows:minmax(0,1fr) auto;gap:10px}.editorial-stack.has-queue .editorial-content{padding:8px 22px;width:min(940px,94%)}.editorial-stack.has-queue .editorial-icon{font-size:30px;margin-bottom:9px}.editorial-stack.has-queue .kicker{font-size:8px;margin-bottom:10px}.editorial-stack.has-queue .quote{font-size:clamp(25px,2.65vw,43px);line-height:1.08}.editorial-stack.has-queue .author{margin-top:10px;font-size:10px}.editorial-stack.has-queue .book{grid-template-columns:110px minmax(0,1fr);gap:20px}.editorial-stack.has-queue .book-cover{width:110px;padding:13px;border-radius:12px}.editorial-stack.has-queue .book-cover b{font-size:16px}.editorial-stack.has-queue .book-info h2,.editorial-stack.has-queue .medicine h2{font-size:clamp(27px,3.3vw,48px);margin-bottom:8px}.editorial-stack.has-queue .book-info h3{font-size:13px;margin-bottom:8px}.editorial-stack.has-queue .stars{font-size:15px;margin-bottom:8px}.editorial-stack.has-queue .book-info p,.editorial-stack.has-queue .medicine p{font-size:11px;line-height:1.48;margin:6px 0}.editorial-stack.has-queue .medicine-dynamic{grid-template-columns:120px minmax(0,1fr);gap:20px}.editorial-stack.has-queue .medicine-image{width:120px;height:150px;border-radius:14px}.editorial-stack.has-queue .medicine-meta{font-size:10px;margin:0 0 8px}.queue-corner{position:relative;width:100%;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:rgba(5,27,24,.72);box-shadow:none;z-index:1}.queue-corner-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px}.queue-corner-head b{font-size:10px}.queue-corner-head span{font-size:8px;color:var(--muted)}.queue-corner-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.queue-corner-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.05)}.queue-corner-item b{display:block;font-family:ui-monospace,monospace;font-size:11px}.queue-corner-item small{display:block;margin-top:2px;font-size:8px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-corner-item span{font-size:8px;color:#9ed9ca;white-space:nowrap}.queue-view-note{font-size:8px;color:var(--muted);margin-top:7px;text-align:right}@media(max-width:780px){.editorial-stack{height:auto;display:block}.queue-corner{margin-top:12px}.queue-corner-list{grid-template-columns:1fr}.editorial{display:block;overflow:auto}.editorial-content{margin:auto}.editorial-stack.has-queue .book,.editorial-stack.has-queue .medicine-dynamic{grid-template-columns:1fr;text-align:center}.editorial-stack.has-queue .book-cover,.editorial-stack.has-queue .medicine-image{margin:auto}}
 .connection{display:inline-flex;align-items:center;margin-top:12px;padding:7px 10px;border-radius:999px;background:rgba(4,27,24,.82);border:1px solid var(--line);font-size:8px;color:var(--muted);white-space:nowrap}.connection.live{color:#90e3c6}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(255,255,255,.08),0 0 30px rgba(25,169,116,.34)}}@keyframes openingIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes openingOut{to{opacity:0;visibility:hidden}}
 @media(max-width:950px){body{overflow:auto}.shell{height:auto;min-height:calc(100vh - 74px)}.main{grid-template-columns:1fr}.ready-grid{grid-template-columns:1fr}.footer{grid-template-columns:repeat(2,1fr)}}
@@ -139,6 +140,10 @@ let pedidos=[];
 let medicamentos=[];
 let editorialIndex=0;
 let conhecidos=new Set();
+let painelModo='pedidos';
+let alternanciaTimer=null;
+const TEMPO_PEDIDOS=12000;
+const TEMPO_EDITORIAL=10000;
 
 const editorial=[
   {tipo:'frase',icone:'📖',kicker:'Uma pausa para a leitura',texto:'A leitura também pode curar.',autor:'Farmácia Literária'},
@@ -226,8 +231,32 @@ function dados(){
   return{aguardando,entregues,ultima,ranking,campeao,visitantes,alunos,media};
 }
 
+function filaCompactaHtml(aguardando){
+  if(!aguardando.length)return '';
+  const itens=aguardando.slice(0,2);
+  return `<aside class="queue-corner" aria-label="Resumo dos pedidos aguardando retirada">
+    <div class="queue-corner-head"><b>📦 Pedidos na fila</b><span>${aguardando.length} aguardando</span></div>
+    <div class="queue-corner-list">${itens.map(p=>`<div class="queue-corner-item"><div><b>${esc(p.codigo||p.pedidoCodigo||p.id)}</b><small>${esc(p.medicamentoNome||'Medicamento')} · ${esc(nome(p))}</small></div><span>${esc(espera(p))}</span></div>`).join('')}</div>
+    ${aguardando.length>2?`<div class="queue-view-note">+ ${aguardando.length-2} pedido(s) na fila</div>`:''}
+  </aside>`;
+}
+
+function agendarAlternancia(){
+  clearTimeout(alternanciaTimer);
+  const temFila=dados().aguardando.length>0;
+  if(!temFila){painelModo='editorial';alternanciaTimer=setTimeout(()=>{editorialIndex+=1;render();agendarAlternancia()},TEMPO_EDITORIAL);return}
+  const espera=painelModo==='pedidos'?TEMPO_PEDIDOS:TEMPO_EDITORIAL;
+  alternanciaTimer=setTimeout(()=>{
+    painelModo=painelModo==='pedidos'?'editorial':'pedidos';
+    if(painelModo==='editorial')editorialIndex+=1;
+    render();
+    agendarAlternancia();
+  },espera);
+}
+
 function render(){
   const d=dados(), prontos=d.aguardando.slice(0,6);
+  const mostrarPedidos=d.aguardando.length&&painelModo==='pedidos';
   app.innerHTML=`<div class="hero">
     <div class="hero-copy">
       <div class="hero-kicker">Projeto literário · FLiSS</div>
@@ -243,8 +272,8 @@ function render(){
     <div class="clock" id="clock"></div>
   </div>
   <div class="main">
-    <section class="box"><div class="section-title"><h2>${d.aguardando.length?'Pedidos aguardando retirada':'Experiência literária'}</h2><span>${d.aguardando.length?`${d.aguardando.length} na fila`:'Conteúdo em rotação'}</span></div>
-    ${prontos.length?`<div class="ready-grid">${prontos.map(p=>`<article class="ready-card ${!conhecidos.has(p.id)?'new':''}"><div><div class="ready-code">${esc(p.codigo||p.pedidoCodigo||p.id)}</div><div class="ready-name">${esc(p.medicamentoNome||'Medicamento')}</div></div><div class="ready-meta">${esc(nome(p))} · ${esc(espera(p))}</div></article>`).join('')}</div>`:editorialHtml()}</section>
+    <section class="box" style="position:relative"><div class="section-title"><h2>${mostrarPedidos?'Pedidos aguardando retirada':'Experiência literária'}</h2><span>${mostrarPedidos?`${d.aguardando.length} na fila`:'Conteúdo em rotação'}</span></div>
+    ${mostrarPedidos?`<div class="ready-grid">${prontos.map(p=>`<article class="ready-card ${!conhecidos.has(p.id)?'new':''}"><div><div class="ready-code">${esc(p.codigo||p.pedidoCodigo||p.id)}</div><div class="ready-name">${esc(p.medicamentoNome||'Medicamento')}</div></div><div class="ready-meta">${esc(nome(p))} · ${esc(espera(p))}</div></article>`).join('')}</div>`:`<div class="editorial-stack${d.aguardando.length?' has-queue':''}">${editorialHtml()}${filaCompactaHtml(d.aguardando)}</div>`}</section>
     <aside class="side">
       <section class="panel"><div class="section-title"><h2>Última entrega</h2><span>Atualização automática</span></div>${d.ultima?`<div class="last"><strong>${esc(d.ultima.medicamentoNome||'Medicamento')}</strong><span>Retirado por ${esc(nome(d.ultima))}</span><span>${confirmado(d.ultima).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div>`:'<div class="empty">Nenhuma entrega registrada.</div>'}</section>
       <section class="panel"><div class="section-title"><h2>Medicamentos mais vendidos</h2><span>Top 5 · entregues</span></div><div class="ranking">${d.ranking.length?d.ranking.map((r,i)=>`<div class="rank"><div class="pos">${['🥇','🥈','🥉'][i]||`${i+1}º`}</div><div><b>${esc(r.nome)}</b><small>${esc([r.turma,r.grupo].filter(Boolean).join(' · ')||'Grupo não informado')}</small></div><div class="value">${r.total}</div></div>`).join(''):'<div class="empty">Ranking ainda sem vendas entregues.</div>'}</div></section>
@@ -267,10 +296,14 @@ onSnapshot(collection(db,'drogas'),snap=>{
 },err=>console.error('Não foi possível carregar os medicamentos cadastrados.',err));
 
 onSnapshot(collection(db,'pedidos_fliss'),snap=>{
+  const anteriores=new Set(pedidos.filter(p=>normalizar(p.status)==='aguardando').map(p=>p.id));
   pedidos=snap.docs.map(d=>({id:d.id,...d.data()}));
+  const chegouNovo=pedidos.some(p=>normalizar(p.status)==='aguardando'&&!anteriores.has(p.id));
+  if(chegouNovo)painelModo='pedidos';
   connectionText='● Atualização em tempo real';
   connectionLive=true;
   render();
+  agendarAlternancia();
 },err=>{
   console.error(err);
   connectionText='Não foi possível conectar ao Firestore';
@@ -279,8 +312,7 @@ onSnapshot(collection(db,'pedidos_fliss'),snap=>{
 });
 
 setInterval(atualizarRelogio,1000);
-setInterval(()=>{if(!dados().aguardando.length){editorialIndex+=1;render()}},10000);
-setInterval(()=>{if(dados().aguardando.length)render()},30000);
+setInterval(()=>{if(dados().aguardando.length&&painelModo==='pedidos')render()},30000);
 
 document.getElementById('fullBtn').onclick=async()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
 document.getElementById('copyBtn').onclick=async()=>{
@@ -288,6 +320,7 @@ document.getElementById('copyBtn').onclick=async()=>{
   catch{prompt('Copie o link:',location.href)}
 };
 render();
+agendarAlternancia();
 
 if(new URLSearchParams(location.search).get('fullscreen')==='1'){
   window.addEventListener('load',()=>setTimeout(()=>{
