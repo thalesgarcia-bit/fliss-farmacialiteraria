@@ -276,7 +276,7 @@
 
 
 /* ══ Operação do Evento — Fase 3 ═══════════════════════════ */
-.f3-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:14px}.f3-card{background:#fff;border:1.5px solid var(--gray2);border-radius:10px;padding:12px}.f3-card b{display:block;font-size:20px;color:var(--ink);margin-top:4px}.f3-card span{font-size:9px;color:var(--gray5);text-transform:uppercase;font-weight:800;letter-spacing:.06em}.f3-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.f3-btn{padding:9px 14px;border-radius:8px;font-size:11px;font-weight:800;border:1px solid var(--gray2);background:#fff;color:var(--ink)}.f3-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.f3-btn.danger{background:var(--red-bg);color:var(--red);border-color:transparent}.f3-order{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid var(--gray2);border-radius:9px;margin-bottom:7px;background:#fff}.f3-order-code{font-family:monospace;font-weight:900;color:var(--primary);font-size:13px}.f3-badge{padding:3px 8px;border-radius:999px;font-size:9px;font-weight:900;white-space:nowrap}.f3-pending{background:#fff7ed;color:#c2410c}.f3-delivered{background:#ecfdf5;color:#047857}.f3-cancelled{background:#fef2f2;color:#b91c1c}.f3-public-btn{position:fixed;right:18px;bottom:18px;z-index:1500;border:0;border-radius:999px;padding:13px 18px;background:var(--primary);color:#fff;font-size:12px;font-weight:900;box-shadow:0 10px 30px rgba(0,0,0,.22)}.f3-overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}.f3-overlay.open{display:flex}.f3-modal{width:min(720px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.3)}.f3-head{padding:17px 20px;background:linear-gradient(135deg,var(--primary),#064e3b);color:#fff;display:flex;justify-content:space-between;align-items:center}.f3-body{padding:18px}.f3-tabs{display:flex;gap:6px;margin-bottom:14px}.f3-tab{padding:8px 12px;border-radius:8px;background:var(--gray1);font-size:11px;font-weight:800}.f3-tab.active{background:var(--primary);color:#fff}.f3-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.f3-form .full{grid-column:1/-1}.f3-form input,.f3-form select{width:100%;padding:10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px}.f3-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.f3-product{border:1.5px solid var(--gray2);border-radius:10px;padding:12px}.f3-product h4{font-size:13px;margin-bottom:4px}.f3-product p{font-size:10px;color:var(--gray5);margin-bottom:8px}.f3-qr{display:flex;justify-content:center;padding:16px;background:#fff;border-radius:10px}.f3-scanner{width:100%;max-width:480px;aspect-ratio:4/3;background:#111;border-radius:10px;overflow:hidden;margin:10px auto}.f3-scanner video{width:100%;height:100%;object-fit:cover}.f3-result{padding:12px;border-radius:9px;background:var(--gray1);font-size:11px;margin-top:10px}.f3-rank-row{display:flex;justify-content:space-between;gap:12px;padding:10px;border-bottom:1px solid var(--gray2);font-size:11px}.f3-rank-row strong{font-size:12px}@media(max-width:800px){.f3-grid{grid-template-columns:repeat(2,1fr)}.f3-products,.f3-form{grid-template-columns:1fr}.f3-form .full{grid-column:auto}}
+.f3-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:9px;margin-bottom:14px}.f3-card{background:#fff;border:1.5px solid var(--gray2);border-radius:10px;padding:12px}.f3-card b{display:block;font-size:20px;color:var(--ink);margin-top:4px}.f3-card span{font-size:9px;color:var(--gray5);text-transform:uppercase;font-weight:800;letter-spacing:.06em}.f3-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.f3-btn{padding:9px 14px;border-radius:8px;font-size:11px;font-weight:800;border:1px solid var(--gray2);background:#fff;color:var(--ink)}.f3-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.f3-btn.danger{background:var(--red-bg);color:var(--red);border-color:transparent}.f3-order{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid var(--gray2);border-radius:9px;margin-bottom:7px;background:#fff}.f3-order-code{font-family:monospace;font-weight:900;color:var(--primary);font-size:13px}.f3-badge{padding:3px 8px;border-radius:999px;font-size:9px;font-weight:900;white-space:nowrap}.f3-pending{background:#fff7ed;color:#c2410c}.f3-delivered{background:#ecfdf5;color:#047857}.f3-cancelled{background:#fef2f2;color:#b91c1c}.f3-public-btn{position:fixed;right:18px;bottom:18px;z-index:1500;border:0;border-radius:999px;padding:13px 18px;background:var(--primary);color:#fff;font-size:12px;font-weight:900;box-shadow:0 10px 30px rgba(0,0,0,.22)}.f3-overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}.f3-overlay.open{display:flex}.f3-modal{width:min(720px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.3)}.f3-head{padding:17px 20px;background:linear-gradient(135deg,var(--primary),#064e3b);color:#fff;display:flex;justify-content:space-between;align-items:center}.f3-body{padding:18px}.f3-tabs{display:flex;gap:6px;margin-bottom:14px}.f3-tab{padding:8px 12px;border-radius:8px;background:var(--gray1);font-size:11px;font-weight:800}.f3-tab.active{background:var(--primary);color:#fff}.f3-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.f3-form .full{grid-column:1/-1}.f3-form input,.f3-form select{width:100%;padding:10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px}.f3-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.f3-product{border:1.5px solid var(--gray2);border-radius:10px;padding:12px}.f3-product h4{font-size:13px;margin-bottom:4px}.f3-product p{font-size:10px;color:var(--gray5);margin-bottom:8px}.f3-qr{display:flex;justify-content:center;padding:16px;background:#fff;border-radius:10px}.f3-scanner{width:100%;max-width:480px;aspect-ratio:4/3;background:#111;border-radius:10px;overflow:hidden;margin:10px auto}.f3-scanner video{width:100%;height:100%;object-fit:cover}.f3-result{padding:12px;border-radius:9px;background:var(--gray1);font-size:11px;margin-top:10px}.f3-rank-row{display:flex;justify-content:space-between;gap:12px;padding:10px;border-bottom:1px solid var(--gray2);font-size:11px}.f3-rank-row strong{font-size:12px}@media(max-width:800px){.f3-grid{grid-template-columns:repeat(2,1fr)}.f3-products,.f3-form{grid-template-columns:1fr}.f3-form .full{grid-column:auto}}
 
 
 /* Fase 4 — perfis e operação híbrida */
@@ -317,6 +317,9 @@
 .lot-invite{cursor:pointer}.lot-invite:hover{border-color:rgba(5,96,58,.28);background:#f7fbf9}
 @media(max-width:650px){.admin-modal.login-mode{width:100vw;max-height:100vh}.invite-detail-grid{grid-template-columns:1fr}}
 
+
+/* Token integrado às carteiras — 2026 */
+.pv-token-section{max-width:760px}.pv-token-card{border:1px solid var(--gray2);border-radius:14px;padding:22px;background:#fff;display:grid;grid-template-columns:64px 1fr;gap:12px 16px;align-items:center}.pv-token-icon{width:58px;height:58px;border-radius:14px;background:var(--coin-bg);display:grid;place-items:center;font-size:30px}.pv-token-copy h3{font-family:'Playfair Display',serif;font-size:20px;margin:0 0 4px}.pv-token-copy p{font-size:11px;color:var(--gray5);line-height:1.55}.pv-token-card label{grid-column:1/-1;font-size:10px;font-weight:900;text-transform:uppercase;color:var(--gray6)}.pv-token-card input{grid-column:1/-1;width:100%;padding:14px;border:1.5px solid var(--gray2);border-radius:10px;text-align:center;font-size:20px;font-weight:900;letter-spacing:.18em}.pv-token-card button{grid-column:1/-1;padding:12px}.pv-token-card #wallet-token-result{grid-column:1/-1}.pv-token-success,.pv-token-error{padding:13px;border-radius:10px;font-size:11px;line-height:1.55}.pv-token-success{background:var(--primary-bg);color:var(--primary);display:grid;grid-template-columns:34px 1fr;gap:2px 10px;align-items:center}.pv-token-success .icon{grid-row:1/3;font-size:25px}.pv-token-success b{font-size:14px}.pv-token-success span{color:var(--gray6)}.pv-token-error{background:var(--red-bg);color:var(--red);font-weight:700}.pv-token-note{margin-top:10px;font-size:10px;color:var(--gray5);line-height:1.55;padding:10px 12px;background:var(--gray1);border-radius:9px}@media(max-width:560px){.pv-token-card{grid-template-columns:1fr}.pv-token-icon{margin:auto}.pv-token-copy{text-align:center}}
 </style>
 
 <style>
@@ -680,7 +683,7 @@ footer strong{color:rgba(255,255,255,.85)}
 .invite-search-empty{padding:28px;text-align:center;border:1px dashed var(--gray2);border-radius:10px;color:var(--gray5);font-size:11px}
 @media(max-width:700px){.invite-searchbar{align-items:stretch;flex-direction:column}.invite-searchfield{max-width:none}.invite-searchinfo{padding-left:2px}}
 
-.hyb-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important}.lot-card{border:1px solid var(--gray2);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}.lot-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.lot-head h5{margin:0;font-size:13px}.lot-meta{font-size:10px;color:var(--gray5);line-height:1.55;margin-top:3px}.lot-actions{display:flex;gap:6px;flex-wrap:wrap}.lot-preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:7px;margin-top:10px}.lot-invite{padding:8px;border-radius:8px;background:var(--gray1);display:flex;justify-content:space-between;gap:8px;font-size:10px}.lot-invite code{font-weight:900}.batch-result{margin-top:12px;border:1px solid var(--gray2);border-radius:10px;padding:12px;background:#fff}.batch-result-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.batch-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:10px}.batch-table th,.batch-table td{border-bottom:1px solid var(--gray2);padding:7px;text-align:left}.batch-table th{color:var(--gray5);font-size:9px;text-transform:uppercase}.credit-card{margin-top:12px;border:1px solid #cae8df;border-radius:12px;padding:14px;background:#f3fbf8}.credit-grid{display:grid;grid-template-columns:130px 1fr auto;gap:8px;margin-top:10px}.credit-grid input{padding:10px;border:1px solid var(--gray2);border-radius:8px}
+.hyb-actions{grid-template-columns:repeat(auto-fit,minmax(54px,1fr))!important}.lot-card{border:1px solid var(--gray2);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}.lot-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.lot-head h5{margin:0;font-size:13px}.lot-meta{font-size:10px;color:var(--gray5);line-height:1.55;margin-top:3px}.lot-actions{display:flex;gap:6px;flex-wrap:wrap}.lot-preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:7px;margin-top:10px}.lot-invite{padding:8px;border-radius:8px;background:var(--gray1);display:flex;justify-content:space-between;gap:8px;font-size:10px}.lot-invite code{font-weight:900}.batch-result{margin-top:12px;border:1px solid var(--gray2);border-radius:10px;padding:12px;background:#fff}.batch-result-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.batch-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:10px}.batch-table th,.batch-table td{border-bottom:1px solid var(--gray2);padding:7px;text-align:left}.batch-table th{color:var(--gray5);font-size:9px;text-transform:uppercase}.credit-card{margin-top:12px;border:1px solid #cae8df;border-radius:12px;padding:14px;background:#f3fbf8}.credit-grid{display:grid;grid-template-columns:130px 1fr auto;gap:8px;margin-top:10px}.credit-grid input{padding:10px;border:1px solid var(--gray2);border-radius:8px}
 @media(max-width:850px){.hyb-actions{grid-template-columns:1fr 1fr!important}.credit-grid{grid-template-columns:1fr}.team-login{margin:20px auto!important;padding:24px!important}}
 </style>
 
@@ -853,7 +856,7 @@ footer strong{color:rgba(255,255,255,.85)}
 .pv-actions{display:flex;gap:8px;flex-wrap:wrap}
 .pv-activation{display:grid;gap:12px}.pv-activation-hero{text-align:center}.pv-activation-hero .ok{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#e8f8f1;color:#087f5b;font-size:30px;margin:0 auto 10px}.pv-activation-hero h3{font-size:18px;margin:0}.pv-activation-hero p{font-size:10px;color:var(--gray5);margin:6px 0 0}
 .pv-credentials{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pv-credential{border:1px solid #dfe6ea;border-radius:13px;padding:12px;background:#fbfcfc}.pv-credential span{font-size:8px;color:var(--gray5);font-weight:900;text-transform:uppercase}.pv-credential b{display:block;font-size:18px;margin-top:5px}
-@media(max-width:820px){.pv-shell{grid-template-columns:1fr}.pv-sidebar{height:auto;padding:10px}.pv-brand{display:none}.pv-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.pv-nav button{grid-template-columns:1fr;justify-items:center;padding:7px 4px}.pv-nav .lbl{display:none!important}.pv-exit{margin-top:8px!important}.pv-top{grid-template-columns:1fr}.pv-grid{grid-template-columns:1fr}.pv-access-card{grid-template-columns:1fr}}
+@media(max-width:820px){.pv-shell{grid-template-columns:1fr}.pv-sidebar{height:auto;padding:10px}.pv-brand{display:none}.pv-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:4px}.pv-nav button{grid-template-columns:1fr;justify-items:center;padding:7px 4px}.pv-nav .lbl{display:none!important}.pv-exit{margin-top:8px!important}.pv-top{grid-template-columns:1fr}.pv-grid{grid-template-columns:1fr}.pv-access-card{grid-template-columns:1fr}}
 </style>
 
 
@@ -989,7 +992,7 @@ footer strong{color:rgba(255,255,255,.85)}
   .pv-shell{grid-template-columns:1fr!important}
   .pv-sidebar{min-height:auto!important;padding:16px!important}
   .pv-sidebar h3{font-size:18px!important}
-  .pv-sidebar nav,.pv-menu,.pv-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .pv-sidebar nav,.pv-menu,.pv-nav{grid-template-columns:repeat(auto-fit,minmax(54px,1fr))!important}
   .pv-sidebar nav button,.pv-menu button,.pv-nav button{justify-content:center!important;font-size:0!important;padding:8px!important}
   .pv-sidebar nav button .pv-nav-icon,.pv-menu button .pv-nav-icon,.pv-nav button .pv-nav-icon{font-size:15px!important}
   .pv-sidebar .pv-sidebar-actions{margin-top:8px!important}
@@ -1205,7 +1208,6 @@ footer strong{color:rgba(255,255,255,.85)}
     <button class="nav-btn active" onclick="showScreen('sobre',this)">📖 Sobre o Projeto</button>
     <button class="nav-btn" onclick="showScreen('moeda',this)">💰 FLiSS Coin</button>
     <button class="nav-btn" onclick="showScreen('farmacia',this)">🏪 Farmácia</button>
-    <button class="nav-btn" onclick="showScreen('token',this)">🎫 Token</button>
   </div>
 </nav>
 
@@ -1217,7 +1219,7 @@ footer strong{color:rgba(255,255,255,.85)}
     <div class="hero-tags" id="heroTags">
       <span class="hero-tag">🏫 Escola SESI Uberaba</span>
       <span class="hero-tag">📚 7º Ano A e B</span>
-      <span class="hero-tag">⚗️ FLiSS 2025</span>
+      <span class="hero-tag">⚗️ FLiSS 2026</span>
     </div>
   </div>
 </div>
@@ -1369,7 +1371,7 @@ footer strong{color:rgba(255,255,255,.85)}
               <div class="team-av">🎓</div>
               <div>
                 <div class="team-name" id="nome3">Alunos do 7º Ano A e B</div>
-                <div class="team-role" id="cargo3">Escola SESI Uberaba · FLiSS 2025</div>
+                <div class="team-role" id="cargo3">Escola SESI Uberaba · FLiSS 2026</div>
               </div>
             </div>
           </div>
@@ -1469,8 +1471,8 @@ footer strong{color:rgba(255,255,255,.85)}
           </div>
           <div class="coin-step">
             <div class="coin-step-num">3</div>
-            <div class="coin-step-text"><strong>Visitante resgata na aba 🎫 Token</strong><br>
-              O visitante digita seu nome e o código do token — as moedas são creditadas automaticamente. O token é desativado após o uso.</div>
+            <div class="coin-step-text"><strong>Resgate dentro da própria carteira</strong><br>
+              Alunos e visitantes acessam a aba 🎫 Token em suas carteiras e digitam somente o código recebido. O sistema identifica automaticamente a carteira e credita as moedas.</div>
           </div>
           <div class="coin-step">
             <div class="coin-step-num">4</div>
@@ -1483,13 +1485,13 @@ footer strong{color:rgba(255,255,255,.85)}
         <div class="coin-card coin-full">
           <h3>📋 Regras da FLiSS Coin</h3>
           <ul class="rules-list">
-            <li><span class="ri">🪪</span><div><strong>Seu nome é sua carteira.</strong> O sistema usa o nome informado na compra para identificar sua conta. Use sempre o mesmo nome completo para manter o saldo.</div></li>
-            <li><span class="ri">🎁</span><div><strong>Saldo inicial.</strong> Todo usuário recebe 🪙 100 FLiSS Coins automaticamente ao interagir com o sistema pela primeira vez. O professor pode ajustar esse valor no painel admin → aba ⚙️ Config.</div></li>
-            <li><span class="ri">🎫</span><div><strong>Tokens somam ao saldo.</strong> Cada token só pode ser usado uma vez. Ao resgatar, as moedas são adicionadas ao saldo já existente — incluindo os 🪙 100 iniciais.</div></li>
-            <li><span class="ri">📉</span><div><strong>Saldo insuficiente?</strong> Se você não tiver moedas suficientes, a compra será bloqueada. Peça ao professor para adicionar moedas na aba 💰 Carteiras do painel administrativo.</div></li>
-            <li><span class="ri">🔄</span><div><strong>Cancelamento de reserva.</strong> O professor pode cancelar uma reserva pelo painel admin. O estoque volta automaticamente, mas as moedas precisam ser devolvidas manualmente na aba Carteiras.</div></li>
-            <li><span class="ri">👨‍🏫</span><div><strong>Gerenciamento pelo professor.</strong> O professor pode adicionar ou remover moedas de qualquer aluno individualmente, zerar todos os saldos, ou remover contas pelo painel admin → aba 💰 Carteiras.</div></li>
-            <li><span class="ri">🏦</span><div><strong>Saldo não expira.</strong> As moedas ficam salvas no banco de dados enquanto o site estiver ativo. Não há limite de tempo para usar.</div></li>
+            <li><span class="ri">👛</span><div><strong>Sua carteira identifica você.</strong> Alunos entram com turma, número da chamada e PIN individual. Visitantes ativam a carteira pelo convite e recebem um código e um PIN de acesso.</div></li>
+            <li><span class="ri">🔐</span><div><strong>Guarde seu PIN.</strong> O PIN é pessoal e necessário para acessar a carteira novamente. Em outro aparelho, o visitante deverá usar o código do convite/carteira junto com o PIN.</div></li>
+            <li><span class="ri">🎫</span><div><strong>Tokens são resgatados dentro da carteira.</strong> Não é necessário informar nome. O sistema credita as moedas diretamente na carteira que estiver aberta.</div></li>
+            <li><span class="ri">1️⃣</span><div><strong>Cada token só pode ser usado uma vez.</strong> Depois do resgate, ele é desativado automaticamente e fica registrado no histórico da carteira.</div></li>
+            <li><span class="ri">📉</span><div><strong>Saldo insuficiente.</strong> A compra é bloqueada quando não houver moedas suficientes. Créditos e ajustes são realizados pela equipe autorizada.</div></li>
+            <li><span class="ri">🔄</span><div><strong>Cancelamentos são registrados.</strong> Quando uma compra for cancelada, o estoque e o saldo devem ser regularizados pela operação do evento conforme o histórico.</div></li>
+            <li><span class="ri">🏦</span><div><strong>Saldo vinculado à carteira.</strong> As moedas permanecem registradas no banco de dados e podem ser consultadas no extrato da própria carteira.</div></li>
           </ul>
         </div>
 
@@ -1510,36 +1512,6 @@ footer strong{color:rgba(255,255,255,.85)}
     </div><!-- /coin-page -->
   </div><!-- /screen-moeda -->
 
-
-
-  <div id="screen-token" class="screen">
-    <div class="token-wrap">
-      <div class="sec-head"><span class="sec-title">🎫 Resgatar Token</span></div>
-      <div class="token-card">
-        <div style="text-align:center;margin-bottom:20px">
-          <div style="font-size:3rem;margin-bottom:8px">🎫</div>
-          <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--ink);margin-bottom:6px">Tem um token?</h2>
-          <p style="font-size:13px;color:var(--gray5);line-height:1.6">Digite seu nome e o código do token recebido para ganhar FLiSS Coins!</p>
-        </div>
-        <div class="fl" style="margin-bottom:12px">
-          <label>Seu nome completo</label>
-          <input class="reserva-input" type="text" id="tok-nome" placeholder="Como você quer ser identificado..." maxlength="80"
-            style="margin:6px 0 0;padding:12px 14px;font-size:14px">
-        </div>
-        <div class="fl" style="margin-bottom:6px">
-          <label>Código do token</label>
-          <input class="token-input-big" type="text" id="tok-codigo" placeholder="000000" maxlength="12"
-            oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"
-            onkeydown="if(event.key==='Enter')resgatarToken()">
-        </div>
-        <button class="btn-confirmar" onclick="resgatarToken()" style="margin-top:8px">🎫 Resgatar agora</button>
-        <div id="tok-result" style="margin-top:14px"></div>
-      </div>
-      <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--gray4);line-height:1.7">
-        Tokens são distribuídos pelos alunos do Festival.<br>Cada token só pode ser usado uma vez.
-      </div>
-    </div>
-  </div>
 
 
 
@@ -1843,7 +1815,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <div id="fa-lote-resultado" class="batch-result" style="display:none"></div>
           </details>
           <div class="fliss-section">
-            <div class="fliss-toolbar"><input id="fa-busca" oninput="renderAlunosFliss()" placeholder="Buscar aluno..." style="flex:1;min-width:200px;padding:8px 10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:11px"><button onclick="renderGestaoFliss()" style="padding:8px 12px;border-radius:8px;background:var(--gray1);font-size:11px;font-weight:700">🔄 Atualizar</button></div>
+            <div class="fliss-toolbar"><input id="fa-busca" oninput="renderAlunosFliss()" placeholder="Buscar aluno..." style="flex:1;min-width:200px;padding:8px 10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:11px"><button onclick="imprimirListaGeralPinsFliss()" style="padding:8px 12px;border-radius:8px;background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:800">📄 Lista de PINs / PDF</button><button onclick="imprimirConvitesAlunosFliss()" style="padding:8px 12px;border-radius:8px;background:var(--coin-bg);color:var(--coin);font-size:11px;font-weight:800">✉️ Convites individuais</button><button onclick="renderGestaoFliss()" style="padding:8px 12px;border-radius:8px;background:var(--gray1);font-size:11px;font-weight:700">🔄 Atualizar</button></div>
             <div id="flissAlunosList"></div>
           </div>
         </div>
@@ -1856,9 +1828,22 @@ footer strong{color:rgba(255,255,255,.85)}
               <div class="fl"><label>Data inicial</label><input id="fs-inicio" type="date"></div>
               <div class="fl"><label>Data final</label><input id="fs-fim" type="date"></div>
               <div class="fl"><label>Crédito por aluno</label><input id="fs-valor" type="number" value="60"></div>
+              <div class="fl"><label>Data do crédito automático</label><input id="fs-credito-em" type="date"><small style="display:block;margin-top:5px;color:var(--gray5);font-size:9px">Ao chegar esta data, o sistema aplica o crédito automaticamente quando estiver aberto e conectado.</small></div>
             </div>
-            <button onclick="salvarSemanaFliss()" class="btn-save" style="max-width:210px">📅 Cadastrar semana</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+              <button onclick="salvarSemanaFliss()" class="btn-save" style="max-width:210px;margin:0">📅 Cadastrar semana</button>
+              <button onclick="processarSemanasAgendadasFliss({silencioso:false})" style="padding:10px 14px;border-radius:8px;background:var(--coin-bg);color:var(--coin);font-size:11px;font-weight:800">⏱️ Processar agendamentos</button>
+            </div>
           </div>
+          <details class="fliss-section">
+            <summary style="font-size:13px;font-weight:800;cursor:pointer">Cadastrar semanas em lote</summary>
+            <div style="font-size:11px;color:var(--gray5);margin:10px 0;line-height:1.6">
+              Uma semana por linha: <strong>nome; data inicial; data final; crédito; data do crédito automático</strong>.<br>
+              Ex.: <code>Semana 1; 29/06/2026; 03/07/2026; 60; 03/07/2026</code>
+            </div>
+            <textarea id="fs-lote" rows="7" style="width:100%;padding:10px;border:1.5px solid var(--gray2);border-radius:8px;font-size:11px" placeholder="Semana 1; 29/06/2026; 03/07/2026; 60; 03/07/2026&#10;Semana 2; 06/07/2026; 10/07/2026; 60; 10/07/2026"></textarea>
+            <button onclick="importarSemanasFliss()" style="margin-top:8px;padding:10px 14px;border-radius:8px;background:var(--primary);color:#fff;font-size:11px;font-weight:800">📚 Cadastrar semanas em lote</button>
+          </details>
           <div class="fliss-section"><div id="flissSemanasList"></div></div>
         </div>
 
@@ -1889,7 +1874,7 @@ footer strong{color:rgba(255,255,255,.85)}
                 </div>
                 <div id="fo-aluno-selecionado" style="display:none;margin-top:7px;font-size:11px;color:var(--primary);font-weight:700"></div>
               </div>
-              <div class="fl"><label>Semana</label><select id="fo-semana"></select></div>
+              <div class="fl"><label>Semana</label><select id="fo-semana" onchange="atualizarIndicadorSemanaPenalidadeFliss()"></select><div id="fo-semana-indicador" style="margin-top:7px;font-size:11px;font-weight:700;color:var(--gray5);line-height:1.45"></div></div>
               <div class="fl ff"><label>Motivo *</label><select id="fo-motivo" onchange="atualizarValorOcorrenciaFliss()"><option value="didatico" data-valor="10">Não trouxe livro didático (−10)</option><option value="paradidatico" data-valor="15">Não trouxe livro paradidático (−15)</option><option value="atividade" data-valor="15">Atividade não entregue (−15)</option><option value="diario" data-valor="10">Diário de bordo (−10)</option><option value="outro" data-valor="0">Outro motivo</option></select></div>
               <div class="fl"><label>Valor do desconto *</label><input id="fo-valor" type="number" value="10" min="1"></div>
               <div class="fl ff"><label>Observação</label><input id="fo-obs" placeholder="Opcional"></div>
@@ -1901,7 +1886,7 @@ footer strong{color:rgba(255,255,255,.85)}
 
         <div class="fliss-view" id="fliss-view-extrato">
           <div class="fliss-section">
-            <div class="fliss-toolbar"><select id="fe-aluno" onchange="renderExtratoFliss()" style="flex:1;min-width:220px;padding:8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:11px"></select><button onclick="renderExtratoFliss()" style="padding:8px 12px;border-radius:8px;background:var(--gray1);font-size:11px;font-weight:700">🔄 Atualizar</button></div>
+            <div class="fliss-toolbar"><select id="fe-aluno" onchange="renderExtratoFliss()" style="flex:1;min-width:220px;padding:8px;border:1.5px solid var(--gray2);border-radius:8px;font-size:11px"></select><button onclick="renderExtratoFliss()" style="padding:8px 12px;border-radius:8px;background:var(--gray1);font-size:11px;font-weight:700">🔄 Atualizar</button><button class="admin-only-action" onclick="limparExtratoAlunoFliss()" style="display:none;padding:8px 12px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:800">🗑️ Limpar extrato do aluno</button><button class="admin-only-action" onclick="limparTodoExtratoFliss()" style="display:none;padding:8px 12px;border-radius:8px;background:var(--red);color:#fff;font-size:11px;font-weight:800">⚠️ Limpar todo o extrato</button></div>
             <div id="flissExtratoList"></div>
           </div>
         </div>
@@ -2040,7 +2025,7 @@ footer strong{color:rgba(255,255,255,.85)}
         </div>
         <div class="f3-dashboard-grid">
           <section class="f3-panel-card">
-            <div class="f3-panel-head"><div><h4>Fila de atendimento</h4><small>Ordenada automaticamente pelo maior tempo de espera</small></div><span id="f3-pending-inline" class="f3-badge f3-pending">0 aguardando</span></div>
+            <div class="f3-panel-head"><div><h4>Fila de atendimento</h4><small>Ordenada automaticamente pelo maior tempo de espera</small></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end"><button type="button" class="f3-btn danger admin-only-action" onclick="limparPedidosConcluidosFliss()" style="display:none;padding:6px 9px">🗑️ Limpar concluídos</button><span id="f3-pending-inline" class="f3-badge f3-pending">0 aguardando</span></div></div>
             <div class="bi-toolbar">
               <div class="bi-search"><span>⌕</span><input id="bi-busca" placeholder="Buscar por pedido, comprador ou medicamento..." oninput="aplicarFiltrosBalcaoFliss()"></div>
               <div class="bi-filters">
@@ -2361,7 +2346,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <div class="fl ff"><label>Eyebrow (tag pequena)</label><input type="text" id="pc-eyebrow" placeholder="📕 A Droga da Obediência — Pedro Bandeira"></div>
             <div class="fl ff"><label>Título principal</label><input type="text" id="pc-h1" placeholder="Farmácia Literária"></div>
             <div class="fl ff"><label>Descrição</label><textarea id="pc-desc" placeholder="Drogas modernas criadas pelos alunos..."></textarea></div>
-            <div class="fl ff"><label>Tags (separadas por |)</label><input type="text" id="pc-tags" placeholder="🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2025"></div>
+            <div class="fl ff"><label>Tags (separadas por |)</label><input type="text" id="pc-tags" placeholder="🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2026"></div>
           </div>
         </div>
 
@@ -2395,30 +2380,25 @@ footer strong{color:rgba(255,255,255,.85)}
             <div class="fl"><label>Nome — Pessoa 2</label><input type="text" id="pc-nome2" placeholder="Profa. Thamiris Borralho"></div>
             <div class="fl"><label>Cargo — Pessoa 2</label><input type="text" id="pc-cargo2" placeholder="Idealizadora e Apoio Pedagógico"></div>
             <div class="fl"><label>Nome — Turma</label><input type="text" id="pc-nome3" placeholder="Alunos do 7º Ano A e B"></div>
-            <div class="fl"><label>Descrição — Turma</label><input type="text" id="pc-cargo3" placeholder="Escola SESI Uberaba · FLiSS 2025"></div>
+            <div class="fl"><label>Descrição — Turma</label><input type="text" id="pc-cargo3" placeholder="Escola SESI Uberaba · FLiSS 2026"></div>
           </div>
         </div>
 
         <div class="pers-section">
           <h4>🦶 Rodapé</h4>
           <div class="fg">
-            <div class="fl ff"><label>Texto do rodapé</label><input type="text" id="pc-footer" placeholder="Farmácia Literária | FLiSS · SESI Uberaba"></div>
+            <div class="fl ff"><label>Texto do rodapé</label><input type="text" id="pc-footer" placeholder="Farmácia Literária | Inspirada em &quot;A Droga da Obediência&quot; — Pedro Bandeira | FLiSS · SESI Uberaba"></div>
           </div>
         </div>
 
         <div style="background:var(--gray1);border-radius:var(--r-lg);padding:18px 20px;margin-top:8px;border:1.5px solid var(--gray2)">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <div style="flex:1;min-width:200px">
-              <label style="font-size:11px;font-weight:700;color:var(--gray6);letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:6px">🔐 Senha de personalização</label>
-              <input type="password" id="pc-senha" placeholder="Digite a senha para salvar..."
-                style="width:100%;padding:10px 14px;border:1.5px solid var(--gray2);border-radius:8px;font-size:13px;color:var(--ink);transition:border-color .2s;background:#fff"
-                onfocus="this.style.borderColor='var(--primary-mid)'"
-                onblur="this.style.borderColor='var(--gray2)'"
-                onkeydown="if(event.key==='Enter')salvarPersonalizacao()">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div style="flex:1;min-width:240px">
+              <div style="font-size:11px;font-weight:800;color:var(--gray6);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px">🔐 Proteção administrativa</div>
+              <div style="font-size:11px;color:var(--gray5);line-height:1.55">A antiga senha fixa foi removida. As personalizações só podem ser salvas por uma conta autenticada com perfil <strong>Administrador</strong>.</div>
             </div>
-            <button class="btn-save" onclick="salvarPersonalizacao()" style="margin-top:0;max-width:260px;align-self:flex-end">💾 Salvar todas as personalizações</button>
+            <button class="btn-save" onclick="salvarPersonalizacao()" style="margin-top:0;max-width:280px">💾 Salvar todas as personalizações</button>
           </div>
-          <div id="persSenhaErr" style="font-size:11px;color:var(--red);margin-top:8px;display:none">❌ Senha incorreta. Personalizações não salvas.</div>
         </div>
         <div class="form-msg" id="persMsg"></div>
       </div>
@@ -2437,18 +2417,10 @@ footer strong{color:rgba(255,255,255,.85)}
         <div class="cfg-group">
           <h4>🗑️ Dados</h4>
           <p style="font-size:12px;color:var(--gray5);margin-bottom:10px">Apagar todas as drogas cadastradas (irreversível).</p>
-          <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-            <div style="flex:1;min-width:180px">
-              <label style="font-size:11px;font-weight:700;color:var(--gray6);letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:6px">🔐 Senha de confirmação</label>
-              <input type="password" id="cfg-apagar-senha" placeholder="Digite a senha para apagar..."
-                style="width:100%;padding:9px 12px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;color:var(--ink);transition:border-color .2s;background:#fff"
-                onfocus="this.style.borderColor='var(--red)'"
-                onblur="this.style.borderColor='var(--gray2)'"
-                onkeydown="if(event.key==='Enter')apagarTudo()">
-            </div>
-            <button onclick="apagarTudo()" style="padding:9px 16px;border-radius:8px;background:var(--red-bg);color:var(--red);font-size:12px;font-weight:700;flex-shrink:0">🗑️ Apagar tudo</button>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid rgba(180,35,24,.16);background:var(--red-bg);border-radius:10px">
+            <div style="flex:1;min-width:220px;font-size:11px;color:var(--gray6);line-height:1.55"><strong style="color:var(--red)">Ação exclusiva do administrador.</strong><br>A senha fixa antiga foi removida. A confirmação será feita digitando uma frase de segurança.</div>
+            <button onclick="apagarTudo()" style="padding:9px 16px;border-radius:8px;background:var(--red);color:#fff;font-size:12px;font-weight:800;flex-shrink:0">🗑️ Apagar todas as drogas</button>
           </div>
-          <div id="cfg-apagar-err" style="font-size:11px;color:var(--red);display:none">❌ Senha incorreta. Nenhuma droga foi apagada.</div>
         </div>
         <div class="cfg-group">
           <h4>🪙 Saldo Inicial de Moedas</h4>
@@ -2589,8 +2561,36 @@ function aplicarConfig(c) {
   if (c.nome3) setText('nome3', c.nome3);
   if (c.cargo3) setText('cargo3', c.cargo3);
   // rodapé
-  if (c.footer) { const el = document.getElementById('footerEl'); if(el) el.innerHTML = '⚗️ <strong>' + c.footer + '</strong>'; }
+  aplicarRodape(c.footer);
   // saldoInicial is loaded from cfg when needed — no DOM change required
+}
+
+const RODAPE_PADRAO = 'Farmácia Literária | Inspirada em \"A Droga da Obediência\" — Pedro Bandeira | FLiSS · SESI Uberaba';
+
+function normalizarTextoRodape(valor='') {
+  const texto = String(valor || '').trim();
+  // Migra automaticamente o valor curto gravado por versões anteriores.
+  if (!texto || texto === 'Farmácia Literária | FLiSS · SESI Uberaba') return RODAPE_PADRAO;
+  return texto;
+}
+
+function aplicarRodape(valor='') {
+  const el = document.getElementById('footerEl');
+  if (!el) return;
+  const texto = normalizarTextoRodape(valor);
+  const partes = texto.split('|').map(p => p.trim()).filter(Boolean);
+  el.replaceChildren();
+  el.append(document.createTextNode('⚗️ '));
+  partes.forEach((parte, indice) => {
+    if (indice > 0) el.append(document.createTextNode('  |  '));
+    if (indice === 0) {
+      const strong = document.createElement('strong');
+      strong.textContent = parte;
+      el.append(strong);
+    } else {
+      el.append(document.createTextNode(parte));
+    }
+  });
 }
 
 function setText(id, txt) {
@@ -2623,11 +2623,6 @@ function syncCor(colorId, txtId) {
 }
 
 function popularFormPersonalizar() {
-  // Clear password field on tab open
-  const pw = document.getElementById('pc-senha');
-  const err = document.getElementById('persSenhaErr');
-  if(pw) { pw.value = ''; pw.style.borderColor = 'var(--gray2)'; }
-  if(err) err.style.display = 'none';
   const c = cfg;
   setV('pc-primary', c.colorPrimary || '#05603A');
   setV('pc-primary-txt', c.colorPrimary || '#05603A');
@@ -2640,7 +2635,7 @@ function popularFormPersonalizar() {
   setV('pc-eyebrow', c.eyebrow || '📕 A Droga da Obediência — Pedro Bandeira');
   setV('pc-h1', c.h1 || 'Farmácia <em>Literária</em>');
   setV('pc-desc', c.desc || '');
-  setV('pc-tags', c.tags || '🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2025');
+  setV('pc-tags', c.tags || '🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2026');
   setV('pc-sobreTitulo', c.sobreTitulo || 'A Farmácia Literária');
   setV('pc-sobreP1', c.sobreP1 || '');
   setV('pc-sobreP2', c.sobreP2 || '');
@@ -2656,8 +2651,8 @@ function popularFormPersonalizar() {
   setV('pc-nome2', c.nome2 || 'Profa. Thamiris Borralho');
   setV('pc-cargo2', c.cargo2 || 'Idealizadora e Apoio Pedagógico');
   setV('pc-nome3', c.nome3 || 'Alunos do 7º Ano A e B');
-  setV('pc-cargo3', c.cargo3 || 'Escola SESI Uberaba · FLiSS 2025');
-  setV('pc-footer', c.footer || 'Farmácia Literária | FLiSS · SESI Uberaba');
+  setV('pc-cargo3', c.cargo3 || 'Escola SESI Uberaba · FLiSS 2026');
+  setV('pc-footer', normalizarTextoRodape(c.footer));
 }
 
 function setV(id, val) {
@@ -2666,22 +2661,13 @@ function setV(id, val) {
 }
 
 async function salvarPersonalizacao() {
-  // Password check
-  const pw = document.getElementById('pc-senha');
-  const err = document.getElementById('persSenhaErr');
-  if (!pw || pw.value !== 'flissthales2026') {
-    if (err) { err.style.display = 'block'; }
-    if (pw) { pw.style.borderColor = 'var(--red)'; pw.focus(); }
-    setTimeout(() => {
-      if (err) err.style.display = 'none';
-      if (pw) pw.style.borderColor = 'var(--gray2)';
-    }, 4000);
+  if (perfilEquipeFliss !== 'admin') {
+    alert('Apenas o administrador pode salvar personalizações.');
     return;
   }
-  if (err) err.style.display = 'none';
-  if (pw) { pw.style.borderColor = 'var(--gray2)'; pw.value = ''; }
   mostrarLoading(true);
-  const newCfg = {
+  try {
+    const newCfg = {
     colorPrimary: document.getElementById('pc-primary').value,
     colorBtn: document.getElementById('pc-btn').value,
     siteName: document.getElementById('pc-siteName').value,
@@ -2708,15 +2694,20 @@ async function salvarPersonalizacao() {
     cargo2: document.getElementById('pc-cargo2').value,
     nome3: document.getElementById('pc-nome3').value,
     cargo3: document.getElementById('pc-cargo3').value,
-    footer: document.getElementById('pc-footer').value,
-  };
-  await window.FB.fbSet('config', 'site', newCfg);
-  cfg = newCfg;
-  nomeMoeda = newCfg.moeda || 'FLiSS Coins';
-  aplicarConfig(newCfg);
-  render();
-  mostrarLoading(false);
-  mostrarMsg('persMsg', '✅ Personalizações salvas e aplicadas!', 'var(--primary)');
+      footer: normalizarTextoRodape(document.getElementById('pc-footer').value),
+    };
+    await window.FB.fbSet('config', 'site', newCfg);
+    // Preserva configurações que não pertencem ao formulário, como grupos e PINs.
+    cfg = { ...cfg, ...newCfg };
+    nomeMoeda = cfg.moeda || 'FLiSS Coins';
+    aplicarConfig(cfg);
+    mostrarMsg('persMsg', '✅ Personalizações salvas e aplicadas!', 'var(--primary)');
+  } catch (e) {
+    console.error('Erro ao salvar personalizações:', e);
+    mostrarMsg('persMsg', '❌ Não foi possível salvar: ' + (e?.message || 'erro desconhecido'), 'var(--red)');
+  } finally {
+    mostrarLoading(false);
+  }
 }
 
 // ── RENDER VITRINE ───────────────────────────────────────────
@@ -3085,6 +3076,7 @@ function aplicarPerfilEquipeFliss(){
  const logoutHeader=document.getElementById('teamHeaderLogout');if(logoutHeader)logoutHeader.style.display='';
  const op=document.getElementById('fliss-operador');if(op){op.value=operadorFliss();op.disabled=true}
  const badge=document.getElementById('teamRoleBadge'); if(badge)badge.textContent=`${usuarioEquipeFliss?.nome||labels[perfilEquipeFliss]||'—'} · ${labels[perfilEquipeFliss]||'—'}`;
+ document.querySelectorAll('.admin-only-action').forEach(el=>{el.style.display=perfilEquipeFliss==='admin'?'':'none'});
  document.querySelectorAll('.a-tab').forEach(b=>{const roles=(b.dataset.roles||'admin').split(',');b.style.display=roles.includes(perfilEquipeFliss)?'':'none';b.classList.remove('active')});
  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
  const target=perfilEquipeFliss==='monitor'?'operacao-fliss':(perfilEquipeFliss==='professor'?'operacao-fliss':'cadastrar');
@@ -3293,24 +3285,29 @@ async function deletarDroga(id) {
 }
 
 async function apagarTudo() {
-  const pw = document.getElementById('cfg-apagar-senha');
-  const err = document.getElementById('cfg-apagar-err');
-  if (!pw || pw.value !== 'flissthales2026') {
-    if (err) { err.style.display = 'block'; }
-    if (pw) { pw.style.borderColor = 'var(--red)'; pw.focus(); }
-    setTimeout(() => {
-      if (err) err.style.display = 'none';
-      if (pw) pw.style.borderColor = 'var(--gray2)';
-    }, 4000);
+  if(perfilEquipeFliss!=='admin'){
+    alert('Apenas o administrador pode apagar todos os medicamentos.');
     return;
   }
-  if (!confirm('Apagar TODAS as drogas? Ação irreversível no Firebase!')) return;
-  if (err) err.style.display = 'none';
-  if (pw) { pw.value = ''; pw.style.borderColor = 'var(--gray2)'; }
+  if(!window.FB)return;
+  const all=await window.FB.fbGetAll('drogas');
+  if(!all.length){alert('Não há medicamentos cadastrados para apagar.');return}
+  if(!confirm(`Apagar permanentemente todos os ${all.length} medicamentos cadastrados? Esta ação não poderá ser desfeita.`))return;
+  const confirmacao=prompt('Para confirmar, digite APAGAR TODOS OS MEDICAMENTOS:');
+  if(String(confirmacao||'').trim().toUpperCase()!=='APAGAR TODOS OS MEDICAMENTOS'){
+    alert('Confirmação incorreta. Nenhum medicamento foi apagado.');
+    return;
+  }
   mostrarLoading(true);
-  const all = await window.FB.fbGetAll('drogas');
-  await Promise.all(all.map(d => window.FB.fbDelete('drogas', d.id)));
-  mostrarLoading(false);
+  try{
+    await Promise.all(all.map(d=>window.FB.fbDelete('drogas',d.id)));
+    alert('Todos os medicamentos foram apagados.');
+    await carregarDrogas();
+  }catch(e){
+    alert('Erro ao apagar medicamentos: '+e.message);
+  }finally{
+    mostrarLoading(false);
+  }
 }
 
 // ── RESERVAS ADMIN ────────────────────────────────────────────
@@ -3810,40 +3807,58 @@ function imprimirTokens() {
   w.print();
 }
 
-async function resgatarToken() {
-  const nome = document.getElementById('tok-nome')?.value.trim();
-  const cod = document.getElementById('tok-codigo')?.value.trim().toUpperCase();
-  const res = document.getElementById('tok-result');
-  if (!nome) { if(res) res.innerHTML = '<p style="color:var(--red);font-size:12px">⚠️ Digite seu nome.</p>'; return; }
-  if (!cod || cod.length < 4) { if(res) res.innerHTML = '<p style="color:var(--red);font-size:12px">⚠️ Digite o código do token.</p>'; return; }
-  if (!window.FB) { if(res) res.innerHTML = '<p style="color:var(--red);font-size:12px">⏳ Aguardando conexão...</p>'; return; }
+async function resgatarTokenCarteiraFliss() {
+  const cod = document.getElementById('wallet-token-code')?.value.trim().toUpperCase();
+  const res = document.getElementById('wallet-token-result');
+  if(!f3Carteira?.id){ if(res)res.innerHTML='<div class="pv-token-error">Abra uma carteira antes de resgatar um token.</div>'; return; }
+  if(!cod || cod.length < 4){ if(res)res.innerHTML='<div class="pv-token-error">Digite o código do token.</div>'; return; }
+  if(!window.FB){ if(res)res.innerHTML='<div class="pv-token-error">Aguardando conexão com o banco de dados.</div>'; return; }
   mostrarLoading(true);
-  try {
-    const token = await window.FB.fbGetDoc('tokens', cod);
-    if (!token) {
-      mostrarLoading(false);
-      if(res) res.innerHTML = '<div style="background:var(--red-bg);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;margin-bottom:6px">❌</div><div style="font-weight:700;color:var(--red)">Token inválido</div><div style="font-size:12px;color:var(--gray5);margin-top:4px">Verifique o código e tente novamente.</div></div>';
-      return;
-    }
-    if (token.usado) {
-      mostrarLoading(false);
-      if(res) res.innerHTML = '<div style="background:var(--gray1);border-radius:10px;padding:14px;text-align:center"><div style="font-size:1.5rem;margin-bottom:6px">⚠️</div><div style="font-weight:700;color:var(--gray6)">Token já utilizado</div><div style="font-size:12px;color:var(--gray5);margin-top:4px">Este token foi resgatado anteriormente.</div></div>';
-      return;
-    }
-    // Credit user and mark token as used
-    const user = await getOrCreateUser(nome);
-    const novoSaldo = (Number(user.moedas)||0) + Number(token.valor);
-    await window.FB.fbUpdate('usuarios', user.id, { moedas: novoSaldo });
-    await window.FB.fbSet('tokens', cod, { ...token, usado: true, usadoPor: nome, usadoEm: new Date().toLocaleString('pt-BR') });
-    mostrarLoading(false);
-    if(res) res.innerHTML = `<div style="background:var(--primary-bg);border-radius:10px;padding:18px;text-align:center"><div style="font-size:2rem;margin-bottom:8px">🎉</div><div style="font-weight:700;color:var(--primary);font-size:15px">+${token.valor} FLiSS Coins!</div><div style="font-size:13px;color:var(--gray5);margin-top:6px">Olá, <strong>${nome}</strong>!<br>Você agora tem <strong style="color:var(--coin)">🪙 ${novoSaldo}</strong> FLiSS Coins.</div><button onclick="goToFarmacia()" style="margin-top:14px;padding:10px 24px;border-radius:8px;background:var(--primary);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer">🏪 Ir à Farmácia</button></div>`;
-    // Clear inputs
-    if(document.getElementById('tok-codigo')) document.getElementById('tok-codigo').value = '';
-  } catch(e) {
-    mostrarLoading(false);
-    if(res) res.innerHTML = `<p style="color:var(--red);font-size:12px">❌ Erro: ${e.message}</p>`;
-  }
+  try{
+    const token=await window.FB.fbGetDoc('tokens',cod);
+    if(!token)throw new Error('Token inválido. Verifique o código e tente novamente.');
+    if(token.usado)throw new Error('Este token já foi utilizado.');
+    const valor=Number(token.valor||0);
+    if(!valor)throw new Error('Este token não possui valor válido.');
+    const colecao=f3Carteira.tipo==='aluno'?'alunos_fliss':'carteiras_visitantes';
+    const atual=await window.FB.fbGetDoc(colecao,f3Carteira.id);
+    if(!atual)throw new Error('Carteira não encontrada.');
+    const anterior=Number(atual.saldo||0);
+    const posterior=anterior+valor;
+    await window.FB.fbUpdate(colecao,f3Carteira.id,{saldo:posterior,atualizadoEm:new Date().toISOString()});
+    await window.FB.fbSet('tokens',cod,{...token,usado:true,usadoPorCarteira:f3Carteira.id,usadoPorTipo:f3Carteira.tipo,usadoEm:new Date().toISOString()});
+    await window.FB.fbAdd('movimentacoes_fliss',{
+      ...(f3Carteira.tipo==='aluno'?{alunoId:f3Carteira.id,alunoNome:f3Carteira.nome||''}:{carteiraId:f3Carteira.id}),
+      entidadeTipo:f3Carteira.tipo,entidadeId:f3Carteira.id,tipo:'CREDITO_TOKEN',token:cod,valor,
+      saldoAnterior:anterior,saldoPosterior:posterior,motivo:`Token ${cod}`,criadoEm:new Date().toISOString(),estornado:false
+    });
+    f3Carteira.saldo=posterior;
+    const input=document.getElementById('wallet-token-code');if(input)input.value='';
+    if(res)res.innerHTML=`<div class="pv-token-success"><div class="icon">🎉</div><b>+${valor} FLiSS Coins</b><span>Token resgatado com sucesso. Seu novo saldo é 🪙 ${posterior}.</span></div>`;
+    const top=document.getElementById(f3Carteira.tipo==='aluno'?'pa-saldo-top':'pv-saldo-top');if(top)top.textContent=`🪙 ${posterior}`;
+  }catch(e){if(res)res.innerHTML=`<div class="pv-token-error">${escFliss(e.message||'Não foi possível resgatar o token.')}</div>`}
+  finally{mostrarLoading(false)}
 }
+
+function renderTokenCarteiraFliss(box){
+  box.innerHTML=`
+    <section class="pa-section pv-token-section" style="margin-top:0">
+      <div class="pa-section-head"><h4>🎫 Resgatar token</h4><span>Crédito direto na carteira aberta</span></div>
+      <div class="pv-token-card">
+        <div class="pv-token-icon">🎫</div>
+        <div class="pv-token-copy"><h3>Tem um token?</h3><p>Digite somente o código recebido. Sua carteira já foi identificada automaticamente.</p></div>
+        <label for="wallet-token-code">Código do token</label>
+        <input id="wallet-token-code" maxlength="12" inputmode="text" autocomplete="off" placeholder="000000" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')" onkeydown="if(event.key==='Enter')resgatarTokenCarteiraFliss()">
+        <button class="f3-btn primary" onclick="resgatarTokenCarteiraFliss()">Resgatar na minha carteira</button>
+        <div id="wallet-token-result" aria-live="polite"></div>
+      </div>
+      <div class="pv-token-note">Cada token pode ser usado apenas uma vez. O crédito e o resgate ficam registrados no extrato da carteira.</div>
+    </section>`;
+  setTimeout(()=>document.getElementById('wallet-token-code')?.focus(),80);
+}
+
+// Compatibilidade: a antiga tela pública deixou de existir.
+async function resgatarToken(){return resgatarTokenCarteiraFliss()}
 
 // ── BOOKS REWARD ──────────────────────────────────────────────
 async function adicionarMoedasLivros() {
@@ -4783,6 +4798,41 @@ function navegarSugestoesPenalidadeFliss(event){
   itens[foSugestaoAtivaFliss]?.scrollIntoView({block:'nearest'});
 }
 
+function dataLocalIsoFliss(data=new Date()){
+  const y=data.getFullYear(),m=String(data.getMonth()+1).padStart(2,'0'),d=String(data.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+function dataCurtaFliss(valor){
+  if(!valor)return '—';
+  const p=String(valor).slice(0,10).split('-');
+  return p.length===3?`${p[2]}/${p[1]}`:dataBrFliss(valor);
+}
+function rotuloSemanaPenalidadeFliss(semana){
+  return `${semana?.nome||'Semana'} — ${dataCurtaFliss(semana?.inicio)} a ${dataCurtaFliss(semana?.fim)}`;
+}
+function semanaAtualFliss(){
+  const hoje=dataLocalIsoFliss();
+  return flissSemanasCache.find(s=>s.inicio&&s.fim&&String(s.inicio).slice(0,10)<=hoje&&String(s.fim).slice(0,10)>=hoje)||null;
+}
+function atualizarIndicadorSemanaPenalidadeFliss(){
+  const select=document.getElementById('fo-semana'),box=document.getElementById('fo-semana-indicador');
+  if(!select||!box)return;
+  const selecionada=flissSemanasCache.find(s=>s.id===select.value)||null;
+  const atual=semanaAtualFliss();
+  if(!selecionada){
+    box.style.color='var(--gray5)';
+    box.textContent=atual?`Semana atual: ${rotuloSemanaPenalidadeFliss(atual)}`:'Nenhuma semana cadastrada corresponde à data de hoje.';
+    return;
+  }
+  if(atual&&selecionada.id===atual.id){
+    box.style.color='var(--primary)';
+    box.textContent=`● Semana atual: ${rotuloSemanaPenalidadeFliss(selecionada)}`;
+  }else{
+    box.style.color='var(--blue)';
+    box.textContent=`● Semana selecionada: ${rotuloSemanaPenalidadeFliss(selecionada)}${atual?` · Atual: ${atual.nome}`:' · Não há semana em andamento hoje.'}`;
+  }
+}
+
 function popularSelectsFliss(){
   const opts=flissAlunosCache.filter(a=>a.ativo!==false).map(a=>`<option value="${a.id}">${escFliss(a.nome)} — ${escFliss(a.turma)} · G${a.grupo}</option>`).join('');
   const extrato=document.getElementById('fe-aluno');
@@ -4796,9 +4846,16 @@ function popularSelectsFliss(){
     document.getElementById('fo-aluno').value='';
     const busca=document.getElementById('fo-aluno-busca');if(busca)busca.value='';
   }
-  const sopts=flissSemanasCache.map(s=>`<option value="${s.id}">${escFliss(s.nome)}</option>`).join('');
   const fs=document.getElementById('fo-semana');
-  if(fs)fs.innerHTML='<option value="">Sem semana vinculada</option>'+sopts;
+  if(fs){
+    const valorAnterior=fs.value;
+    const atual=semanaAtualFliss();
+    const sopts=flissSemanasCache.map(s=>`<option value="${s.id}">${escFliss(rotuloSemanaPenalidadeFliss(s))}</option>`).join('');
+    fs.innerHTML='<option value="">Sem semana vinculada</option>'+sopts;
+    if(valorAnterior&&flissSemanasCache.some(s=>s.id===valorAnterior))fs.value=valorAnterior;
+    else if(atual)fs.value=atual.id;
+    atualizarIndicadorSemanaPenalidadeFliss();
+  }
 }
 
 function renderAlunosFliss(){
@@ -4822,6 +4879,62 @@ async function importarAlunosFliss(){
 function mostrarListaPinsFliss(arr){const box=document.getElementById('fa-lote-resultado');if(!box)return;box.style.display='block';box.innerHTML=`<div class="batch-result-head"><div><b>Lista de acesso dos alunos</b><div style="font-size:9px;color:var(--gray5)">Número, nome, turma, grupo e PIN individual</div></div><div style="display:flex;gap:6px"><button class="f3-btn" onclick="baixarListaPinsFliss()">Baixar CSV</button><button class="f3-btn primary" onclick="imprimirListaPinsFliss()">🖨️ Imprimir</button></div></div><div style="overflow:auto"><table class="batch-table"><thead><tr><th>Nº</th><th>Nome</th><th>Turma</th><th>Grupo</th><th>PIN</th></tr></thead><tbody>${arr.map(a=>`<tr><td>${escFliss(a.numero)}</td><td>${escFliss(a.nome)}</td><td>${escFliss(a.turma)}</td><td>${escFliss(a.grupo)}</td><td><b>${escFliss(a.pin)}</b></td></tr>`).join('')}</tbody></table></div>`}
 function baixarListaPinsFliss(){if(!ultimoLoteAlunosFliss.length)return;const linhas=['numero;nome;turma;grupo;pin',...ultimoLoteAlunosFliss.map(a=>[a.numero,a.nome,a.turma,a.grupo,a.pin].map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';'))];const blob=new Blob(['\ufeff'+linhas.join('\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lista-acesso-alunos-fliss.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
 function imprimirListaPinsFliss(){if(!ultimoLoteAlunosFliss.length)return;const w=window.open('','_blank');if(!w)return;w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Lista de acesso — FLiSS</title><style>body{font-family:Arial;padding:24px;color:#172033}h1{font-size:20px}p{font-size:11px;color:#667085}table{width:100%;border-collapse:collapse;font-size:11px}th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left}th{background:#07594d;color:#fff}@media print{button{display:none}}</style></head><body><h1>Farmácia Literária — Lista de acesso dos alunos</h1><p>Entregue individualmente o PIN correspondente a cada aluno.</p><button onclick="window.print()">Imprimir</button><table><thead><tr><th>Nº</th><th>Nome</th><th>Turma</th><th>Grupo</th><th>PIN</th></tr></thead><tbody>${ultimoLoteAlunosFliss.map(a=>`<tr><td>${escFliss(a.numero)}</td><td>${escFliss(a.nome)}</td><td>${escFliss(a.turma)}</td><td>${escFliss(a.grupo)}</td><td><b>${escFliss(a.pin)}</b></td></tr>`).join('')}</tbody></table></body></html>`);w.document.close()}
+
+function alunosOrdenadosPinsFliss(){
+  return [...flissAlunosCache].sort((a,b)=>(a.turma||'').localeCompare(b.turma||'')||(Number(a.numero)||999)-(Number(b.numero)||999)||(a.nome||'').localeCompare(b.nome||''));
+}
+function abrirImpressaoFliss(titulo,conteudo,cssExtra=''){
+  const w=window.open('','_blank');
+  if(!w){alert('Permita pop-ups para abrir a impressão.');return}
+  w.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>${escFliss(titulo)}</title><style>
+    @page{size:A4;margin:10mm}
+    *{box-sizing:border-box}
+    body{font-family:Arial,sans-serif;color:#172033;margin:0;background:#fff}
+    .print-actions{display:flex;gap:8px;margin:0 0 14px}
+    .print-actions button{padding:9px 14px;border:0;border-radius:7px;background:#05603A;color:#fff;font-weight:700;cursor:pointer}
+    h1{font-size:19px;margin:0 0 5px}.sub{font-size:10px;color:#667085;margin:0 0 15px}
+    ${cssExtra}
+    @media print{.print-actions{display:none}}
+  </style></head><body><div class="print-actions"><button onclick="window.print()">Imprimir ou salvar em PDF</button></div>${conteudo}</body></html>`);
+  w.document.close();
+}
+function imprimirListaGeralPinsFliss(){
+  const alunos=alunosOrdenadosPinsFliss();
+  if(!alunos.length){alert('Nenhum aluno cadastrado.');return}
+  const linhas=alunos.map(a=>`<tr><td>${escFliss(a.numero||'—')}</td><td><strong>${escFliss(a.nome)}</strong></td><td>${escFliss(a.turma)}</td><td>${escFliss(grupoLabelFliss(a.turma,a.grupo))}</td><td class="pin">${escFliss(a.pin||'—')}</td></tr>`).join('');
+  abrirImpressaoFliss('Lista de PINs dos alunos',`<h1>Farmácia Literária — PINs individuais</h1><p class="sub">Documento administrativo. Entregue cada PIN somente ao respectivo aluno.</p><table><thead><tr><th>Nº</th><th>Aluno</th><th>Turma</th><th>Grupo</th><th>PIN</th></tr></thead><tbody>${linhas}</tbody></table>`,`
+    table{width:100%;border-collapse:collapse;font-size:10px}
+    th{background:#07594d;color:#fff;text-align:left;padding:7px}
+    td{border-bottom:1px solid #dfe3e8;padding:7px;vertical-align:top}
+    .pin{font-family:monospace;font-size:13px;font-weight:900;letter-spacing:.12em}
+  `);
+}
+function imprimirConvitesAlunosFliss(){
+  const alunos=alunosOrdenadosPinsFliss();
+  if(!alunos.length){alert('Nenhum aluno cadastrado.');return}
+  const cards=alunos.map(a=>`<article class="convite">
+    <div class="marca">💊 FARMÁCIA LITERÁRIA <span>FLiSS</span></div>
+    <div class="nome">${escFliss(a.nome)}</div>
+    <div class="meta">${escFliss(a.turma)} · Nº ${escFliss(a.numero||'—')}<br>${escFliss(grupoLabelFliss(a.turma,a.grupo))}</div>
+    <div class="pin-label">SEU PIN INDIVIDUAL</div>
+    <div class="pin">${escFliss(a.pin||'—')}</div>
+    <div class="instrucao">Use este PIN para acessar sua carteira e participar da Farmácia Literária. Não compartilhe.</div>
+  </article>`).join('');
+  abrirImpressaoFliss('Convites individuais — FLiSS',`<h1>Convites individuais dos alunos</h1><p class="sub">Recorte nas linhas pontilhadas e entregue um convite para cada aluno.</p><section class="grade">${cards}</section>`,`
+    .grade{display:grid;grid-template-columns:repeat(2,1fr);gap:5mm}
+    .convite{height:61mm;border:1px dashed #98A2B3;border-radius:4mm;padding:6mm;position:relative;break-inside:avoid;overflow:hidden;background:linear-gradient(145deg,#fff 0%,#f6fbf8 100%)}
+    .convite:nth-child(4n+2),.convite:nth-child(4n+3){background:linear-gradient(145deg,#f8fafc 0%,#fff 100%)}
+    .marca{font-size:8px;font-weight:900;letter-spacing:.08em;color:#05603A;border-bottom:1px solid #d7e9df;padding-bottom:3mm}
+    .marca span{float:right;color:#CA8A04}
+    .nome{font-size:13px;font-weight:800;margin-top:4mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .meta{font-size:8.5px;color:#667085;line-height:1.5;margin-top:1.5mm;min-height:10mm}
+    .pin-label{font-size:7px;font-weight:900;letter-spacing:.12em;color:#667085;text-align:center;margin-top:2mm}
+    .pin{font-family:monospace;font-size:22px;font-weight:900;letter-spacing:.18em;text-align:center;color:#05603A;margin:1mm 0}
+    .instrucao{font-size:7.5px;line-height:1.35;text-align:center;color:#667085;border-top:1px solid #e4e7ec;padding-top:2mm}
+    @media print{.grade{gap:4mm}.convite{height:60mm}}
+  `);
+}
+
 async function alternarAlunoFliss(id,ativo){if(!exigirOperadorFliss())return;await window.FB.fbUpdate('alunos_fliss',id,{ativo,atualizadoEm:new Date().toISOString(),atualizadoPor:operadorFliss()});await renderGestaoFliss()}
 async function apagarAlunoFliss(id){
   if(!exigirOperadorFliss()||!window.FB)return;
@@ -4842,19 +4955,153 @@ async function apagarAlunoFliss(id){
 }
 async function ajusteAlunoFliss(id){if(!exigirOperadorFliss())return;const a=flissAlunosCache.find(x=>x.id===id);if(!a)return;const raw=prompt(`Ajuste para ${a.nome}. Use positivo para crédito e negativo para desconto:`,`0`);if(raw===null)return;const valor=Number(raw);if(!Number.isFinite(valor)||valor===0){alert('Digite um valor diferente de zero.');return}const motivo=prompt('Motivo obrigatório do ajuste:','Ajuste administrativo');if(!motivo?.trim())return;await movimentarAlunoFliss(a,valor,'AJUSTE_ADMINISTRATIVO',motivo.trim(),null);await renderGestaoFliss()}
 
-async function salvarSemanaFliss(){
-  if(!exigirOperadorFliss())return;const nome=document.getElementById('fs-nome').value.trim(),inicio=document.getElementById('fs-inicio').value,fim=document.getElementById('fs-fim').value,valor=Number(document.getElementById('fs-valor').value||60);if(!nome||valor<=0){alert('Informe a semana e um crédito válido.');return}const id=idAlunoFliss('semana',inicio||Date.now(),nome);await window.FB.fbSet('semanas_fliss',id,{nome,inicio,fim,valor,status:'programada',criadoEm:new Date().toISOString(),criadoPor:operadorFliss()});document.getElementById('fs-nome').value='';msgFliss('✅ Semana cadastrada.');await renderGestaoFliss();
+function dataIsoFliss(valor=''){
+  const v=String(valor||'').trim();
+  if(!v)return '';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;
+  const m=v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(!m)return '';
+  return `${m[3]}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`;
 }
-function renderSemanasFliss(){const el=document.getElementById('flissSemanasList');if(!el)return;if(!flissSemanasCache.length){el.innerHTML='<div style="text-align:center;padding:24px;color:var(--gray4);font-size:11px">Nenhuma semana cadastrada.</div>';return}el.innerHTML=flissSemanasCache.map(s=>`<div class="a-item"><div class="a-item-img" style="background:var(--primary-bg)">📅</div><div class="a-item-info"><div class="a-item-name">${escFliss(s.nome)}</div><div class="a-item-meta">${s.inicio||'—'} a ${s.fim||'—'} · +${moedaFliss(s.valor)} · ${s.status==='creditada'?'creditada':'programada'}</div></div><div class="a-item-btns">${s.status==='creditada'?'<span class="fliss-chip">✅ Aplicada</span>':`<button onclick="aplicarCreditoSemanaFliss('${s.id}')" style="padding:7px 10px;border-radius:7px;background:var(--primary);color:#fff;font-size:10px;font-weight:800">Creditar alunos</button>`}</div></div>`).join('')}
+function dataBrFliss(valor=''){
+  const v=String(valor||'');
+  const m=v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m?`${m[3]}/${m[2]}/${m[1]}`:(v||'—');
+}
 
-async function aplicarCreditoSemanaFliss(id){
-  const ev=await window.FB.fbGetDoc('config','evento_fliss'); if(ev?.repassesEncerrados){alert('Os repasses semanais foram encerrados na preparação do evento.');return;}
-  if(!exigirOperadorFliss())return;const sem=flissSemanasCache.find(x=>x.id===id);if(!sem||sem.status==='creditada')return;if(!confirm(`Creditar ${sem.valor} FLiSS Coins para todos os alunos ativos em ${sem.nome}?`))return;mostrarLoading(true);try{const ativos=flissAlunosCache.filter(a=>a.ativo!==false);let feitos=0,pulados=0;for(const a of ativos){const movId=`credito_${id}_${a.id}`;const existente=await window.FB.fbGetDoc('movimentacoes_fliss',movId);if(existente){pulados++;continue}const anterior=Number(a.saldo||0),posterior=anterior+Number(sem.valor);await window.FB.fbSet('movimentacoes_fliss',movId,{alunoId:a.id,alunoNome:a.nome,tipo:'CREDITO_SEMANAL',valor:Number(sem.valor),saldoAnterior:anterior,saldoPosterior:posterior,motivo:sem.nome,semanaId:id,semanaNome:sem.nome,responsavel:operadorFliss(),criadoEm:new Date().toISOString(),estornado:false});await window.FB.fbUpdate('alunos_fliss',a.id,{saldo:posterior,atualizadoEm:new Date().toISOString()});a.saldo=posterior;feitos++}await window.FB.fbUpdate('semanas_fliss',id,{status:'creditada',creditadaEm:new Date().toISOString(),creditadaPor:operadorFliss(),quantidadeCreditada:feitos});msgFliss(`✅ Crédito aplicado a ${feitos} aluno(s). ${pulados?pulados+' já haviam recebido.':''}`);await renderGestaoFliss()}catch(e){msgFliss('Erro: '+e.message,true)}finally{mostrarLoading(false)}
+async function salvarSemanaFliss(){
+  if(!exigirOperadorFliss()||!window.FB)return;
+  const nome=document.getElementById('fs-nome').value.trim();
+  const inicio=document.getElementById('fs-inicio').value;
+  const fim=document.getElementById('fs-fim').value;
+  const valor=Number(document.getElementById('fs-valor').value||60);
+  const creditoEm=document.getElementById('fs-credito-em')?.value||'';
+  if(!nome||valor<=0){alert('Informe a semana e um crédito válido.');return}
+  if(inicio&&fim&&fim<inicio){alert('A data final não pode ser anterior à data inicial.');return}
+  const id=idAlunoFliss('semana',inicio||Date.now(),nome);
+  await window.FB.fbSet('semanas_fliss',id,{nome,inicio,fim,valor,creditoEm,status:'programada',criadoEm:new Date().toISOString(),criadoPor:operadorFliss()});
+  document.getElementById('fs-nome').value='';
+  if(document.getElementById('fs-credito-em'))document.getElementById('fs-credito-em').value='';
+  msgFliss(creditoEm?'✅ Semana cadastrada e agendada.':'✅ Semana cadastrada.');
+  await renderGestaoFliss();
+}
+
+async function importarSemanasFliss(){
+  if(!exigirOperadorFliss()||!window.FB)return;
+  const campo=document.getElementById('fs-lote');
+  const linhas=(campo?.value||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  if(!linhas.length){alert('Cole ou digite as semanas que deseja cadastrar.');return}
+  const itens=[];
+  const erros=[];
+  linhas.forEach((linha,indice)=>{
+    const p=linha.split(';').map(x=>x.trim());
+    const nome=p[0],inicio=dataIsoFliss(p[1]),fim=dataIsoFliss(p[2]),valor=Number(String(p[3]||'60').replace(',','.')),creditoEm=dataIsoFliss(p[4]||p[2]);
+    if(!nome||!inicio||!fim||!Number.isFinite(valor)||valor<=0||!creditoEm||fim<inicio){
+      erros.push(`Linha ${indice+1}`);
+      return;
+    }
+    itens.push({nome,inicio,fim,valor,creditoEm});
+  });
+  if(erros.length){alert(`Revise ${erros.join(', ')}. Use: nome; dd/mm/aaaa; dd/mm/aaaa; crédito; dd/mm/aaaa`);return}
+  mostrarLoading(true);
+  try{
+    let novos=0,existentes=0;
+    for(const item of itens){
+      const id=idAlunoFliss('semana',item.inicio,item.nome);
+      const existe=await window.FB.fbGetDoc('semanas_fliss',id);
+      if(existe){existentes++;continue}
+      await window.FB.fbSet('semanas_fliss',id,{...item,status:'programada',criadoEm:new Date().toISOString(),criadoPor:operadorFliss()});
+      novos++;
+    }
+    campo.value='';
+    msgFliss(`✅ ${novos} semana(s) cadastrada(s).${existentes?` ${existentes} já existia(m).`:''}`);
+    await renderGestaoFliss();
+  }catch(e){msgFliss('Erro ao cadastrar semanas em lote: '+e.message,true)}
+  finally{mostrarLoading(false)}
+}
+
+function renderSemanasFliss(){
+  const el=document.getElementById('flissSemanasList');
+  if(!el)return;
+  if(!flissSemanasCache.length){el.innerHTML='<div style="text-align:center;padding:24px;color:var(--gray4);font-size:11px">Nenhuma semana cadastrada.</div>';return}
+  el.innerHTML=flissSemanasCache.map(s=>{
+    const agendada=s.creditoEm?` · crédito automático em ${dataBrFliss(s.creditoEm)}`:' · sem agendamento';
+    const status=s.status==='creditada'?'creditada':(s.creditoEm&&s.creditoEm<=new Date().toISOString().slice(0,10)?'aguardando processamento':'programada');
+    return `<div class="a-item"><div class="a-item-img" style="background:var(--primary-bg)">📅</div><div class="a-item-info"><div class="a-item-name">${escFliss(s.nome)}</div><div class="a-item-meta">${dataBrFliss(s.inicio)} a ${dataBrFliss(s.fim)} · +${moedaFliss(s.valor)}${agendada} · ${status}</div></div><div class="a-item-btns">${s.status==='creditada'?'<span class="fliss-chip">✅ Aplicada</span>':`<button onclick="aplicarCreditoSemanaFliss('${s.id}')" style="padding:7px 10px;border-radius:7px;background:var(--primary);color:#fff;font-size:10px;font-weight:800">Creditar agora</button>`}</div></div>`;
+  }).join('');
+}
+
+async function aplicarCreditoSemanaFliss(id,opcoes={}){
+  const silencioso=Boolean(opcoes.silencioso);
+  const ev=await window.FB.fbGetDoc('config','evento_fliss');
+  if(ev?.repassesEncerrados){if(!silencioso)alert('Os repasses semanais foram encerrados na preparação do evento.');return {feitos:0,pulados:0}}
+  if(!silencioso&&!exigirOperadorFliss())return {feitos:0,pulados:0};
+  const sem=flissSemanasCache.find(x=>x.id===id)||await window.FB.fbGetDoc('semanas_fliss',id);
+  if(!sem||sem.status==='creditada')return {feitos:0,pulados:0};
+  if(!silencioso&&!confirm(`Creditar ${sem.valor} FLiSS Coins para todos os alunos ativos em ${sem.nome}?`))return {feitos:0,pulados:0};
+  if(!silencioso)mostrarLoading(true);
+  try{
+    const alunos=flissAlunosCache.length?flissAlunosCache:await window.FB.fbGetAll('alunos_fliss');
+    const ativos=alunos.filter(a=>a.ativo!==false);
+    let feitos=0,pulados=0;
+    for(const a of ativos){
+      const movId=`credito_${id}_${a.id}`;
+      const existente=await window.FB.fbGetDoc('movimentacoes_fliss',movId);
+      if(existente){pulados++;continue}
+      const atual=await window.FB.fbGetDoc('alunos_fliss',a.id);
+      if(!atual||atual.ativo===false){pulados++;continue}
+      const anterior=Number(atual.saldo||0),posterior=anterior+Number(sem.valor);
+      await window.FB.fbSet('movimentacoes_fliss',movId,{alunoId:a.id,alunoNome:atual.nome||a.nome,tipo:'CREDITO_SEMANAL',valor:Number(sem.valor),saldoAnterior:anterior,saldoPosterior:posterior,motivo:sem.nome,semanaId:id,semanaNome:sem.nome,responsavel:operadorFliss()||'Agendamento automático',criadoEm:new Date().toISOString(),estornado:false,automatico:silencioso});
+      await window.FB.fbUpdate('alunos_fliss',a.id,{saldo:posterior,atualizadoEm:new Date().toISOString()});
+      a.saldo=posterior;feitos++;
+    }
+    await window.FB.fbUpdate('semanas_fliss',id,{status:'creditada',creditadaEm:new Date().toISOString(),creditadaPor:operadorFliss()||'Agendamento automático',quantidadeCreditada:feitos});
+    if(!silencioso)msgFliss(`✅ Crédito aplicado a ${feitos} aluno(s). ${pulados?pulados+' já haviam recebido.':''}`);
+    return {feitos,pulados};
+  }catch(e){
+    if(!silencioso)msgFliss('Erro: '+e.message,true);
+    else console.warn('Crédito automático da semana:',e);
+    return {feitos:0,pulados:0,erro:e};
+  }finally{
+    if(!silencioso){mostrarLoading(false);await renderGestaoFliss()}
+  }
+}
+
+let processandoSemanasAutomaticasFliss=false;
+async function processarSemanasAgendadasFliss({silencioso=true}={}){
+  if(processandoSemanasAutomaticasFliss||!window.FB)return;
+  processandoSemanasAutomaticasFliss=true;
+  try{
+    const hoje=new Date().toISOString().slice(0,10);
+    const semanas=await window.FB.fbGetAll('semanas_fliss');
+    const vencidas=semanas.filter(s=>s.status!=='creditada'&&s.creditoEm&&s.creditoEm<=hoje).sort((a,b)=>(a.creditoEm||'').localeCompare(b.creditoEm||''));
+    if(!vencidas.length){if(!silencioso)msgFliss('ℹ️ Nenhum crédito automático está pendente para hoje.');return}
+    flissSemanasCache=semanas;
+    if(!flissAlunosCache.length)flissAlunosCache=await window.FB.fbGetAll('alunos_fliss');
+    let total=0;
+    for(const sem of vencidas){
+      const r=await aplicarCreditoSemanaFliss(sem.id,{silencioso:true});
+      total+=Number(r?.feitos||0);
+    }
+    if(!silencioso)msgFliss(`✅ ${vencidas.length} semana(s) processada(s), com ${total} crédito(s) individuais.`);
+    await renderGestaoFliss();
+  }catch(e){if(!silencioso)msgFliss('Erro nos agendamentos: '+e.message,true);else console.warn(e)}
+  finally{processandoSemanasAutomaticasFliss=false}
 }
 
 function atualizarValorOcorrenciaFliss(){const s=document.getElementById('fo-motivo'),o=s?.options[s.selectedIndex],v=Number(o?.dataset.valor||0);if(v)document.getElementById('fo-valor').value=v}
 async function registrarPenalidadeFliss(){
-  if(!exigirOperadorFliss())return;const id=document.getElementById('fo-aluno').value,a=flissAlunosCache.find(x=>x.id===id),semanaId=document.getElementById('fo-semana').value,s=document.getElementById('fo-motivo'),motivoBase=s.options[s.selectedIndex].text.replace(/\s*\(−\d+\)$/,''),obs=document.getElementById('fo-obs').value.trim(),valor=Math.abs(Number(document.getElementById('fo-valor').value));if(!a||!valor){alert('Selecione o aluno e informe o valor.');return}await movimentarAlunoFliss(a,-valor,'PENALIDADE',obs?`${motivoBase} — ${obs}`:motivoBase,semanaId||null);document.getElementById('fo-obs').value='';
+  if(!exigirOperadorFliss())return;const id=document.getElementById('fo-aluno').value,a=flissAlunosCache.find(x=>x.id===id),semanaId=document.getElementById('fo-semana').value,s=document.getElementById('fo-motivo'),motivoBase=s.options[s.selectedIndex].text.replace(/\s*\(−\d+\)$/,''),obs=document.getElementById('fo-obs').value.trim(),valor=Math.abs(Number(document.getElementById('fo-valor').value));if(!a||!valor){alert('Selecione o aluno e informe o valor.');return}
+  const semanaSelecionada=flissSemanasCache.find(x=>x.id===semanaId);
+  if(semanaSelecionada?.inicio&&String(semanaSelecionada.inicio).slice(0,10)>dataLocalIsoFliss()){
+    const continuar=confirm(`⚠️ Você está registrando uma penalidade para uma semana futura:
+
+${rotuloSemanaPenalidadeFliss(semanaSelecionada)}
+
+Deseja registrar mesmo assim?`);
+    if(!continuar)return;
+  }
+  await movimentarAlunoFliss(a,-valor,'PENALIDADE',obs?`${motivoBase} — ${obs}`:motivoBase,semanaId||null);document.getElementById('fo-obs').value='';
   document.getElementById('fo-aluno').value='';
   const buscaAluno=document.getElementById('fo-aluno-busca');if(buscaAluno)buscaAluno.value='';
   const infoAluno=document.getElementById('fo-aluno-selecionado');if(infoAluno)infoAluno.style.display='none';
@@ -5242,6 +5489,99 @@ function atualizarRelogiosBalcaoFliss(){
 if(!window.flissBalcaoClock){
   window.flissBalcaoClock=setInterval(atualizarRelogiosBalcaoFliss,30000);
 }
+
+function exigirAdministradorFliss(){
+  if(perfilEquipeFliss!=='admin'){
+    alert('Apenas o administrador pode apagar registros.');
+    return false;
+  }
+  return true;
+}
+
+async function apagarRegistrosFliss(colecao, registros){
+  for(const registro of registros){
+    await window.FB.fbDelete(colecao,registro.id);
+  }
+}
+
+async function limparPedidosConcluidosFliss(){
+  if(!exigirAdministradorFliss()||!window.FB)return;
+  mostrarLoading(true);
+  try{
+    const pedidos=await window.FB.fbGetAll('pedidos_fliss');
+    const apagar=pedidos.filter(p=>{
+      const status=WorkflowPedidosFliss.normalizar(p.status);
+      return status==='entregue'||status==='cancelado';
+    });
+    if(!apagar.length){
+      alert('Não há pedidos entregues ou cancelados para apagar.');
+      return;
+    }
+    const aguardando=pedidos.filter(p=>WorkflowPedidosFliss.normalizar(p.status)==='aguardando').length;
+    const frase=`Apagar permanentemente ${apagar.length} pedido(s) entregue(s) ou cancelado(s)?\n\n${aguardando} pedido(s) aguardando serão preservados.\n\nEsta ação não poderá ser desfeita.`;
+    if(!confirm(frase))return;
+    const confirmacao=prompt('Para confirmar, digite APAGAR CONCLUÍDOS:');
+    if(String(confirmacao||'').trim().toUpperCase()!=='APAGAR CONCLUÍDOS'){
+      alert('Confirmação incorreta. Nenhum registro foi apagado.');
+      return;
+    }
+    await apagarRegistrosFliss('pedidos_fliss',apagar);
+    alert(`${apagar.length} pedido(s) concluído(s) removido(s). Os pedidos aguardando foram preservados.`);
+    await renderOperacaoFliss();
+  }catch(e){
+    alert('Erro ao limpar pedidos: '+e.message);
+  }finally{
+    mostrarLoading(false);
+  }
+}
+
+async function limparExtratoAlunoFliss(){
+  if(!exigirAdministradorFliss()||!window.FB)return;
+  const alunoId=document.getElementById('fe-aluno')?.value;
+  if(!alunoId){alert('Selecione um aluno.');return}
+  const aluno=flissAlunosCache.find(a=>a.id===alunoId);
+  mostrarLoading(true);
+  try{
+    const movs=(await window.FB.fbGetAll('movimentacoes_fliss')).filter(m=>m.alunoId===alunoId);
+    if(!movs.length){alert('Este aluno não possui movimentações para apagar.');return}
+    if(!confirm(`Apagar permanentemente ${movs.length} movimentação(ões) do extrato de ${aluno?.nome||'este aluno'}?\n\nO saldo atual da carteira será mantido. Esta ação não poderá ser desfeita.`))return;
+    const confirmacao=prompt('Para confirmar, digite o nome completo do aluno:');
+    if(String(confirmacao||'').trim().toLocaleLowerCase('pt-BR')!==String(aluno?.nome||'').trim().toLocaleLowerCase('pt-BR')){
+      alert('Nome incorreto. Nenhum registro foi apagado.');
+      return;
+    }
+    await apagarRegistrosFliss('movimentacoes_fliss',movs);
+    alert('Extrato removido. O saldo atual da carteira foi preservado.');
+    await renderExtratoFliss();
+  }catch(e){
+    alert('Erro ao limpar extrato: '+e.message);
+  }finally{
+    mostrarLoading(false);
+  }
+}
+
+async function limparTodoExtratoFliss(){
+  if(!exigirAdministradorFliss()||!window.FB)return;
+  mostrarLoading(true);
+  try{
+    const movs=await window.FB.fbGetAll('movimentacoes_fliss');
+    if(!movs.length){alert('Não há movimentações para apagar.');return}
+    if(!confirm(`ATENÇÃO: apagar permanentemente TODAS as ${movs.length} movimentações do sistema?\n\nOs saldos atuais das carteiras serão mantidos, mas todo o histórico será perdido.`))return;
+    const confirmacao=prompt('Para confirmar, digite APAGAR TODO O EXTRATO:');
+    if(String(confirmacao||'').trim().toUpperCase()!=='APAGAR TODO O EXTRATO'){
+      alert('Confirmação incorreta. Nenhum registro foi apagado.');
+      return;
+    }
+    await apagarRegistrosFliss('movimentacoes_fliss',movs);
+    alert('Todo o extrato foi removido. Os saldos atuais foram preservados.');
+    await renderExtratoFliss();
+  }catch(e){
+    alert('Erro ao limpar o extrato: '+e.message);
+  }finally{
+    mostrarLoading(false);
+  }
+}
+
 async function renderOperacaoFliss(opcoes={}){
   if(!window.FB)return;
   iniciarRealtimeFliss();
@@ -5710,13 +6050,14 @@ function mostrarAtivacaoVisitanteFliss(){
   modoModalPortalFliss('auth');
   document.getElementById('f3PortalBody').innerHTML=`
     <div class="pv-activation">
-      <div class="pv-activation-hero"><div class="ok">✓</div><h3>Carteira ativada</h3><p>Guarde seus dados para acessar novamente durante o evento.</p></div>
+      <div class="pv-activation-hero"><div class="ok">✓</div><h3>Carteira ativada</h3><p>Seu acesso foi criado com sucesso.</p></div>
+      <div style="margin:0 0 16px;padding:15px;border:2px solid #f59e0b;border-radius:12px;background:#fffbeb;color:#78350f;text-align:left;line-height:1.6"><strong style="display:block;font-size:13px;margin-bottom:4px">⚠️ FUNDAMENTAL: GUARDE OU SALVE SEU PIN</strong><span style="font-size:11px">Você precisará dele sempre que acessar sua carteira novamente. Em outro aparelho, entre usando o código do convite/carteira e o PIN. Não compartilhe esses dados.</span></div>
       <div class="visitor-activation-qr"><div id="visitorActivationQr"></div></div>
       <div class="pv-credentials">
         <div class="pv-credential"><span>Código da carteira</span><b>${escFliss(f3Carteira.codigo)}</b></div>
         <div class="pv-credential"><span>PIN</span><b>${escFliss(f3Carteira.pin)}</b></div>
       </div>
-      <div class="pv-note">Neste dispositivo, os próximos acessos poderão ser feitos apenas com o PIN. Em outro aparelho, use código + PIN ou leia o QR Code.</div>
+      <div class="pv-note"><strong>Salve estes dados agora.</strong> Neste dispositivo, os próximos acessos poderão ser feitos apenas com o PIN. Em outro aparelho, use o código do convite/carteira + PIN ou leia o QR Code.</div>
       <button class="f3-btn primary" onclick="renderPortalVisitanteFliss('inicio')">Entrar no portal</button>
     </div>`;
 }
@@ -5751,6 +6092,7 @@ async function renderPortalVisitanteFliss(aba='inicio'){
           <button data-pv="inicio" class="${aba==='inicio'?'active':''}" onclick="navPortalVisitanteFliss('inicio')"><span class="pa-ico">⌂</span><span class="pa-label">Início</span></button>
           <button data-pv="comprar" class="${aba==='comprar'?'active':''}" onclick="navPortalVisitanteFliss('comprar')"><span class="pa-ico">🛒</span><span class="pa-label">Comprar</span></button>
           <button data-pv="carteira" class="${aba==='carteira'?'active':''}" onclick="navPortalVisitanteFliss('carteira')"><span class="pa-ico">🪙</span><span class="pa-label">Carteira</span></button>
+          <button data-pv="token" class="${aba==='token'?'active':''}" onclick="navPortalVisitanteFliss('token')"><span class="pa-ico">🎫</span><span class="pa-label">Token</span></button>
           <button data-pv="pedidos" class="${aba==='pedidos'?'active':''}" onclick="navPortalVisitanteFliss('pedidos')"><span class="pa-ico">💊</span><span class="pa-label">Meus medicamentos</span></button>
         </nav>
         <button class="pa-exit pv-exit" onclick="sairPortalVisitanteFliss()">Sair da carteira</button>
@@ -5762,6 +6104,7 @@ async function renderPortalVisitanteFliss(aba='inicio'){
             <p>Bem-vindo à sua experiência na Farmácia Literária.</p>
             <div class="pa-meta pv-meta">
               <span class="pa-chip pv-chip">Carteira ${escFliss(f3Carteira.codigo)}</span>
+              <span class="pa-chip pv-chip" style="font-weight:900">PIN ${escFliss(f3Carteira.pin||'—')}</span>
               ${f3Carteira.grupo?`<span class="pa-chip pv-chip">${escFliss(f3Carteira.grupo)}</span>`:''}
             </div>
           </div>
@@ -5787,6 +6130,7 @@ async function renderConteudoPortalVisitanteFliss(aba){
   if(aba==='inicio')return renderInicioPortalVisitanteFliss(box);
   if(aba==='comprar')return renderComprasPortalAlunoFliss(box);
   if(aba==='carteira')return renderCarteiraPortalVisitanteFliss(box);
+  if(aba==='token')return renderTokenCarteiraFliss(box);
   if(aba==='pedidos')return renderPedidosPortalVisitanteFliss(box);
 }
 async function renderInicioPortalVisitanteFliss(box){
@@ -5826,8 +6170,9 @@ async function renderCarteiraPortalVisitanteFliss(box){
         <div>
           <div style="font-size:9px;color:var(--gray5);font-weight:900;text-transform:uppercase">Código da carteira</div>
           <div class="pa-code" style="font-size:26px;margin-top:5px">${escFliss(f3Carteira.codigo)}</div>
+          <div style="margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:9px;background:var(--primary-bg);color:var(--primary)"><span style="font-size:9px;font-weight:900;text-transform:uppercase">PIN de acesso</span><b style="font-size:18px;letter-spacing:.14em">${escFliss(f3Carteira.pin||'—')}</b></div>
           <div class="pa-wallet" style="margin-top:15px;max-width:260px"><span>Saldo disponível</span><b>🪙 ${Number(f3Carteira.saldo||0)}</b></div>
-          <div class="pv-note">Apresente este QR Code no balcão quando solicitado. O código da carteira permite acessar novamente em outro dispositivo.</div>
+          <div class="pv-note"><strong>Guarde o PIN.</strong> Neste aparelho, você poderá entrar rapidamente com ele. Em outro aparelho, use o código da carteira/convite junto com o PIN ou leia o QR Code.</div>
         </div>
       </div>
     </section>
@@ -5891,6 +6236,7 @@ async function renderPortalAlunoFliss(aba='inicio'){
           <button data-pa="inicio" onclick="navPortalAlunoFliss('inicio')"><span class="pa-ico">⌂</span><span class="pa-label">Início</span></button>
           <button data-pa="comprar" onclick="navPortalAlunoFliss('comprar')"><span class="pa-ico">🛒</span><span class="pa-label">Comprar</span></button>
           <button data-pa="carteira" onclick="navPortalAlunoFliss('carteira')"><span class="pa-ico">🪙</span><span class="pa-label">Carteira</span></button>
+          <button data-pa="token" onclick="navPortalAlunoFliss('token')"><span class="pa-ico">🎫</span><span class="pa-label">Token</span></button>
           <button data-pa="medicamentos" onclick="navPortalAlunoFliss('medicamentos')"><span class="pa-ico">💊</span><span class="pa-label">Meus medicamentos</span></button>
           <button data-pa="ranking" onclick="navPortalAlunoFliss('ranking')"><span class="pa-ico">🏆</span><span class="pa-label">Ranking</span></button>
         </nav>
@@ -5922,6 +6268,7 @@ async function renderConteudoPortalAlunoFliss(aba){
   if(aba==='inicio')return renderInicioPortalAlunoFliss(box);
   if(aba==='comprar')return renderComprasPortalAlunoFliss(box);
   if(aba==='carteira')return renderCarteiraPortalAlunoFliss(box);
+  if(aba==='token')return renderTokenCarteiraFliss(box);
   if(aba==='medicamentos')return renderMedicamentosPortalAlunoFliss(box);
   if(aba==='ranking')return renderRankingPortalAlunoFliss(box);
 }
@@ -6576,7 +6923,7 @@ async function gerarLoteConvitesFliss(){
 }
 function conviteUrlFliss(c){return location.origin+location.pathname+'?convite='+encodeURIComponent(c.codigo||c.id)}
 async function qrDataUrlFliss(text,size=240){return new Promise((resolve,reject)=>{try{if(!window.QRCode){reject(new Error('Biblioteca de QR Code não carregada.'));return}const host=document.createElement('div');host.style.cssText='position:fixed;left:-9999px;top:-9999px;background:#fff;padding:4px';document.body.appendChild(host);new QRCode(host,{text,width:size,height:size,correctLevel:QRCode.CorrectLevel.M});setTimeout(()=>{const canvas=host.querySelector('canvas'),img=host.querySelector('img');const data=canvas?.toDataURL('image/png')||img?.src;host.remove();data?resolve(data):reject(new Error('Não foi possível gerar o QR Code.'))},120)}catch(e){reject(e)}})}
-async function carregarLoteConvitesFliss(lote){const all=await window.FB.fbGetAll('tokens');return all.filter(x=>(x.tipo==='convite_visitante'||String(x.id||'').startsWith('CVT-'))&&x.lote===lote).sort((a,b)=>(a.codigo||a.id||'').localeCompare(b.codigo||b.id||''))}
+async function carregarLoteConvitesFliss(lote){const all=await window.FB.fbGetAll('tokens');return all.filter(x=>(x.tipo==='convite_visitante'||String(x.id||'').startsWith('CVT-'))&&(x.lote||'SEM-LOTE')===lote).sort((a,b)=>(a.codigo||a.id||'').localeCompare(b.codigo||b.id||''))}
 async function imprimirUltimoLoteFliss(){const all=await window.FB.fbGetAll('tokens');const conv=all.filter(x=>x.tipo==='convite_visitante'&&x.lote);if(!conv.length){alert('Nenhum lote disponível.');return}const lotes=[...new Set(conv.sort((a,b)=>(b.criadoEm||'').localeCompare(a.criadoEm||'')).map(x=>x.lote))];const escolha=prompt('Digite o lote que deseja imprimir:\n\n'+lotes.slice(0,12).join('\n'),lotes[0]);if(escolha)imprimirLoteFliss(escolha.trim())}
 async function imprimirLoteFliss(lote){
  mostrarLoading(true);try{const itens=await carregarLoteConvitesFliss(lote);if(!itens.length){alert('Lote não encontrado.');return}const preparados=[];for(const c of itens){preparados.push({...c,qrData:await qrDataUrlFliss(conviteUrlFliss(c),280)})}
@@ -7463,6 +7810,22 @@ document.addEventListener('click',()=>setTimeout(atualizarProntidaoEquipeFliss,3
 document.addEventListener('DOMContentLoaded',()=>setTimeout(atualizarProntidaoEquipeFliss,600));
 
 document.addEventListener('DOMContentLoaded',abrirAcessoPublicoFliss);
+
+// Verifica os créditos automáticos ao abrir o sistema e, enquanto a página
+// permanecer aberta, repete a conferência a cada cinco minutos.
+function iniciarAgendadorSemanasFliss(){
+  const executar=()=>{
+    try{
+      if(window.FB?.authCurrent?.())processarSemanasAgendadasFliss({silencioso:true});
+    }catch(e){console.warn('Agendador semanal FLiSS:',e)}
+  };
+  setTimeout(executar,3500);
+  if(!window.__flissAgendadorSemanas){
+    window.__flissAgendadorSemanas=setInterval(executar,5*60*1000);
+  }
+}
+if(window.FB)iniciarAgendadorSemanasFliss();
+else window.addEventListener('fb-ready',iniciarAgendadorSemanasFliss,{once:true});
 
 </script>
 </body>
