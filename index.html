@@ -318,6 +318,10 @@
 @media(max-width:650px){.admin-modal.login-mode{width:100vw;max-height:100vh}.invite-detail-grid{grid-template-columns:1fr}}
 
 
+
+/* Carteiras unificadas — alunos e visitantes */
+.wallet-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 14px}.wallet-tools input,.wallet-tools select{padding:9px 11px;border:1px solid var(--gray2);border-radius:8px;background:#fff;font-size:11px}.wallet-tools input{flex:1;min-width:220px}.wallet-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}.wallet-summary-card{border:1px solid var(--gray2);border-radius:10px;padding:10px 12px;background:#fff}.wallet-summary-card span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:var(--gray5);font-weight:800}.wallet-summary-card b{display:block;font-size:17px;color:var(--ink);margin-top:2px}.wallet-list-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.wallet-row{border:1px solid var(--gray2);border-radius:10px;padding:10px 12px;background:#fff;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:9px;align-items:center}.wallet-avatar{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--primary-bg);font-size:16px}.wallet-row.visitor .wallet-avatar{background:#eff6ff}.wallet-name{font-size:11px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wallet-meta{font-size:9px;color:var(--gray5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wallet-balance{font-size:13px;font-weight:900;color:var(--primary);text-align:right}.wallet-actions{grid-column:1/-1;display:flex;gap:6px;justify-content:flex-end;align-items:center;padding-top:7px;border-top:1px solid var(--gray1)}.wallet-actions input{width:72px;padding:5px 7px;border:1px solid var(--gray2);border-radius:6px;font-size:10px}.wallet-actions button{padding:5px 8px;border-radius:6px;font-size:9px;font-weight:800}.wallet-reward-details{background:var(--primary-bg);border:1px solid rgba(5,96,58,.18);border-radius:10px;margin-bottom:12px}.wallet-reward-details summary{cursor:pointer;padding:11px 14px;font-size:11px;font-weight:800;color:var(--primary);list-style:none}.wallet-reward-details summary::-webkit-details-marker{display:none}.wallet-reward-body{padding:0 14px 13px}.wallet-empty{text-align:center;padding:30px;color:var(--gray4);font-size:11px;border:1px dashed var(--gray2);border-radius:10px}@media(max-width:850px){.wallet-summary{grid-template-columns:repeat(2,1fr)}.wallet-list-grid{grid-template-columns:1fr}}@media(max-width:520px){.wallet-summary{grid-template-columns:1fr}.wallet-tools{align-items:stretch}.wallet-tools input,.wallet-tools select{width:100%}}
+
 /* Token integrado às carteiras — 2026 */
 .pv-token-section{max-width:760px}.pv-token-card{border:1px solid var(--gray2);border-radius:14px;padding:22px;background:#fff;display:grid;grid-template-columns:64px 1fr;gap:12px 16px;align-items:center}.pv-token-icon{width:58px;height:58px;border-radius:14px;background:var(--coin-bg);display:grid;place-items:center;font-size:30px}.pv-token-copy h3{font-family:'Playfair Display',serif;font-size:20px;margin:0 0 4px}.pv-token-copy p{font-size:11px;color:var(--gray5);line-height:1.55}.pv-token-card label{grid-column:1/-1;font-size:10px;font-weight:900;text-transform:uppercase;color:var(--gray6)}.pv-token-card input{grid-column:1/-1;width:100%;padding:14px;border:1.5px solid var(--gray2);border-radius:10px;text-align:center;font-size:20px;font-weight:900;letter-spacing:.18em}.pv-token-card button{grid-column:1/-1;padding:12px}.pv-token-card #wallet-token-result{grid-column:1/-1}.pv-token-success,.pv-token-error{padding:13px;border-radius:10px;font-size:11px;line-height:1.55}.pv-token-success{background:var(--primary-bg);color:var(--primary);display:grid;grid-template-columns:34px 1fr;gap:2px 10px;align-items:center}.pv-token-success .icon{grid-row:1/3;font-size:25px}.pv-token-success b{font-size:14px}.pv-token-success span{color:var(--gray6)}.pv-token-error{background:var(--red-bg);color:var(--red);font-weight:700}.pv-token-note{margin-top:10px;font-size:10px;color:var(--gray5);line-height:1.55;padding:10px 12px;background:var(--gray1);border-radius:9px}@media(max-width:560px){.pv-token-card{grid-template-columns:1fr}.pv-token-icon{margin:auto}.pv-token-copy{text-align:center}}
 </style>
@@ -1710,8 +1714,9 @@ footer strong{color:rgba(255,255,255,.85)}
       <!-- CARTEIRAS -->
       <div class="tab-pane" id="tab-carteiras">
         
-        <div style="background:var(--primary-bg);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:16px;border:1.5px solid rgba(5,96,58,.2)">
-          <h4 style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px">📚 Adicionar moedas por livros lidos</h4>
+        <details class="wallet-reward-details">
+          <summary>📚 Adicionar moedas por livros lidos</summary>
+          <div class="wallet-reward-body">
           <div class="fg">
             <div class="fl ff"><label>Nome do aluno</label><input type="text" id="livro-nome" placeholder="Nome completo do aluno"></div>
             <div class="fl"><label>Livros lidos</label><input type="number" id="livro-qtd" value="1" min="1" placeholder="Ex: 3"></div>
@@ -1721,6 +1726,13 @@ footer strong{color:rgba(255,255,255,.85)}
             <button onclick="adicionarMoedasLivros()" style="padding:9px 18px;border-radius:8px;background:var(--primary);color:#fff;font-size:12px;font-weight:700">📚 Adicionar moedas</button>
             <span id="livro-msg" style="font-size:11px;display:none"></span>
           </div>
+          </div>
+        </details>
+        <div class="wallet-summary" id="carteirasResumo"></div>
+        <div class="wallet-tools">
+          <input id="carteirasBusca" placeholder="Buscar aluno, visitante, turma, grupo, PIN ou carteira..." oninput="filtrarCarteirasFliss()">
+          <select id="carteirasTipo" onchange="filtrarCarteirasFliss()"><option value="todos">Todas as carteiras</option><option value="aluno">Alunos</option><option value="visitante">Visitantes</option></select>
+          <select id="carteirasStatus" onchange="filtrarCarteirasFliss()"><option value="todos">Todos os status</option><option value="ativo">Ativas</option><option value="inativo">Inativas</option></select>
         </div>
 <div class="wallet-bar">
           <div id="carteirasStats" style="font-size:12px;color:var(--gray5)">Carregando...</div>
@@ -3430,89 +3442,58 @@ async function getOrCreateUser(nome) {
   return { id: uid, ...data };
 }
 
+let carteirasUnificadasCache = [];
+
+function escCarteira(v=''){
+  return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function normalizarCarteiraBusca(v=''){
+  return String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+function carteiraUnificadaAluno(a){
+  return {tipo:'aluno',id:a.id,nome:a.nome||'Aluno sem nome',codigo:a.pin||a.id,pin:a.pin||'',saldo:Number(a.saldo||0),ativo:a.ativo!==false,turma:a.turma||'',grupo:a.grupo||'',numero:a.numero||'',origem:a};
+}
+function carteiraUnificadaVisitante(w){
+  return {tipo:'visitante',id:w.id,nome:w.nome||`Visitante ${w.codigo||w.id||''}`,codigo:w.codigo||w.id,pin:w.pin||'',saldo:Number(w.saldo||0),ativo:w.ativo!==false,turma:w.turmaOrigem||'',grupo:w.grupoOrigem||'',numero:'',origem:w};
+}
+
 async function renderCarteiras() {
+  const el=document.getElementById('carteirasList'), stats=document.getElementById('carteirasStats');
+  if(!window.FB){if(el)el.innerHTML='<div class="wallet-empty">⏳ Aguardando conexão com o banco de dados.</div>';if(stats)stats.textContent='Aguardando...';return}
   mostrarLoading(true);
-  if (!window.FB) {
-    mostrarLoading(false);
-    const el = document.getElementById('carteirasList');
-    if(el) el.innerHTML = '<div style="color:var(--gray4);font-size:12px;padding:24px;text-align:center">⏳ Aguardando conexão com o banco de dados. Tente novamente em alguns segundos.</div>';
-    const stats = document.getElementById('carteirasStats');
-    if(stats) stats.textContent = 'Aguardando...';
-    return;
-  }
-  try {
-    const usuarios = await window.FB.fbGetAll('usuarios');
-    mostrarLoading(false);
-    const el = document.getElementById('carteirasList');
-    const stats = document.getElementById('carteirasStats');
-    const totalMoedas = usuarios.reduce((sum, u) => sum + (Number(u.moedas)||0), 0);
-    if (stats) stats.textContent = `${usuarios.length} usuário${usuarios.length!==1?'s':''} · 🪙 ${totalMoedas} ${nomeMoeda} em circulação`;
-    if (!el) return;
-    if (!usuarios.length) {
-      el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--gray4);font-size:12px">Nenhum usuário ainda.<br>Eles aparecem na primeira compra.</div>';
-      return;
-    }
-    const sorted = [...usuarios].sort((a,b) => (b.moedas||0) - (a.moedas||0));
-    el.innerHTML = sorted.map(u => `
-      <div class="a-item">
-        <div class="a-item-img" style="background:var(--coin-bg);font-size:1.2rem">🧑</div>
-        <div class="a-item-info">
-          <div class="a-item-name">${u.nome}</div>
-          <div class="a-item-meta">🪙 ${u.moedas||0} ${nomeMoeda} · desde ${(u.createdAt||'').split('T')[0]||'—'}</div>
-        </div>
-        <div class="a-item-btns" style="flex-direction:column;gap:4px;align-items:flex-end">
-          <div style="display:flex;gap:5px;align-items:center">
-            <input type="number" id="coins-${u.id}" placeholder="+/-" title="Use negativo para remover"
-              style="width:65px;padding:5px 7px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;text-align:center">
-            <button onclick="atribuirMoedas('${u.id}')"
-              style="padding:5px 10px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-size:11px;font-weight:600">💰 Atribuir</button>
-          </div>
-          <button onclick="deletarUsuario('${u.id}')"
-            style="padding:4px 10px;border-radius:6px;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600">🗑️ Remover</button>
-        </div>
-      </div>`).join('');
-  } catch(e) {
-    mostrarLoading(false);
-    const el = document.getElementById('carteirasList');
-    if(el) el.innerHTML = `<div style="color:var(--red);font-size:12px;padding:16px">Erro: ${e.message}</div>`;
-  }
+  try{
+    const [alunos,visitantes]=await Promise.all([window.FB.fbGetAll('alunos_fliss'),window.FB.fbGetAll('carteiras_visitantes')]);
+    carteirasUnificadasCache=[...alunos.map(carteiraUnificadaAluno),...visitantes.map(carteiraUnificadaVisitante)]
+      .sort((a,b)=>a.tipo.localeCompare(b.tipo)||(a.turma||'').localeCompare(b.turma||'')||(Number(a.numero)||999)-(Number(b.numero)||999)||a.nome.localeCompare(b.nome));
+    renderResumoCarteirasFliss();
+    filtrarCarteirasFliss();
+  }catch(e){if(el)el.innerHTML=`<div class="wallet-empty" style="color:var(--red)">Erro ao carregar carteiras: ${escCarteira(e.message)}</div>`}
+  finally{mostrarLoading(false)}
 }
-
-async function atribuirMoedas(uid) {
-  if (!window.FB) { alert('Banco de dados não disponível ainda. Aguarde e tente novamente.'); return; }
-  const input = document.getElementById('coins-' + uid);
-  const amount = parseInt(input.value);
-  if (isNaN(amount)) { alert('Digite um número (negativo para remover)'); return; }
-  mostrarLoading(true);
-  try {
-    const user = await window.FB.fbGetDoc('usuarios', uid);
-    if (!user) { alert('Usuário não encontrado'); mostrarLoading(false); return; }
-    const newBal = Math.max(0, (Number(user.moedas)||0) + amount);
-    await window.FB.fbUpdate('usuarios', uid, { moedas: newBal });
-    input.value = '';
-    await renderCarteiras();
-  } catch(e) { alert('Erro: ' + e.message); }
-  mostrarLoading(false);
+function renderResumoCarteirasFliss(){
+  const arr=carteirasUnificadasCache, alunos=arr.filter(x=>x.tipo==='aluno'), visitantes=arr.filter(x=>x.tipo==='visitante'), ativos=arr.filter(x=>x.ativo), total=ativos.reduce((s,x)=>s+x.saldo,0);
+  const resumo=document.getElementById('carteirasResumo');
+  if(resumo)resumo.innerHTML=`<div class="wallet-summary-card"><span>Alunos</span><b>${alunos.length}</b></div><div class="wallet-summary-card"><span>Visitantes</span><b>${visitantes.length}</b></div><div class="wallet-summary-card"><span>Carteiras ativas</span><b>${ativos.length}</b></div><div class="wallet-summary-card"><span>Moedas em circulação</span><b>🪙 ${total.toLocaleString('pt-BR')}</b></div>`;
+  const stats=document.getElementById('carteirasStats');if(stats)stats.textContent=`${arr.length} carteiras cadastradas · ${ativos.length} ativas`;
 }
-
-async function deletarUsuario(uid) {
-  if (!window.FB) { alert('Banco de dados não disponível ainda.'); return; }
-  if (!confirm('Remover este usuário e sua carteira?')) return;
-  mostrarLoading(true);
-  await window.FB.fbDelete('usuarios', uid);
-  mostrarLoading(false);
-  renderCarteiras();
+function filtrarCarteirasFliss(){
+  const q=normalizarCarteiraBusca(document.getElementById('carteirasBusca')?.value||''), tipo=document.getElementById('carteirasTipo')?.value||'todos', status=document.getElementById('carteirasStatus')?.value||'todos';
+  const arr=carteirasUnificadasCache.filter(c=>(tipo==='todos'||c.tipo===tipo)&&(status==='todos'||(status==='ativo'?c.ativo:!c.ativo))&&(!q||normalizarCarteiraBusca(`${c.nome} ${c.codigo} ${c.pin} ${c.turma} ${c.grupo} ${c.numero}`).includes(q)));
+  const el=document.getElementById('carteirasList');if(!el)return;
+  if(!arr.length){el.innerHTML='<div class="wallet-empty">Nenhuma carteira corresponde aos filtros.</div>';return}
+  el.innerHTML=`<div class="wallet-list-grid">${arr.map(c=>`<article class="wallet-row ${c.tipo==='visitante'?'visitor':''}"><div class="wallet-avatar">${c.tipo==='aluno'?'🎓':'👛'}</div><div><div class="wallet-name">${escCarteira(c.nome)}</div><div class="wallet-meta">${c.tipo==='aluno'?`${escCarteira(c.turma)} · Grupo ${escCarteira(c.grupo)} · PIN ${escCarteira(c.pin||'—')}`:`Carteira ${escCarteira(c.codigo)} · PIN ${escCarteira(c.pin||'—')}`}</div></div><div><div class="wallet-balance">🪙 ${c.saldo.toLocaleString('pt-BR')}</div><div class="wallet-meta" style="text-align:right">${c.ativo?'Ativa':'Inativa'}</div></div><div class="wallet-actions"><input type="number" id="coins-${c.tipo}-${escCarteira(c.id)}" placeholder="+ / −"><button style="background:var(--primary-bg);color:var(--primary)" onclick="atribuirMoedasCarteiraFliss('${c.tipo}','${escCarteira(c.id)}')">Ajustar saldo</button><button style="background:var(--gray1);color:var(--gray6)" onclick="alternarCarteiraFliss('${c.tipo}','${escCarteira(c.id)}',${c.ativo?'false':'true'})">${c.ativo?'Inativar':'Ativar'}</button>${perfilEquipeFliss==='admin'?`<button style="background:var(--red-bg);color:var(--red)" onclick="deletarCarteiraFliss('${c.tipo}','${escCarteira(c.id)}')">Apagar</button>`:''}</div></article>`).join('')}</div>`;
 }
-
-async function zerarCarteiras() {
-  if (!window.FB) { alert('Banco de dados não disponível ainda.'); return; }
-  if (!confirm('Zerar saldo de TODOS os usuários? Eles mantêm a conta mas ficam com 0 moedas.')) return;
-  mostrarLoading(true);
-  const usuarios = await window.FB.fbGetAll('usuarios');
-  await Promise.all(usuarios.map(u => window.FB.fbUpdate('usuarios', u.id, { moedas: 0 })));
-  mostrarLoading(false);
-  renderCarteiras();
+async function atribuirMoedasCarteiraFliss(tipo,id){
+  const input=document.getElementById(`coins-${tipo}-${id}`), valor=Number(input?.value);if(!Number.isFinite(valor)||valor===0){alert('Digite um valor diferente de zero. Use negativo para descontar.');return}
+  const colecao=tipo==='aluno'?'alunos_fliss':'carteiras_visitantes', doc=await window.FB.fbGetDoc(colecao,id);if(!doc){alert('Carteira não encontrada.');return}
+  const anterior=Number(doc.saldo||0), posterior=anterior+valor;
+  await window.FB.fbUpdate(colecao,id,{saldo:posterior,atualizadoEm:new Date().toISOString()});
+  await window.FB.fbAdd('movimentacoes_fliss',{alunoId:tipo==='aluno'?id:null,carteiraId:tipo==='visitante'?id:null,entidadeTipo:tipo,entidadeId:id,tipo:'AJUSTE_MANUAL',valor,saldoAnterior:anterior,saldoPosterior:posterior,motivo:'Ajuste manual na aba Carteiras',responsavel:operadorFliss(),criadoEm:new Date().toISOString(),estornado:false});
+  await renderCarteiras();
 }
+async function alternarCarteiraFliss(tipo,id,ativo){const colecao=tipo==='aluno'?'alunos_fliss':'carteiras_visitantes';await window.FB.fbUpdate(colecao,id,{ativo,atualizadoEm:new Date().toISOString()});await renderCarteiras()}
+async function deletarCarteiraFliss(tipo,id){if(!exigirAdministradorFliss())return;if(!confirm('Apagar permanentemente esta carteira? Esta ação não pode ser desfeita.'))return;const colecao=tipo==='aluno'?'alunos_fliss':'carteiras_visitantes';await window.FB.fbDelete(colecao,id);await renderCarteiras()}
+async function zerarCarteiras(){if(!exigirAdministradorFliss()||!window.FB)return;if(!confirm('Zerar o saldo de TODAS as carteiras de alunos e visitantes?'))return;const [a,v]=await Promise.all([window.FB.fbGetAll('alunos_fliss'),window.FB.fbGetAll('carteiras_visitantes')]);await Promise.all([...a.map(x=>window.FB.fbUpdate('alunos_fliss',x.id,{saldo:0})),...v.map(x=>window.FB.fbUpdate('carteiras_visitantes',x.id,{saldo:0}))]);await renderCarteiras()}
 
 async function salvarSaldoInicial() {
   if (!window.FB) { alert('Banco de dados não disponível ainda.'); return; }
@@ -3917,37 +3898,20 @@ async function resgatarToken(){return resgatarTokenCarteiraFliss()}
 // ── BOOKS REWARD ──────────────────────────────────────────────
 async function adicionarMoedasLivros() {
   if (!window.FB) { alert('Banco de dados não disponível.'); return; }
-  const nome = document.getElementById('livro-nome')?.value.trim();
-  const qtd = parseInt(document.getElementById('livro-qtd')?.value) || 0;
-  const moedasPorLivro = parseInt(document.getElementById('livro-moedas')?.value) || 30;
-  const msg = document.getElementById('livro-msg');
-  if (!nome || qtd < 1) {
-    if(msg) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='⚠️ Informe nome e quantidade de livros.'; }
-    return;
-  }
+  const nome=document.getElementById('livro-nome')?.value.trim(),qtd=Number(document.getElementById('livro-qtd')?.value||0),moedasPorLivro=Number(document.getElementById('livro-moedas')?.value||30),msg=document.getElementById('livro-msg');
+  if(!nome||qtd<1){if(msg){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='⚠️ Informe o aluno e a quantidade de livros.'}return}
   mostrarLoading(true);
-  try {
-    const user = await getOrCreateUser(nome);
-    const bonus = qtd * moedasPorLivro;
-    const novoSaldo = (Number(user.moedas)||0) + bonus;
-    await window.FB.fbUpdate('usuarios', user.id, { moedas: novoSaldo });
-    // Register in history
-    await window.FB.fbAdd('historico', {
-      tipo: 'livros', usuario: nome, userId: user.id,
-      qtdLivros: qtd, moedasPorLivro, bonus, saldoApos: novoSaldo,
-      data: new Date().toLocaleString('pt-BR')
-    });
-    mostrarLoading(false);
-    if(msg) { msg.style.display='block'; msg.style.color='var(--primary)'; msg.textContent=`✅ +${bonus} moedas para ${nome} (${qtd} livro${qtd!==1?'s':''} × 🪙${moedasPorLivro})`; }
-    if(document.getElementById('livro-nome')) document.getElementById('livro-nome').value = '';
-    if(document.getElementById('livro-qtd')) document.getElementById('livro-qtd').value = '1';
-    renderCarteiras();
-  } catch(e) {
-    mostrarLoading(false);
-    if(msg) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='❌ Erro: '+e.message; }
-  }
+  try{
+    const alunos=await window.FB.fbGetAll('alunos_fliss'), busca=normalizarCarteiraBusca(nome), correspondentes=alunos.filter(a=>normalizarCarteiraBusca(a.nome||'').includes(busca));
+    if(correspondentes.length!==1)throw new Error(correspondentes.length?'Há mais de um aluno correspondente. Digite o nome completo.':'Aluno não encontrado no cadastro.');
+    const aluno=correspondentes[0], bonus=qtd*moedasPorLivro, anterior=Number(aluno.saldo||0), posterior=anterior+bonus;
+    await window.FB.fbUpdate('alunos_fliss',aluno.id,{saldo:posterior,atualizadoEm:new Date().toISOString()});
+    await window.FB.fbAdd('movimentacoes_fliss',{alunoId:aluno.id,alunoNome:aluno.nome,tipo:'CREDITO_LIVROS',valor:bonus,saldoAnterior:anterior,saldoPosterior:posterior,motivo:`${qtd} livro(s) lido(s)`,responsavel:operadorFliss(),criadoEm:new Date().toISOString(),estornado:false});
+    if(msg){msg.style.display='block';msg.style.color='var(--primary)';msg.textContent=`✅ +${bonus} FLiSS Coins para ${aluno.nome}.`}
+    document.getElementById('livro-nome').value='';document.getElementById('livro-qtd').value='1';await renderCarteiras();
+  }catch(e){if(msg){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='❌ '+e.message}}
+  finally{mostrarLoading(false)}
 }
-
 
 // ── STUDENT GROUPS ────────────────────────────────────────────
 const GRUPOS = {
@@ -5352,6 +5316,7 @@ const FlissRealtime=window.FlissRealtime||{
     ouvir('alunos_fliss',dados=>{
       coinStatsAlunosCache = dados || [];
       coinStatsCarregados = true;
+      if(document.getElementById('tab-carteiras')?.classList.contains('active')) this.agendar('carteiras-admin',()=>renderCarteiras(),180);
       renderStatsMoedaTempoReal();
       if(f3Carteira?.tipo==='aluno'){
         const aluno=dados.find(a=>a.id===f3Carteira.id);
@@ -5386,6 +5351,7 @@ const FlissRealtime=window.FlissRealtime||{
     ouvir('carteiras_visitantes',dados=>{
       coinStatsVisitantesCache = dados || [];
       coinStatsCarregados = true;
+      if(document.getElementById('tab-carteiras')?.classList.contains('active')) this.agendar('carteiras-admin',()=>renderCarteiras(),180);
       renderStatsMoedaTempoReal();
       this.atualizarBalcao();
       if(f3Carteira?.tipo==='visitante'){
