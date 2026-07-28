@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Painel Público — Farmácia Literária</title>
+<link rel="icon" href="assets/favicon/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+
 <meta name="theme-color" content="#061815">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,6 +98,37 @@ button{font:inherit}
 }
 
 </style>
+
+<style id="fliss-fase7-12-scroll-interno-css">
+@media (min-width:951px){
+  html,body{height:100%;overflow:hidden!important}
+  .shell{height:calc(100vh - 70px)!important;min-height:0!important}
+  .main{min-height:0!important;overflow:hidden!important}
+  .side{
+    min-height:0!important;
+    height:100%!important;
+    overflow:hidden!important;
+    grid-template-rows:auto minmax(0,1fr) auto!important;
+    align-content:stretch!important;
+  }
+  .side>.panel{min-height:0!important;overflow:hidden!important}
+  .side>.panel:nth-child(2){display:flex!important;flex-direction:column!important}
+  .side>.panel:nth-child(2) .ranking{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding-right:6px!important;
+    scrollbar-width:thin;
+    scrollbar-color:#2b6f61 #0b2b26;
+  }
+  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar{width:8px}
+  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar-track{background:#0b2b26;border-radius:999px}
+  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar-thumb{background:#2b6f61;border-radius:999px;border:2px solid #0b2b26}
+  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar-thumb:hover{background:#3b8b79}
+}
+</style>
+
 </head>
 <body>
 <div class="opening"><div class="opening-inner"><div class="opening-title">Farmácia Literária</div><div class="opening-line"></div><div class="opening-sub">A leitura também pode curar.</div></div></div>
