@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- Favicon incorporado diretamente no HTML para evitar falhas de caminho/deploy -->
-<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,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">
-<link rel="shortcut icon" type="image/png" href="data:image/png;base64,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">
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Painel Público — Farmácia Literária</title>
-
-
-<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
-<link rel="manifest" href="assets/favicon/site.webmanifest">
-
 <meta name="theme-color" content="#061815">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +24,7 @@ button{font:inherit}
 .hero h1{font-family:Playfair Display,serif;font-size:39px;line-height:1;margin:0;letter-spacing:-.03em}
 .hero p{font-size:11px;color:var(--muted);margin:8px 0 0}
 .hero .signature{color:#b9d8d1;font-style:italic;font-size:12px}
-.clock{text-align:right}.clock b{display:block;font-size:32px}.clock span{display:block;font-size:10px;color:var(--muted);margin-top:5px}
+.clock{text-align:right;display:flex;flex-direction:column;align-items:flex-end}.clock b{display:block;font-size:32px}.clock span{display:block;font-size:10px;color:var(--muted);margin-top:5px}
 .main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;min-height:0}
 .box{border:1px solid var(--line);border-radius:22px;padding:20px;background:var(--panel);overflow:hidden}
 .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
@@ -63,10 +54,10 @@ button{font:inherit}
 .empty{display:grid;place-items:center;min-height:90px;text-align:center;color:var(--muted);font-size:11px}
 .opening{position:fixed;inset:0;z-index:20;background:#061815;display:grid;place-items:center;animation:openingOut .8s ease 2.5s forwards;pointer-events:none}
 .opening-inner{text-align:center;animation:openingIn .8s ease}.opening-title{font-family:Playfair Display,serif;font-size:clamp(40px,6vw,78px);font-weight:700}.opening-line{width:180px;height:1px;background:rgba(255,255,255,.36);margin:22px auto}.opening-sub{font-size:16px;color:#b9d8d1;font-style:italic}
-.connection{position:fixed;left:18px;bottom:18px;z-index:5;padding:7px 10px;border-radius:999px;background:rgba(4,27,24,.82);border:1px solid var(--line);font-size:8px;color:var(--muted)}.connection.live{color:#90e3c6}
+.connection{display:inline-flex;align-items:center;margin-top:12px;padding:7px 10px;border-radius:999px;background:rgba(4,27,24,.82);border:1px solid var(--line);font-size:8px;color:var(--muted);white-space:nowrap}.connection.live{color:#90e3c6}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(255,255,255,.08),0 0 30px rgba(25,169,116,.34)}}@keyframes openingIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes openingOut{to{opacity:0;visibility:hidden}}
 @media(max-width:950px){body{overflow:auto}.shell{height:auto;min-height:calc(100vh - 74px)}.main{grid-template-columns:1fr}.ready-grid{grid-template-columns:1fr}.footer{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:650px){.topbar{padding:0 15px}.shell{padding:17px}.book{grid-template-columns:1fr;text-align:center}.book-cover{width:145px;margin:auto}.hero{flex-direction:column}.clock{text-align:left}}
+@media(max-width:650px){.topbar{padding:0 15px}.shell{padding:17px}.book{grid-template-columns:1fr;text-align:center}.book-cover{width:145px;margin:auto}.hero{flex-direction:column}.clock{text-align:left;align-items:flex-start}}
 
 .medicine-dynamic{display:grid;grid-template-columns:190px minmax(0,1fr);gap:32px;align-items:center;max-width:920px}
 .medicine-image{width:190px;height:240px;object-fit:cover;border-radius:20px;border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 50px rgba(0,0,0,.28)}
@@ -101,37 +92,6 @@ button{font:inherit}
 }
 
 </style>
-
-<style id="fliss-fase7-12-scroll-interno-css">
-@media (min-width:951px){
-  html,body{height:100%;overflow:hidden!important}
-  .shell{height:calc(100vh - 70px)!important;min-height:0!important}
-  .main{min-height:0!important;overflow:hidden!important}
-  .side{
-    min-height:0!important;
-    height:100%!important;
-    overflow:hidden!important;
-    grid-template-rows:auto minmax(0,1fr) auto!important;
-    align-content:stretch!important;
-  }
-  .side>.panel{min-height:0!important;overflow:hidden!important}
-  .side>.panel:nth-child(2){display:flex!important;flex-direction:column!important}
-  .side>.panel:nth-child(2) .ranking{
-    flex:1 1 auto!important;
-    min-height:0!important;
-    overflow-y:auto!important;
-    overflow-x:hidden!important;
-    padding-right:6px!important;
-    scrollbar-width:thin;
-    scrollbar-color:#2b6f61 #0b2b26;
-  }
-  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar{width:8px}
-  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar-track{background:#0b2b26;border-radius:999px}
-  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar-thumb{background:#2b6f61;border-radius:999px;border:2px solid #0b2b26}
-  .side>.panel:nth-child(2) .ranking::-webkit-scrollbar-thumb:hover{background:#3b8b79}
-}
-</style>
-
 </head>
 <body>
 <div class="opening"><div class="opening-inner"><div class="opening-title">Farmácia Literária</div><div class="opening-line"></div><div class="opening-sub">A leitura também pode curar.</div></div></div>
@@ -150,7 +110,6 @@ button{font:inherit}
   </div>
 </header>
 <main id="app" class="shell"></main>
-<div id="connection" class="connection">Conectando ao evento…</div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -168,7 +127,14 @@ const firebaseConfig={
 
 const db=getFirestore(initializeApp(firebaseConfig));
 const app=document.getElementById('app');
-const connection=document.getElementById('connection');
+let connectionText='Conectando ao evento…';
+let connectionLive=false;
+function atualizarConexao(){
+  const el=document.getElementById('connection');
+  if(!el)return;
+  el.textContent=connectionText;
+  el.classList.toggle('live',connectionLive);
+}
 let pedidos=[];
 let medicamentos=[];
 let editorialIndex=0;
@@ -279,7 +245,7 @@ function render(){
 
 function atualizarRelogio(){
   const el=document.getElementById('clock');if(!el)return;
-  const now=new Date();el.innerHTML=`<b>${now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</b><span>${now.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})}</span>`;
+  const now=new Date();el.innerHTML=`<b>${now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</b><span>${now.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'})}</span><div id="connection" class="connection${connectionLive?' live':''}">${connectionText}</div>`;
 }
 
 onSnapshot(collection(db,'drogas'),snap=>{
@@ -289,12 +255,14 @@ onSnapshot(collection(db,'drogas'),snap=>{
 
 onSnapshot(collection(db,'pedidos_fliss'),snap=>{
   pedidos=snap.docs.map(d=>({id:d.id,...d.data()}));
-  connection.textContent='● Atualização em tempo real';
-  connection.classList.add('live');
+  connectionText='● Atualização em tempo real';
+  connectionLive=true;
   render();
 },err=>{
   console.error(err);
-  connection.textContent='Não foi possível conectar ao Firestore';
+  connectionText='Não foi possível conectar ao Firestore';
+  connectionLive=false;
+  atualizarConexao();
 });
 
 setInterval(atualizarRelogio,1000);
