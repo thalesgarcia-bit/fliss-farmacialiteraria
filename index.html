@@ -3529,27 +3529,62 @@ async function salvarSaldoInicial() {
 
 
 
-// ── FLISS COIN PAGE STATS ────────────────────────────────────
-async function atualizarStatsMoeda() {
-  // Saldo inicial from config
+// ── FLISS COIN PAGE STATS EM TEMPO REAL ─────────────────────
+let coinStatsAlunosCache = [];
+let coinStatsVisitantesCache = [];
+let coinStatsDrogasCache = [];
+let coinStatsCarregados = false;
+
+function numeroCoinStat(valor) {
+  return Number(valor || 0).toLocaleString('pt-BR');
+}
+
+function medicamentoDisponivelCoinStat(d) {
+  const estoque = Number(d?.estoque ?? d?.quantidade ?? d?.stock ?? 0);
+  return d?.ativo !== false && !d?.pausado && estoque > 0;
+}
+
+function renderStatsMoedaTempoReal() {
   const saldoInicial = cfg.saldoInicial !== undefined ? Number(cfg.saldoInicial) : 100;
-  const el1 = document.getElementById('coinStatInicial');
-  if(el1) el1.textContent = saldoInicial;
+  const alunosAtivos = coinStatsAlunosCache.filter(a => a.ativo !== false);
+  const visitantesAtivos = coinStatsVisitantesCache.filter(v => v.ativo !== false);
+  const medicamentosDisponiveis = coinStatsDrogasCache.filter(medicamentoDisponivelCoinStat);
+  const totalMoedas = [...alunosAtivos, ...visitantesAtivos]
+    .reduce((total, carteira) => total + Number(carteira.saldo || 0), 0);
 
-  // Produtos disponíveis
-  const el2 = document.getElementById('coinStatProdutos');
-  if(el2) el2.textContent = drogas.filter(d => (d.estoque||0) > 0).length;
+  const valores = {
+    coinStatInicial: saldoInicial,
+    coinStatProdutos: medicamentosDisponiveis.length,
+    coinStatAlunos: alunosAtivos.length + visitantesAtivos.length,
+    coinStatTotal: totalMoedas
+  };
 
-  if (!window.FB) return;
+  Object.entries(valores).forEach(([id, valor]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = numeroCoinStat(valor);
+  });
+}
+
+async function atualizarStatsMoeda() {
+  // Renderiza imediatamente o que já chegou pelos listeners.
+  renderStatsMoedaTempoReal();
+  if (!window.FB || coinStatsCarregados) return;
+
   try {
-    const usuarios = await window.FB.fbGetAll('usuarios');
-    const totalMoedas = usuarios.reduce((sum, u) => sum + (Number(u.moedas)||0), 0);
-    const el3 = document.getElementById('coinStatAlunos');
-    const el4 = document.getElementById('coinStatTotal');
-    if(el3) el3.textContent = usuarios.length;
-    if(el4) el4.textContent = totalMoedas;
-  } catch(e) {
-    console.warn('Erro ao carregar stats de moeda:', e);
+    const [alunos, visitantes, listaDrogas, siteCfg] = await Promise.all([
+      window.FB.fbGetAll('alunos_fliss'),
+      window.FB.fbGetAll('carteiras_visitantes'),
+      window.FB.fbGetAll('drogas'),
+      window.FB.fbGetDoc('config', 'site')
+    ]);
+    coinStatsAlunosCache = alunos || [];
+    coinStatsVisitantesCache = visitantes || [];
+    coinStatsDrogasCache = listaDrogas || [];
+    if (siteCfg) cfg = { ...cfg, ...siteCfg };
+    coinStatsCarregados = true;
+    renderStatsMoedaTempoReal();
+  } catch (e) {
+    console.warn('Erro ao carregar indicadores da FLiSS Coin:', e);
   }
 }
 
@@ -5315,6 +5350,9 @@ const FlissRealtime=window.FlissRealtime||{
     });
 
     ouvir('alunos_fliss',dados=>{
+      coinStatsAlunosCache = dados || [];
+      coinStatsCarregados = true;
+      renderStatsMoedaTempoReal();
       if(f3Carteira?.tipo==='aluno'){
         const aluno=dados.find(a=>a.id===f3Carteira.id);
         if(aluno){
@@ -5335,6 +5373,10 @@ const FlissRealtime=window.FlissRealtime||{
 
     ouvir('drogas',dados=>{
       f3Drogas=dados;
+      drogas=dados;
+      coinStatsDrogasCache = dados || [];
+      coinStatsCarregados = true;
+      renderStatsMoedaTempoReal();
       this.atualizarBalcao();
       if(this.portalAlunoAberto()&&(window.flissPortalAlunoAbaAtual||'inicio')==='comprar'){
         this.atualizarPortalAluno();
@@ -5342,6 +5384,9 @@ const FlissRealtime=window.FlissRealtime||{
     });
 
     ouvir('carteiras_visitantes',dados=>{
+      coinStatsVisitantesCache = dados || [];
+      coinStatsCarregados = true;
+      renderStatsMoedaTempoReal();
       this.atualizarBalcao();
       if(f3Carteira?.tipo==='visitante'){
         const w=dados.find(x=>x.id===f3Carteira.id);
@@ -5358,7 +5403,10 @@ const FlissRealtime=window.FlissRealtime||{
 
     ouvir('config',dados=>{
       const evento=dados.find(x=>x.id==='evento_fliss');
+      const site=dados.find(x=>x.id==='site');
       if(evento)f3Evento=evento;
+      if(site)cfg={...cfg,...site};
+      renderStatsMoedaTempoReal();
       this.atualizarBalcao();
       this.atualizarPortalAluno();
     });
