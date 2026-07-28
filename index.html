@@ -2279,27 +2279,24 @@ footer strong{color:rgba(255,255,255,.85)}
             o formulário de cadastro de drogas. Cada grupo recebe um PIN exclusivo.<br>
             <strong style="color:var(--ink)">O aluno digita o PIN → o sistema identifica automaticamente a turma e o grupo.</strong>
           </div>
-
-          <div style="background:var(--primary-bg);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:var(--primary);border:1px solid rgba(5,96,58,.15)">
-            🔑 <strong>PIN mestre (professor):</strong> <code style="background:rgba(5,96,58,.1);padding:2px 8px;border-radius:4px;font-weight:800;letter-spacing:.1em">FLISS2025</code>
-            — funciona sempre, deixa turma e grupo livres para testes.
-          </div>
         </div>
 
         <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
           <div style="flex:1;min-width:200px">
             <div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--primary)">7º Ano A</div>
             <table class="pin-config-table" style="width:100%">
-              <thead><tr><th>Grupo</th><th>Nome do grupo</th><th>PIN de acesso</th></tr></thead>
+              <thead><tr><th>Grupo</th><th>Nome do grupo</th><th>PIN de acesso</th><th>Ação</th></tr></thead>
               <tbody id="pinConfigBody7A"></tbody>
             </table>
+            <button type="button" onclick="adicionarGrupo('7A')" style="margin-top:10px;padding:8px 12px;border-radius:7px;background:var(--primary-bg);color:var(--primary);font-size:11px;font-weight:800;border:1px solid rgba(5,96,58,.18)">＋ Adicionar grupo</button>
           </div>
           <div style="flex:1;min-width:200px">
             <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid var(--blue)">7º Ano B</div>
             <table class="pin-config-table" style="width:100%">
-              <thead><tr><th>Grupo</th><th>Nome do grupo</th><th>PIN de acesso</th></tr></thead>
+              <thead><tr><th>Grupo</th><th>Nome do grupo</th><th>PIN de acesso</th><th>Ação</th></tr></thead>
               <tbody id="pinConfigBody7B"></tbody>
             </table>
+            <button type="button" onclick="adicionarGrupo('7B')" style="margin-top:10px;padding:8px 12px;border-radius:7px;background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:800;border:1px solid rgba(29,78,216,.18)">＋ Adicionar grupo</button>
           </div>
         </div>
 
@@ -4203,22 +4200,6 @@ function verificarPinAluno() {
   const pin = input?.value.trim().toUpperCase();
   if (!pin) { if(err) err.textContent = 'Digite o PIN do seu grupo.'; return; }
 
-  // Master PIN for testing (professor access)
-  if (pin === 'FLISS2025') {
-    _sfUnlocked = true;
-    _sfGrupo = '';
-    _sfTurma = '';
-    document.getElementById('sf-pin-gate').style.display = 'none';
-    document.getElementById('sf-form-wrap').style.display = 'block';
-    // Leave turma/grupo unlocked for master access
-    const turmaEl = document.getElementById('sf-turma');
-    const grupoEl = document.getElementById('sf-grupo');
-    if(turmaEl) turmaEl.disabled = false;
-    if(grupoEl) grupoEl.disabled = false;
-    if(err) { err.style.color = 'var(--primary)'; err.textContent = '✅ Acesso mestre — professor. Turma e grupo livres.'; }
-    return;
-  }
-
   // Find which group this PIN belongs to
   const pins = cfg.pins || {};
   const grupo = Object.keys(pins).find(g => pins[g].toUpperCase() === pin);
@@ -4337,57 +4318,111 @@ function toggleAlunoSection() {
 
 
 // ── GRUPOS & PINS TAB ────────────────────────────────────────
-const NUM_GRUPOS = 6;
 const TURMAS = ['7A', '7B'];
+const gruposVisiveis = { '7A': 1, '7B': 1 };
+
+function quantidadeGruposSalvos(turma) {
+  const numeros = new Set();
+  Object.keys(cfg?.grupos?.[turma] || {}).forEach(n => {
+    const num = Number(n);
+    if (Number.isInteger(num) && num > 0) numeros.add(num);
+  });
+  Object.keys(cfg?.pins || {}).forEach(key => {
+    const m = key.match(new RegExp(`^Grupo\\s+(\\d+)\\s+—\\s+${turma}$`));
+    if (m) numeros.add(Number(m[1]));
+  });
+  return numeros.size ? Math.max(...numeros) : 1;
+}
+
+function safeGrupoKey(turma, numero) {
+  return `Grupo ${numero} — ${turma}`.replace(/ /g,'_').replace(/—/g,'dash');
+}
+
+function renderGrupoLinha(turma, numero) {
+  const key = `Grupo ${numero} — ${turma}`;
+  const safeKey = safeGrupoKey(turma, numero);
+  const nomeSalvo = cfg?.grupos?.[turma]?.[numero] || '';
+  const pinSalvo = cfg?.pins?.[key] || '';
+  const podeRemover = numero === gruposVisiveis[turma] && numero > 1;
+  return `<tr data-grupo-numero="${numero}">
+    <td style="font-weight:700;color:var(--gray5);font-size:11px;white-space:nowrap">Grupo ${numero}</td>
+    <td><input type="text" id="nome-${safeKey}" value="${escFliss(nomeSalvo)}"
+      placeholder="Ex: Nome do medicamento"
+      style="width:100%;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px"></td>
+    <td><input type="text" id="pin-${safeKey}" value="${escFliss(pinSalvo)}"
+      placeholder="Ex: G${numero}${turma}"
+      oninput="this.value=this.value.toUpperCase()"
+      style="width:105px;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center"></td>
+    <td>${podeRemover ? `<button type="button" onclick="removerUltimoGrupo('${turma}')" title="Remover este grupo" style="padding:6px 8px;border-radius:6px;background:var(--red-bg);color:var(--red);font-size:10px;font-weight:800">Remover</button>` : ''}</td>
+  </tr>`;
+}
 
 function renderGruposEPins() {
   TURMAS.forEach(turma => {
+    gruposVisiveis[turma] = Math.max(gruposVisiveis[turma] || 1, quantidadeGruposSalvos(turma));
     const tbody = document.getElementById(`pinConfigBody${turma}`);
     if (!tbody) return;
-    const gruposData = (cfg.grupos && cfg.grupos[turma]) || {};
-    const pinsData = (cfg.pins) || {};
-    let rows = '';
-    for (let i = 1; i <= NUM_GRUPOS; i++) {
-      const key = `Grupo ${i} — ${turma}`;
-      const nomeSalvo = gruposData[i] || '';
-      const pinSalvo = pinsData[key] || '';
-      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
-      rows += `<tr>
-        <td style="font-weight:700;color:var(--gray5);font-size:11px;white-space:nowrap">Grupo ${i}</td>
-        <td><input type="text" id="nome-${safeKey}" value="${nomeSalvo}"
-          placeholder="Ex: Os Neurocientistas"
-          style="width:100%;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px"></td>
-        <td><input type="text" id="pin-${safeKey}" value="${pinSalvo}"
-          placeholder="Ex: G${i}${turma}"
-          oninput="this.value=this.value.toUpperCase()"
-          style="width:90px;padding:5px 8px;border:1.5px solid var(--gray2);border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center"></td>
-      </tr>`;
-    }
-    tbody.innerHTML = rows;
+    tbody.innerHTML = Array.from(
+      { length: gruposVisiveis[turma] },
+      (_, i) => renderGrupoLinha(turma, i + 1)
+    ).join('');
   });
+}
+
+function adicionarGrupo(turma) {
+  if (!TURMAS.includes(turma)) return;
+  gruposVisiveis[turma] = Math.max(1, gruposVisiveis[turma] || 1) + 1;
+  renderGruposEPins();
+  const safeKey = safeGrupoKey(turma, gruposVisiveis[turma]);
+  document.getElementById(`nome-${safeKey}`)?.focus();
+}
+
+function removerUltimoGrupo(turma) {
+  if (!TURMAS.includes(turma) || gruposVisiveis[turma] <= 1) return;
+  const numero = gruposVisiveis[turma];
+  const alunosVinculados = (window.flissAlunosCache || []).filter(
+    a => String(a.turma || '').toUpperCase() === turma && Number(a.grupo) === numero
+  );
+  if (alunosVinculados.length) {
+    alert(`O Grupo ${numero} não pode ser removido porque possui ${alunosVinculados.length} aluno(s) vinculado(s). Ajuste os alunos antes de remover o grupo.`);
+    return;
+  }
+  if (!confirm(`Remover o Grupo ${numero} do ${turma}?`)) return;
+  gruposVisiveis[turma]--;
+  renderGruposEPins();
+}
+
+function lerGruposEPinsDaTela() {
+  const pins = {};
+  const grupos = { '7A': {}, '7B': {} };
+  TURMAS.forEach(turma => {
+    for (let i = 1; i <= gruposVisiveis[turma]; i++) {
+      const key = `Grupo ${i} — ${turma}`;
+      const safeKey = safeGrupoKey(turma, i);
+      const nome = document.getElementById(`nome-${safeKey}`)?.value.trim() || '';
+      const pin = document.getElementById(`pin-${safeKey}`)?.value.trim().toUpperCase() || '';
+      if (nome) grupos[turma][i] = nome;
+      if (pin) pins[key] = pin;
+    }
+  });
+  return { pins, grupos };
 }
 
 async function salvarGruposEPins() {
   if (!window.FB) { alert('Banco de dados não disponível.'); return; }
-  const pins = {};
-  const grupos = { '7A': {}, '7B': {} };
+  const { pins, grupos } = lerGruposEPinsDaTela();
 
-  TURMAS.forEach(turma => {
-    for (let i = 1; i <= NUM_GRUPOS; i++) {
-      const key = `Grupo ${i} — ${turma}`;
-      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
-      const nomeEl = document.getElementById(`nome-${safeKey}`);
-      const pinEl = document.getElementById(`pin-${safeKey}`);
-      if (nomeEl) grupos[turma][i] = nomeEl.value.trim();
-      if (pinEl && pinEl.value.trim()) pins[key] = pinEl.value.trim();
-    }
-  });
+  const pinsDuplicados = Object.entries(pins).filter(([key, pin], index, arr) =>
+    arr.findIndex(([, outroPin]) => outroPin === pin) !== index
+  );
+  if (pinsDuplicados.length) {
+    alert('Existem PINs repetidos. Cada grupo deve possuir um PIN exclusivo.');
+    return;
+  }
 
   cfg.pins = pins;
   cfg.grupos = grupos;
   await window.FB.fbSet('config', 'site', { pins, grupos });
-
-  // Update GRUPOS constant with custom names
   atualizarNomesGrupos(grupos);
 
   const msg = document.getElementById('pinConfigMsg');
@@ -4400,28 +4435,19 @@ async function salvarGruposEPins() {
 }
 
 function atualizarNomesGrupos(grupos) {
-  // Update the GRUPOS map with custom names for display
   if (!grupos) return;
-  ['7A','7B'].forEach(turma => {
-    if (!grupos[turma]) return;
-    GRUPOS[turma] = [];
-    for (let i = 1; i <= NUM_GRUPOS; i++) {
-      const nome = grupos[turma][i];
-      const label = nome ? `${nome} (G${i})` : `Grupo ${i} — ${turma}`;
-      GRUPOS[turma].push(`Grupo ${i} — ${turma}`); // keep key consistent for PIN matching
-    }
+  TURMAS.forEach(turma => {
+    const quantidade = Math.max(1, ...Object.keys(grupos[turma] || {}).map(Number).filter(Number.isFinite));
+    GRUPOS[turma] = Array.from({length: quantidade}, (_, i) => `Grupo ${i + 1} — ${turma}`);
   });
 }
 
 function gerarPinsAleatorios() {
-  if (!confirm('Gerar PINs aleatórios para todos os grupos? Isso substituirá os PINs atuais nos campos.')) return;
+  if (!confirm('Gerar PINs aleatórios para todos os grupos exibidos? Isso substituirá os PINs atuais nos campos.')) return;
   TURMAS.forEach(turma => {
-    for (let i = 1; i <= NUM_GRUPOS; i++) {
-      const key = `Grupo ${i} — ${turma}`;
-      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
-      const pinEl = document.getElementById(`pin-${safeKey}`);
+    for (let i = 1; i <= gruposVisiveis[turma]; i++) {
+      const pinEl = document.getElementById(`pin-${safeGrupoKey(turma, i)}`);
       if (pinEl) {
-        // Generate readable PIN: G1A-XXXX
         const rand = Math.floor(1000 + Math.random() * 9000);
         pinEl.value = `G${i}${turma}-${rand}`;
       }
@@ -4430,16 +4456,14 @@ function gerarPinsAleatorios() {
 }
 
 function imprimirGuiaPins() {
-  const rows7A = [], rows7B = [];
-  ['7A','7B'].forEach(turma => {
-    const arr = turma === '7A' ? rows7A : rows7B;
-    for (let i = 1; i <= NUM_GRUPOS; i++) {
-      const key = `Grupo ${i} — ${turma}`;
-      const safeKey = key.replace(/ /g,'_').replace(/—/g,'dash');
-      const nome = document.getElementById(`nome-${safeKey}`)?.value || '—';
-      const pin = document.getElementById(`pin-${safeKey}`)?.value || '—';
-      arr.push({ num: i, nome, pin });
-    }
+  const { pins, grupos } = lerGruposEPinsDaTela();
+  const montarLinhas = turma => Array.from({length: gruposVisiveis[turma]}, (_, idx) => {
+    const num = idx + 1;
+    return {
+      num,
+      nome: grupos[turma]?.[num] || '—',
+      pin: pins[`Grupo ${num} — ${turma}`] || '—'
+    };
   });
 
   const makeTable = (rows, turma, color) => `
@@ -4452,20 +4476,19 @@ function imprimirGuiaPins() {
       </tr></thead>
       <tbody>${rows.map((r,i) => `<tr style="background:${i%2?'#f9f9f9':'#fff'}">
         <td style="padding:7px 12px;font-weight:700">${r.num}</td>
-        <td style="padding:7px 12px">${r.nome}</td>
-        <td style="padding:7px 12px;font-weight:900;letter-spacing:.12em;font-family:monospace">${r.pin}</td>
+        <td style="padding:7px 12px">${escFliss(r.nome)}</td>
+        <td style="padding:7px 12px;font-weight:900;letter-spacing:.12em;font-family:monospace">${escFliss(r.pin)}</td>
       </tr>`).join('')}</tbody>
     </table>`;
 
   const html = `<html><head><title>Guia de PINs — FLiSS Farmácia Literária</title>
     <style>body{font-family:Arial,sans-serif;padding:32px;max-width:700px;margin:0 auto}
-    h1{font-size:20px;color:#0F172A} .note{font-size:12px;color:#888;margin:8px 0 20px}</style>
+    h1{font-size:20px;color:#0F172A}.note{font-size:12px;color:#888;margin:8px 0 20px}</style>
     </head><body>
     <h1>🔐 Guia de PINs — Farmácia Literária FLiSS</h1>
     <p class="note">Distribua o PIN correto para cada grupo. O aluno digita o PIN no site para acessar o formulário de cadastro da droga.</p>
-    <p class="note"><strong>PIN mestre (professor):</strong> FLISS2025</p>
-    ${makeTable(rows7A,'A','#05603A')}
-    ${makeTable(rows7B,'B','#1D4ED8')}
+    ${makeTable(montarLinhas('7A'),'A','#05603A')}
+    ${makeTable(montarLinhas('7B'),'B','#1D4ED8')}
     </body></html>`;
 
   const w = window.open('', '_blank');
@@ -4646,7 +4669,7 @@ function idAlunoFliss(turma,numero,nome){ const base=`${turma}-${numero||nome}`.
 function gerarPinFliss(){ return String(Math.floor(1000+Math.random()*9000)); }
 
 function switchFlissView(view,btn){ document.querySelectorAll('.fliss-subtab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.fliss-view').forEach(x=>x.classList.remove('active')); btn?.classList.add('active'); document.getElementById('fliss-view-'+view)?.classList.add('active'); if(view==='extrato') renderExtratoFliss(); }
-function popularGruposAlunoFliss(){ const turma=document.getElementById('fa-turma')?.value||'7A'; const sel=document.getElementById('fa-grupo'); if(!sel)return; sel.innerHTML=Array.from({length:10},(_,i)=>`<option value="${i+1}">${escFliss(grupoLabelFliss(turma,i+1))}</option>`).join(''); }
+function popularGruposAlunoFliss(){ const turma=document.getElementById('fa-turma')?.value||'7A'; const sel=document.getElementById('fa-grupo'); if(!sel)return; const qtd=Math.max(1,quantidadeGruposSalvos(turma),gruposVisiveis[turma]||1); sel.innerHTML=Array.from({length:qtd},(_,i)=>`<option value="${i+1}">${escFliss(grupoLabelFliss(turma,i+1))}</option>`).join(''); }
 function gerarPinAlunoFliss(){ const el=document.getElementById('fa-pin'); if(el)el.value=gerarPinFliss(); }
 
 async function renderGestaoFliss(){
@@ -4782,7 +4805,7 @@ function renderAlunosFliss(){
   const el=document.getElementById('flissAlunosList'); if(!el)return; const q=(document.getElementById('fa-busca')?.value||'').toLowerCase();
   const arr=flissAlunosCache.filter(a=>!q||`${a.nome} ${a.turma} ${a.grupo}`.toLowerCase().includes(q));
   if(!arr.length){el.innerHTML='<div style="text-align:center;padding:25px;color:var(--gray4);font-size:11px">Nenhum aluno cadastrado.</div>';return;}
-  el.innerHTML=`<div class="fliss-table-wrap"><table class="fliss-table"><thead><tr><th>Nº</th><th>Aluno</th><th>Turma / grupo</th><th>PIN</th><th>Saldo</th><th>Situação</th><th>Ações</th></tr></thead><tbody>${arr.map(a=>`<tr><td>${a.numero||'—'}</td><td><strong>${escFliss(a.nome)}</strong></td><td>${escFliss(a.turma)} · ${escFliss(grupoLabelFliss(a.turma,a.grupo))}</td><td><code>${escFliss(a.pin||'—')}</code></td><td class="${Number(a.saldo||0)<0?'fliss-neg':'fliss-pos'}">${moedaFliss(a.saldo)}</td><td><span class="fliss-chip">${a.ativo===false?'Inativo':'Ativo'}</span></td><td><button onclick="ajusteAlunoFliss('${a.id}')" style="font-size:10px;padding:5px 7px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-weight:700">Ajustar</button> <button onclick="alternarAlunoFliss('${a.id}',${a.ativo===false?'true':'false'})" style="font-size:10px;padding:5px 7px;border-radius:6px;background:var(--gray1);font-weight:700">${a.ativo===false?'Ativar':'Inativar'}</button></td></tr>`).join('')}</tbody></table></div>`;
+  el.innerHTML=`<div class="fliss-table-wrap"><table class="fliss-table"><thead><tr><th>Nº</th><th>Aluno</th><th>Turma / grupo</th><th>PIN</th><th>Saldo</th><th>Situação</th><th>Ações</th></tr></thead><tbody>${arr.map(a=>`<tr><td>${a.numero||'—'}</td><td><strong>${escFliss(a.nome)}</strong></td><td>${escFliss(a.turma)} · ${escFliss(grupoLabelFliss(a.turma,a.grupo))}</td><td><code>${escFliss(a.pin||'—')}</code></td><td class="${Number(a.saldo||0)<0?'fliss-neg':'fliss-pos'}">${moedaFliss(a.saldo)}</td><td><span class="fliss-chip">${a.ativo===false?'Inativo':'Ativo'}</span></td><td><button onclick="ajusteAlunoFliss('${a.id}')" style="font-size:10px;padding:5px 7px;border-radius:6px;background:var(--primary-bg);color:var(--primary);font-weight:700">Ajustar</button> <button onclick="alternarAlunoFliss('${a.id}',${a.ativo===false?'true':'false'})" style="font-size:10px;padding:5px 7px;border-radius:6px;background:var(--gray1);font-weight:700">${a.ativo===false?'Ativar':'Inativar'}</button> <button onclick="apagarAlunoFliss('${a.id}')" style="font-size:10px;padding:5px 7px;border-radius:6px;background:var(--red-bg);color:var(--red);font-weight:800">Apagar</button></td></tr>`).join('')}</tbody></table></div>`;
 }
 
 async function salvarAlunoFliss(){
@@ -4800,6 +4823,23 @@ function mostrarListaPinsFliss(arr){const box=document.getElementById('fa-lote-r
 function baixarListaPinsFliss(){if(!ultimoLoteAlunosFliss.length)return;const linhas=['numero;nome;turma;grupo;pin',...ultimoLoteAlunosFliss.map(a=>[a.numero,a.nome,a.turma,a.grupo,a.pin].map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';'))];const blob=new Blob(['\ufeff'+linhas.join('\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lista-acesso-alunos-fliss.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
 function imprimirListaPinsFliss(){if(!ultimoLoteAlunosFliss.length)return;const w=window.open('','_blank');if(!w)return;w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Lista de acesso — FLiSS</title><style>body{font-family:Arial;padding:24px;color:#172033}h1{font-size:20px}p{font-size:11px;color:#667085}table{width:100%;border-collapse:collapse;font-size:11px}th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left}th{background:#07594d;color:#fff}@media print{button{display:none}}</style></head><body><h1>Farmácia Literária — Lista de acesso dos alunos</h1><p>Entregue individualmente o PIN correspondente a cada aluno.</p><button onclick="window.print()">Imprimir</button><table><thead><tr><th>Nº</th><th>Nome</th><th>Turma</th><th>Grupo</th><th>PIN</th></tr></thead><tbody>${ultimoLoteAlunosFliss.map(a=>`<tr><td>${escFliss(a.numero)}</td><td>${escFliss(a.nome)}</td><td>${escFliss(a.turma)}</td><td>${escFliss(a.grupo)}</td><td><b>${escFliss(a.pin)}</b></td></tr>`).join('')}</tbody></table></body></html>`);w.document.close()}
 async function alternarAlunoFliss(id,ativo){if(!exigirOperadorFliss())return;await window.FB.fbUpdate('alunos_fliss',id,{ativo,atualizadoEm:new Date().toISOString(),atualizadoPor:operadorFliss()});await renderGestaoFliss()}
+async function apagarAlunoFliss(id){
+  if(!exigirOperadorFliss()||!window.FB)return;
+  const aluno=flissAlunosCache.find(a=>a.id===id);
+  if(!aluno)return;
+  const confirmar=confirm(`Apagar permanentemente o aluno “${aluno.nome}”?\n\nO cadastro e o acesso serão removidos. Esta ação não poderá ser desfeita.`);
+  if(!confirmar)return;
+  mostrarLoading(true);
+  try{
+    await window.FB.fbDelete('alunos_fliss',id);
+    msgFliss(`🗑️ ${aluno.nome} foi removido permanentemente.`);
+    await renderGestaoFliss();
+  }catch(e){
+    msgFliss('Erro ao apagar aluno: '+e.message,true);
+  }finally{
+    mostrarLoading(false);
+  }
+}
 async function ajusteAlunoFliss(id){if(!exigirOperadorFliss())return;const a=flissAlunosCache.find(x=>x.id===id);if(!a)return;const raw=prompt(`Ajuste para ${a.nome}. Use positivo para crédito e negativo para desconto:`,`0`);if(raw===null)return;const valor=Number(raw);if(!Number.isFinite(valor)||valor===0){alert('Digite um valor diferente de zero.');return}const motivo=prompt('Motivo obrigatório do ajuste:','Ajuste administrativo');if(!motivo?.trim())return;await movimentarAlunoFliss(a,valor,'AJUSTE_ADMINISTRATIVO',motivo.trim(),null);await renderGestaoFliss()}
 
 async function salvarSemanaFliss(){
@@ -4868,7 +4908,7 @@ function nomeGrupoPreparacao(turma,grupo){
 }
 function opcoesGrupoPreparacao(turma,selecionado){
   let out='<option value="">— Vincular grupo —</option>';
-  for(let i=1;i<=NUM_GRUPOS;i++){const val=`Grupo ${i} — ${turma}`;const nome=cfg?.grupos?.[turma]?.[i];out+=`<option value="${val}" ${val===selecionado?'selected':''}>${nome?nome+' (G'+i+')':val}</option>`}
+  const qtd=Math.max(1,quantidadeGruposSalvos(turma),gruposVisiveis[turma]||1);for(let i=1;i<=qtd;i++){const val=`Grupo ${i} — ${turma}`;const nome=cfg?.grupos?.[turma]?.[i];out+=`<option value="${val}" ${val===selecionado?'selected':''}>${nome?nome+' (G'+i+')':val}</option>`}
   return out;
 }
 function precoNivelFliss(nivel){return nivel==='completo'?40:nivel==='intermediario'?80:nivel==='basico'?120:null}
