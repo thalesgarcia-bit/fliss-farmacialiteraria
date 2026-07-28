@@ -2302,7 +2302,7 @@ footer strong{color:rgba(255,255,255,.85)}
         <div id="rankList" class="ranking-list"></div>
         <div id="rankEmpty" style="text-align:center;padding:60px 20px;display:none">
           <div style="font-size:3rem;opacity:.3;margin-bottom:12px">🏆</div>
-          <p style="color:var(--gray4);font-size:13px">Nenhuma venda registrada ainda.</p>
+          <p style="color:var(--gray4);font-size:13px">Nenhuma venda entregue registrada ainda.</p>
         </div>
         <div style="background:linear-gradient(135deg,#0F172A,#1E3A5F);border-radius:var(--r-xl);padding:22px 28px;margin-top:24px">
           <h3 style="font-family:'Playfair Display',serif;color:#fde68a;font-size:1.1rem;margin-bottom:14px">🎁 Prêmios</h3>
@@ -3633,85 +3633,103 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ── RANKING ───────────────────────────────────────────────────
+// ── RANKING DE MEDICAMENTOS / GRUPOS ──────────────────────────
+function chaveRankingMedicamentoFliss(pedido){
+  return String(pedido?.medicamentoId || pedido?.droId || pedido?.medicamentoNome || pedido?.droNome || 'sem-medicamento');
+}
+function grupoRankingMedicamentoFliss(pedido,droga){
+  return String(pedido?.grupoVendedor || droga?.grupoFliss || droga?.autor || 'Grupo não informado');
+}
+function turmaRankingMedicamentoFliss(pedido,droga){
+  return String(pedido?.turmaVendedor || droga?.turma || pedido?.turma || '');
+}
+function montarRankingMedicamentosFliss(pedidos,listaDrogas=[]){
+  const drogasPorId=new Map((listaDrogas||[]).map(d=>[String(d.id),d]));
+  const mapa=new Map();
+  (pedidos||[]).filter(p=>WorkflowPedidosFliss.apareceNoRanking(p)).forEach(p=>{
+    const id=chaveRankingMedicamentoFliss(p);
+    const droga=drogasPorId.get(String(p.medicamentoId||p.droId||''))||{};
+    const atual=mapa.get(id)||{
+      id,
+      nome:p.medicamentoNome||p.droNome||droga.nome||'Medicamento',
+      grupo:grupoRankingMedicamentoFliss(p,droga),
+      turma:turmaRankingMedicamentoFliss(p,droga),
+      quantidade:0,
+      receita:0,
+      primeiraEntrega:null,
+      ultimaEntrega:null
+    };
+    const q=Math.max(1,Number(p.quantidade||1));
+    atual.quantidade+=q;
+    atual.receita+=Number(p.total ?? ((Number(p.precoUnitario||p.preco||0))*q) ?? 0)||0;
+    const data=String(p.confirmadoEm||p.ultimaTransicaoEm||p.criadoEm||'');
+    if(data&&(!atual.primeiraEntrega||data<atual.primeiraEntrega))atual.primeiraEntrega=data;
+    if(data&&(!atual.ultimaEntrega||data>atual.ultimaEntrega))atual.ultimaEntrega=data;
+    mapa.set(id,atual);
+  });
+  return [...mapa.values()].sort((a,b)=>
+    b.quantidade-a.quantidade ||
+    String(a.primeiraEntrega||'9999').localeCompare(String(b.primeiraEntrega||'9999')) ||
+    a.nome.localeCompare(b.nome,'pt-BR')
+  );
+}
+
 async function renderRanking() {
   if (!window.FB) {
     document.getElementById('rankList').innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray4);font-size:12px">⏳ Aguardando conexão...</div>';
     return;
   }
   try {
-    const reservas = await window.FB.fbGetAll('reservas');
-    // Count sales per drug
-    const salesMap = {};
-    reservas.forEach(r => {
-      if (!salesMap[r.droId]) salesMap[r.droId] = { nome: r.droNome, turma: r.turma || '', count: 0, receita: 0 };
-      salesMap[r.droId].count++;
-      salesMap[r.droId].receita += Number(r.preco) || 0;
-    });
-    // Merge with drogas for extra info
-    drogas.forEach(d => {
-      if (salesMap[d.id]) { salesMap[d.id].autor = d.autor; salesMap[d.id].turma = d.turma || ''; }
-    });
-    const sorted = Object.entries(salesMap)
-      .map(([id, v]) => ({ id, ...v }))
-      .sort((a, b) => b.count - a.count);
-
-    const badge = document.getElementById('rankBadge');
-    if(badge) badge.textContent = sorted.length + ' grupo' + (sorted.length !== 1 ? 's' : '');
-
-    const empty = document.getElementById('rankEmpty');
-    const podium = document.getElementById('rankPodium');
-    const list = document.getElementById('rankList');
-
-    if (!sorted.length) {
-      if(podium) podium.innerHTML = '';
-      if(list) list.innerHTML = '';
-      if(empty) empty.style.display = 'block';
+    const [pedidos,listaDrogas]=await Promise.all([
+      window.FB.fbGetAll('pedidos_fliss'),
+      window.FB.fbGetAll('drogas')
+    ]);
+    const sorted=montarRankingMedicamentosFliss(pedidos,listaDrogas);
+    const badge=document.getElementById('rankBadge');
+    if(badge)badge.textContent=`${sorted.length} medicamento${sorted.length===1?'':'s'} no ranking`;
+    const empty=document.getElementById('rankEmpty');
+    const podium=document.getElementById('rankPodium');
+    const list=document.getElementById('rankList');
+    if(!sorted.length){
+      if(podium)podium.innerHTML='';
+      if(list)list.innerHTML='';
+      if(empty)empty.style.display='block';
       return;
     }
-    if(empty) empty.style.display = 'none';
-
-    const medals = ['🥇','🥈','🥉'];
-    const prizes = ['Caixas de chocolate 🍫','Chocolates 🍫','Balas e pirulitos 🍬'];
-    const pClasses = ['p1','p2','p3'];
-
-    // Podium (top 3)
-    if(podium) {
-      const top3 = sorted.slice(0,3);
-      // Visual order: 2nd, 1st, 3rd
-      const order = top3.length === 1 ? [0] : top3.length === 2 ? [1,0] : [1,0,2];
-      podium.innerHTML = order.map(i => {
-        const d = top3[i];
-        if(!d) return '';
+    if(empty)empty.style.display='none';
+    const medals=['🥇','🥈','🥉'];
+    const prizes=['Caixas de chocolate 🍫','Chocolates 🍫','Balas e pirulitos 🍬'];
+    const pClasses=['p1','p2','p3'];
+    if(podium){
+      const top3=sorted.slice(0,3);
+      const order=top3.length===1?[0]:top3.length===2?[1,0]:[1,0,2];
+      podium.innerHTML=order.map(i=>{
+        const d=top3[i]; if(!d)return '';
+        const local=[d.turma,d.grupo].filter(Boolean).join(' · ');
         return `<div class="podium-card ${pClasses[i]}">
           <div class="podium-medal">${medals[i]}</div>
-          <div class="podium-name">${d.nome}</div>
-          <div class="podium-turma">${TL[d.turma]||d.turma||'—'} · ${d.autor||'—'}</div>
-          <div class="podium-sales">${d.count}</div>
-          <div class="podium-lbl">vendas</div>
-          ${i < prizes.length ? `<div class="podium-prize">${prizes[i]}</div>` : ''}
+          <div class="podium-name">${escFliss(d.nome)}</div>
+          <div class="podium-turma">${escFliss(local||'Grupo não informado')}</div>
+          <div class="podium-sales">${d.quantidade}</div>
+          <div class="podium-lbl">unidades vendidas e entregues</div>
+          ${i<prizes.length?`<div class="podium-prize">${prizes[i]}</div>`:''}
         </div>`;
       }).join('');
     }
-
-    // Full list
-    if(list) {
-      list.innerHTML = sorted.map((d, idx) => `
-        <div class="rank-item">
-          <div class="rank-pos">${idx < 3 ? medals[idx] : idx+1}</div>
+    if(list){
+      list.innerHTML=sorted.map((d,idx)=>{
+        const local=[d.turma,d.grupo].filter(Boolean).join(' · ');
+        return `<div class="rank-item">
+          <div class="rank-pos">${idx<3?medals[idx]:`${idx+1}º`}</div>
           <div style="flex:1">
-            <div class="rank-name">${d.nome}</div>
-            <div class="rank-turma">${TL[d.turma]||d.turma||'—'} · ${d.autor||'—'} · 🪙 ${d.receita} arrecadados</div>
+            <div class="rank-name">${escFliss(d.nome)}</div>
+            <div class="rank-turma">${escFliss(local||'Grupo não informado')} · 🪙 ${Number(d.receita).toLocaleString('pt-BR')} arrecadadas</div>
           </div>
-          <div style="text-align:right">
-            <div class="rank-count">${d.count}</div>
-            <div class="rank-lbl">vendas</div>
-          </div>
-        </div>`).join('');
+          <div style="text-align:right"><div class="rank-count">${d.quantidade}</div><div class="rank-lbl">unidades entregues</div></div>
+        </div>`;
+      }).join('');
     }
-  } catch(e) {
-    console.error('Erro no ranking:', e);
-  }
+  }catch(e){console.error('Erro no ranking de medicamentos:',e)}
 }
 
 // ── TOKEN SYSTEM ──────────────────────────────────────────────
@@ -6518,12 +6536,34 @@ async function renderMedicamentosPortalAlunoFliss(box){
   }).join(''):'<div class="pa-empty">Você ainda não comprou medicamentos.</div>'}</div></section>`;
 }
 async function renderRankingPortalAlunoFliss(box){
-  const [pedidos,alunos]=await Promise.all([window.FB.fbGetAll('pedidos_fliss'),window.FB.fbGetAll('alunos_fliss')]);
-  const pontos=new Map(alunos.filter(a=>a.ativo!==false).map(a=>[a.id,{id:a.id,nome:a.nome,turma:a.turma,grupo:a.grupo,total:0,quantidade:0}]));
-  pedidos.filter(p=>WorkflowPedidosFliss.apareceNoRanking(p)&&p.compradorTipo==='aluno').forEach(p=>{const x=pontos.get(p.carteiraId);if(x){x.total+=Number(p.total||0);x.quantidade+=Number(p.quantidade||1)}});
-  const ranking=[...pontos.values()].sort((a,b)=>b.quantidade-a.quantidade||b.total-a.total||a.nome.localeCompare(b.nome));
-  const pos=ranking.findIndex(x=>x.id===f3Carteira.id)+1;
-  box.innerHTML=`<div class="pa-grid"><div class="pa-card"><div class="pa-card-icon">📍</div><div><div class="k">Sua posição</div><div class="v">${pos?`${pos}º`:'—'}</div><div class="s">no ranking</div></div></div><div class="pa-card"><div class="pa-card-icon">👥</div><div><div class="k">Participantes</div><div class="v">${ranking.length}</div><div class="s">alunos</div></div></div><div class="pa-card"><div class="pa-card-icon">🏆</div><div><div class="k">Critério</div><div class="v" style="font-size:14px;line-height:1.2">Medicamentos retirados</div></div></div></div><section class="pa-section"><div class="pa-section-head"><h4>Ranking dos alunos</h4><span>Somente pedidos entregues</span></div><div class="pa-list">${ranking.slice(0,20).map((r,i)=>`<div class="pa-row" style="${r.id===f3Carteira.id?'border-color:var(--primary);background:var(--primary-bg)':''}"><div><b>${i+1}º · ${escFliss(r.nome)}${r.id===f3Carteira.id?' (você)':''}</b><small>${escFliss(r.turma)} · ${escFliss(grupoLabelFliss(r.turma,r.grupo))}</small></div><div class="pa-value">${r.quantidade} medicamento(s)</div></div>`).join('')}</div></section>`;
+  const [pedidos,listaDrogas]=await Promise.all([window.FB.fbGetAll('pedidos_fliss'),window.FB.fbGetAll('drogas')]);
+  const ranking=montarRankingMedicamentosFliss(pedidos,listaDrogas);
+  const turmaAluno=String(f3Carteira?.turma||'').toUpperCase();
+  const grupoAluno=Number(f3Carteira?.grupo||0);
+  const drogaGrupo=(listaDrogas||[]).find(d=>{
+    const turma=String(d.turma||'').toUpperCase();
+    const grupoNum=Number(d.grupo||d.numeroGrupo||String(d.grupoFliss||'').match(/Grupo\s*(\d+)/i)?.[1]||0);
+    return turma===turmaAluno&&grupoNum===grupoAluno;
+  });
+  const chavePropria=drogaGrupo?String(drogaGrupo.id):'';
+  let proprio=ranking.find(r=>r.id===chavePropria);
+  if(!proprio){
+    proprio=ranking.find(r=>String(r.turma).toUpperCase()===turmaAluno&&String(r.grupo).toLowerCase().includes(`grupo ${grupoAluno}`));
+  }
+  const pos=proprio?ranking.indexOf(proprio)+1:0;
+  const anterior=pos>1?ranking[pos-2]:null;
+  const faltam=proprio&&anterior?Math.max(0,anterior.quantidade-proprio.quantidade+1):0;
+  const lider=ranking[0]||null;
+  box.innerHTML=`
+    <div class="pa-grid">
+      <div class="pa-card"><div class="pa-card-icon">📍</div><div><div class="k">Posição do seu grupo</div><div class="v">${pos?`${pos}º`:'—'}</div><div class="s">entre ${ranking.length} medicamento(s)</div></div></div>
+      <div class="pa-card"><div class="pa-card-icon">💊</div><div><div class="k">Seu medicamento</div><div class="v" style="font-size:14px;line-height:1.2">${escFliss(proprio?.nome||drogaGrupo?.nome||'Não identificado')}</div><div class="s">${proprio?.quantidade||0} unidade(s) entregue(s)</div></div></div>
+      <div class="pa-card"><div class="pa-card-icon">🏆</div><div><div class="k">Líder atual</div><div class="v" style="font-size:14px;line-height:1.2">${escFliss(lider?.nome||'Ainda sem vendas')}</div><div class="s">${lider?`${lider.quantidade} unidade(s)`:'Somente pedidos entregues'}</div></div></div>
+    </div>
+    ${proprio&&anterior?`<div class="viz-callout" style="margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--primary-bg);color:var(--primary);font-size:11px;font-weight:700">Faltam ${faltam} venda(s) entregue(s) para ultrapassar ${escFliss(anterior.nome)}.</div>`:''}
+    <section class="pa-section"><div class="pa-section-head"><h4>Ranking dos medicamentos</h4><span>Competição por grupo · somente pedidos entregues</span></div><div class="pa-list">
+      ${ranking.length?ranking.slice(0,20).map((r,i)=>`<div class="pa-row" style="${proprio&&r.id===proprio.id?'border-color:var(--primary);background:var(--primary-bg)':''}"><div><b>${i+1}º · ${escFliss(r.nome)}${proprio&&r.id===proprio.id?' · seu grupo':''}</b><small>${escFliss([r.turma,r.grupo].filter(Boolean).join(' · ')||'Grupo não informado')}</small></div><div class="pa-value">${r.quantidade} venda(s)</div></div>`).join(''):'<div class="pa-empty">Nenhuma venda entregue foi registrada.</div>'}
+    </div></section>`;
 }
 async function renderLojaF3(){
   return f3Carteira?.tipo==='visitante'

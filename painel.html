@@ -202,10 +202,23 @@ function dados(){
   const entregues=pedidos.filter(p=>normalizar(p.status)==='entregue');
   const ultima=[...entregues].sort((a,b)=>confirmado(b)-confirmado(a))[0]||null;
   const ranks={};
-  entregues.forEach(p=>{const n=nome(p);ranks[n]??={nome:n,total:0,tipo:tipo(p)};ranks[n].total+=Number(p.quantidade||1)});
-  const ranking=Object.values(ranks).sort((a,b)=>b.total-a.total).slice(0,5);
-  const meds={};entregues.forEach(p=>{const n=p.medicamentoNome||'Medicamento';meds[n]=(meds[n]||0)+Number(p.quantidade||1)});
-  const campeao=Object.entries(meds).sort((a,b)=>b[1]-a[1])[0]||null;
+  entregues.forEach(p=>{
+    const id=String(p.medicamentoId||p.medicamentoNome||'sem-medicamento');
+    const med=(medicamentos||[]).find(m=>String(m.id)===String(p.medicamentoId))||{};
+    if(!ranks[id])ranks[id]={
+      id,
+      nome:p.medicamentoNome||med.nome||'Medicamento',
+      grupo:p.grupoVendedor||med.grupoFliss||med.autor||'Grupo não informado',
+      turma:p.turmaVendedor||med.turma||'',
+      total:0,
+      primeira:p.confirmadoEm||p.criadoEm||''
+    };
+    ranks[id].total+=Number(p.quantidade||1);
+    const data=p.confirmadoEm||p.criadoEm||'';
+    if(data&&(!ranks[id].primeira||data<ranks[id].primeira))ranks[id].primeira=data;
+  });
+  const ranking=Object.values(ranks).sort((a,b)=>b.total-a.total||String(a.primeira||'9999').localeCompare(String(b.primeira||'9999'))||a.nome.localeCompare(b.nome,'pt-BR')).slice(0,5);
+  const campeao=ranking[0]||null;
   const visitantes=new Set(entregues.filter(p=>tipo(p)==='visitante').map(p=>p.carteiraId||p.compradorRef||p.id)).size;
   const alunos=new Set(entregues.filter(p=>tipo(p)==='aluno').map(p=>p.carteiraId||p.alunoId||p.compradorRef||p.id)).size;
   const waits=entregues.map(minutos).filter(Number.isFinite);
@@ -234,8 +247,8 @@ function render(){
     ${prontos.length?`<div class="ready-grid">${prontos.map(p=>`<article class="ready-card ${!conhecidos.has(p.id)?'new':''}"><div><div class="ready-code">${esc(p.codigo||p.pedidoCodigo||p.id)}</div><div class="ready-name">${esc(p.medicamentoNome||'Medicamento')}</div></div><div class="ready-meta">${esc(nome(p))} · ${esc(espera(p))}</div></article>`).join('')}</div>`:editorialHtml()}</section>
     <aside class="side">
       <section class="panel"><div class="section-title"><h2>Última entrega</h2><span>Atualização automática</span></div>${d.ultima?`<div class="last"><strong>${esc(d.ultima.medicamentoNome||'Medicamento')}</strong><span>Retirado por ${esc(nome(d.ultima))}</span><span>${confirmado(d.ultima).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div>`:'<div class="empty">Nenhuma entrega registrada.</div>'}</section>
-      <section class="panel"><div class="section-title"><h2>Ranking</h2><span>Top 5</span></div><div class="ranking">${d.ranking.length?d.ranking.map((r,i)=>`<div class="rank"><div class="pos">${['🥇','🥈','🥉'][i]||`${i+1}º`}</div><div><b>${esc(r.nome)}</b><small>${r.tipo==='visitante'?'Visitante':'Aluno'}</small></div><div class="value">${r.total}</div></div>`).join(''):'<div class="empty">Ranking ainda sem dados.</div>'}</div></section>
-      <section class="panel"><div class="section-title"><h2>Mais procurado</h2><span>Hoje</span></div>${d.campeao?`<div class="last"><strong>${esc(d.campeao[0])}</strong><span>${d.campeao[1]} retirada(s)</span></div>`:'<div class="empty">Ainda sem entregas.</div>'}</section>
+      <section class="panel"><div class="section-title"><h2>Medicamentos mais vendidos</h2><span>Top 5 · entregues</span></div><div class="ranking">${d.ranking.length?d.ranking.map((r,i)=>`<div class="rank"><div class="pos">${['🥇','🥈','🥉'][i]||`${i+1}º`}</div><div><b>${esc(r.nome)}</b><small>${esc([r.turma,r.grupo].filter(Boolean).join(' · ')||'Grupo não informado')}</small></div><div class="value">${r.total}</div></div>`).join(''):'<div class="empty">Ranking ainda sem vendas entregues.</div>'}</div></section>
+      <section class="panel"><div class="section-title"><h2>Líder da competição</h2><span>Grupo</span></div>${d.campeao?`<div class="last"><strong>${esc(d.campeao.nome)}</strong><span>${esc([d.campeao.turma,d.campeao.grupo].filter(Boolean).join(' · ')||'Grupo não informado')}</span><span>${d.campeao.total} unidade(s) vendida(s)</span></div>`:'<div class="empty">Ainda sem entregas.</div>'}</section>
     </aside>
   </div>
   <footer class="footer"><div class="stat"><span>Pedidos entregues</span><b>${d.entregues.length}</b></div><div class="stat"><span>Visitantes atendidos</span><b>${d.visitantes}</b></div><div class="stat"><span>Alunos atendidos</span><b>${d.alunos}</b></div><div class="stat"><span>Tempo médio</span><b>${d.media?`${d.media} min`:'—'}</b></div></footer>`;
