@@ -247,6 +247,13 @@
 .btn-editar-aprovar{padding:6px 12px;border-radius:6px;background:var(--blue-bg);color:var(--blue);font-size:11px;font-weight:700}
 .btn-rejeitar{padding:6px 12px;border-radius:6px;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:700}
 .pending-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:var(--gray6)}
+.returned-banner{display:none;margin:0 0 16px;padding:14px 16px;border:1.5px solid #f59e0b;border-radius:12px;background:#fffbeb;color:#92400e}
+.returned-banner.show{display:block}.returned-banner b{display:block;font-size:13px;margin-bottom:5px}.returned-banner p{font-size:11px;line-height:1.6;white-space:pre-wrap}
+.sf-save-state{display:inline-flex;align-items:center;gap:6px;margin-left:10px;font-size:10px;color:var(--gray5);font-weight:600}
+.pending-returned{border-color:#f59e0b;background:#fffdf7}.pending-status{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;margin-left:7px}.pending-status.returned{background:#fef3c7;color:#92400e}
+.btn-devolver{padding:6px 12px;border-radius:6px;background:#fff7ed;color:#c2410c;font-size:11px;font-weight:700;border:1px solid #fed7aa}
+.fliss-return-note{border:1.5px solid #f59e0b;background:#fffbeb;border-radius:12px;padding:14px 16px;margin-bottom:14px}.fliss-return-note h4{font-size:12px;color:#92400e;margin:0 0 5px}.fliss-return-note p{font-size:10px;color:#78350f;line-height:1.6;white-space:pre-wrap;margin:0}.fliss-return-note small{display:block;font-size:9px;color:#a16207;margin-top:7px}
+
 .pf-item{background:var(--gray1);border-radius:6px;padding:5px 8px}
 .pf-lbl{font-weight:700;color:var(--gray5);font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
 .pf-val{color:var(--ink);line-height:1.4}
@@ -1292,6 +1299,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <p>Preencha todos os campos que conseguir. Quanto mais completo, mais barato e competitivo será seu medicamento!<br>
             <strong style="color:#fde68a">Atenção:</strong> sua droga ficará <strong style="color:#fde68a">pendente de aprovação</strong> pelo professor antes de aparecer na vitrine.</p>
           </div>
+          <div id="sf-returned-banner" class="returned-banner"><b>↩️ Seu medicamento foi devolvido para ajustes.</b><p id="sf-returned-notes"></p></div>
           <div class="sobre-card" style="margin-bottom:20px">
             <div class="fg">
               <div class="fl ff"><label>Nome da Droga *</label><input type="text" id="sf-nome" placeholder="Ex: Neurocienzol 500mg"></div>
@@ -1334,7 +1342,8 @@ footer strong{color:rgba(255,255,255,.85)}
               <div class="fl ff"><label>📝 Observações (opcional)</label><textarea id="sf-obs" rows="2" placeholder="Curiosidades, dedicatória, notas…"></textarea></div>
             </div>
             <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--gray2)">
-              <button class="btn-confirmar" onclick="submeterDroga()" style="max-width:340px">📤 Enviar para revisão do professor</button>
+              <button id="sf-submit-btn" class="btn-confirmar" onclick="submeterDroga()" style="max-width:340px">📤 Enviar para revisão do professor</button>
+              <span id="sf-save-state" class="sf-save-state"></span>
               <div id="sf-msg" style="font-size:12px;margin-top:10px;display:none"></div>
             </div>
           </div>
@@ -2507,7 +2516,7 @@ window.addEventListener('fb-ready', async () => {
     });
     // Real-time listener for pending drugs (badge counter)
     window.FB.fbListen('drogas_pendentes', (data) => {
-      const count = data.length;
+      const count = data.filter(d => d.status !== 'rascunho').length;
       const badge = document.getElementById('pendingBadge');
       const tabBadge = document.getElementById('pendingTabBadge');
       if (badge) {
@@ -3969,8 +3978,9 @@ function addEfSF() {
   if (!v) return;
   sfEfs.push(v); i.value = '';
   renderEfChipsSF();
+  agendarAutosaveSF();
 }
-function removeEfSF(i) { sfEfs.splice(i, 1); renderEfChipsSF(); }
+function removeEfSF(i) { sfEfs.splice(i, 1); renderEfChipsSF(); agendarAutosaveSF(); }
 function renderEfChipsSF() {
   const el = document.getElementById('sfEfChips');
   if (!el) return;
@@ -3996,6 +4006,7 @@ function previewImgSF(inp) {
       sfImgUrl = canvas.toDataURL('image/jpeg', 0.75);
       const p = document.getElementById('sf-imgPreview');
       if (p) { p.src = sfImgUrl; p.style.display = 'block'; }
+      agendarAutosaveSF();
     };
     img.src = e.target.result;
   };
@@ -4007,57 +4018,171 @@ function getFieldSF(id) {
   return el ? el.value.trim() : '';
 }
 
-async function submeterDroga() {
-  const nome = getFieldSF('sf-nome');
-  const turma = getFieldSF('sf-turma');
-  const grupo = getFieldSF('sf-grupo');
-  const autor = getFieldSF('sf-autor');
-  const ind = getFieldSF('sf-ind');
-  const dose = getFieldSF('sf-dose');
-  const frequencia = getFieldSF('sf-frequencia');
-  const modouso = getFieldSF('sf-modouso');
-  const estoque = parseInt(document.getElementById('sf-estoque')?.value);
-  const msg = document.getElementById('sf-msg');
+let _sfRegistroId = null;       // id de uma submissão devolvida que está sendo corrigida
+let _sfAutosaveTimer = null;
+let _sfAutosaveBound = false;
+let _sfRestoring = false;
+let _sfReadOnly = false;
 
-  const showMsg = (txt, cor) => {
-    if(msg) { msg.textContent = txt; msg.style.color = cor; msg.style.display = 'block'; }
+function sfGrupoNumero(valor) {
+  const m = String(valor || '').match(/(?:Grupo\s*)?(\d+)/i);
+  return m ? String(Number(m[1])) : '';
+}
+function sfGrupoKey(turma, grupo) {
+  return `${String(turma || '').toUpperCase()}__G${sfGrupoNumero(grupo) || String(grupo || '').replace(/\W+/g,'_')}`;
+}
+function sfMesmoGrupo(d, turma, grupo) {
+  return String(d?.turma || '').toUpperCase() === String(turma || '').toUpperCase()
+    && sfGrupoNumero(d?.grupo || d?.grupoFliss) === sfGrupoNumero(grupo);
+}
+function coletarDadosSF(status='rascunho') {
+  const estoqueRaw = document.getElementById('sf-estoque')?.value;
+  return {
+    nome:getFieldSF('sf-nome'), sub:getFieldSF('sf-sub'),
+    turma:_sfTurma || getFieldSF('sf-turma'), grupo:_sfGrupo || getFieldSF('sf-grupo'), autor:getFieldSF('sf-autor'),
+    cat:getFieldSF('sf-cat'), estoque:estoqueRaw === '' ? '' : Number(estoqueRaw), img:sfImgUrl, emoji:'💊',
+    ind:getFieldSF('sf-ind'), comp:getFieldSF('sf-comp'),
+    dose:getFieldSF('sf-dose'), frequencia:getFieldSF('sf-frequencia'), modouso:getFieldSF('sf-modouso'),
+    efeitos:[...sfEfs], contraQuem:getFieldSF('sf-contra-quem'), contraAvisos:getFieldSF('sf-contra-avisos'),
+    contraInteracoes:getFieldSF('sf-contra-interacoes'), fab:getFieldSF('sf-fab'), obs:getFieldSF('sf-obs'),
+    status, grupoKey:sfGrupoKey(_sfTurma || getFieldSF('sf-turma'), _sfGrupo || getFieldSF('sf-grupo'))
   };
-
-  if (!nome || !turma || !grupo || !autor || !ind || (!dose && !frequencia && !modouso) || isNaN(estoque)) {
-    showMsg('⚠️ Preencha os campos obrigatórios: nome, turma, grupo, integrantes, indicação, ao menos um campo de posologia e estoque.', 'var(--red)');
-    return;
+}
+function setSfSaveState(texto, erro=false) {
+  const el=document.getElementById('sf-save-state');
+  if(el){el.textContent=texto;el.style.color=erro?'var(--red)':'var(--gray5)';}
+}
+function sfLocalStorageKey(){ return `fliss_sf_${sfGrupoKey(_sfTurma,_sfGrupo)}`; }
+function salvarBackupLocalSF(){
+  if(!_sfUnlocked||_sfRestoring||_sfReadOnly)return;
+  try{localStorage.setItem(sfLocalStorageKey(),JSON.stringify({...coletarDadosSF('rascunho'),atualizadoEm:new Date().toISOString()}))}catch(e){console.warn('Backup local do formulário:',e)}
+}
+function lerBackupLocalSF(){
+  try{return JSON.parse(localStorage.getItem(sfLocalStorageKey())||'null')}catch(e){return null}
+}
+function agendarAutosaveSF() {
+  if(!_sfUnlocked || _sfRestoring || _sfReadOnly) return;
+  salvarBackupLocalSF();
+  clearTimeout(_sfAutosaveTimer);
+  setSfSaveState('Salvando rascunho…');
+  _sfAutosaveTimer=setTimeout(salvarRascunhoSF,500);
+}
+async function salvarRascunhoSF() {
+  if(!_sfUnlocked || !window.FB || _sfRestoring || _sfReadOnly) return;
+  try{
+    const dados=coletarDadosSF('rascunho');
+    if(!dados.grupoKey) return;
+    await window.FB.fbSet('drogas_pendentes',`__rascunho__${dados.grupoKey}`,{...dados,atualizadoEm:new Date().toISOString()});
+    setSfSaveState('✓ Rascunho salvo automaticamente');
+  }catch(e){
+    console.warn('Autosave do formulário:',e);
+    setSfSaveState('Não foi possível salvar agora',true);
   }
-  if (!window.FB) { showMsg('❌ Banco de dados não disponível. Tente novamente.', 'var(--red)'); return; }
+}
+function habilitarAutosaveSF() {
+  if(_sfAutosaveBound) return;
+  const wrap=document.getElementById('sf-form-wrap');
+  if(!wrap) return;
+  wrap.addEventListener('input',e=>{if(e.target.matches('input,textarea,select'))agendarAutosaveSF()});
+  wrap.addEventListener('change',e=>{if(e.target.matches('input,textarea,select')){salvarBackupLocalSF();salvarRascunhoSF()}});
+  wrap.addEventListener('focusout',e=>{if(e.target.matches('input,textarea,select')){salvarBackupLocalSF();salvarRascunhoSF()}});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){salvarBackupLocalSF();salvarRascunhoSF()}});
+  _sfAutosaveBound=true;
+}
+function preencherFormularioSF(d) {
+  if(!d) return;
+  _sfRestoring=true;
+  const setF=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val??''};
+  setF('sf-nome',d.nome);setF('sf-sub',d.sub);setF('sf-cat',d.cat);setF('sf-autor',d.autor);
+  setF('sf-ind',d.ind);setF('sf-comp',d.comp);setF('sf-dose',d.dose);setF('sf-frequencia',d.frequencia);setF('sf-modouso',d.modouso);
+  setF('sf-contra-quem',d.contraQuem);setF('sf-contra-avisos',d.contraAvisos);setF('sf-contra-interacoes',d.contraInteracoes);
+  setF('sf-fab',d.fab);setF('sf-obs',d.obs);setF('sf-estoque',d.estoque);
+  sfEfs=Array.isArray(d.efeitos)?[...d.efeitos]:[];renderEfChipsSF();
+  sfImgUrl=d.img||'';const p=document.getElementById('sf-imgPreview');if(p){p.src=sfImgUrl;p.style.display=sfImgUrl?'block':'none'}
+  const turmaEl=document.getElementById('sf-turma');if(turmaEl){turmaEl.value=_sfTurma;turmaEl.disabled=true;atualizarGruposSF()}
+  setTimeout(()=>{const grupoEl=document.getElementById('sf-grupo');if(grupoEl){[...grupoEl.options].forEach(o=>{if(sfGrupoNumero(o.value)===sfGrupoNumero(_sfGrupo))o.selected=true});grupoEl.disabled=true}_sfRestoring=false},70);
+}
+function bloquearFormularioSF(bloquear) {
+  _sfReadOnly=Boolean(bloquear);
+  const wrap=document.getElementById('sf-form-wrap');
+  wrap?.querySelectorAll('input,textarea,select').forEach(el=>{
+    if(el.id==='sf-turma'||el.id==='sf-grupo')return;
+    el.disabled=_sfReadOnly;
+  });
+  const btn=document.getElementById('sf-submit-btn');
+  if(btn)btn.disabled=_sfReadOnly;
+}
+async function carregarTrabalhoGrupoSF() {
+  if(!window.FB || !_sfUnlocked) return;
+  const banner=document.getElementById('sf-returned-banner'), notes=document.getElementById('sf-returned-notes');
+  const btn=document.getElementById('sf-submit-btn'), msg=document.getElementById('sf-msg');
+  if(banner)banner.classList.remove('show');_sfRegistroId=null;
+  try{
+    const pendentes=await window.FB.fbGetAll('drogas_pendentes');
+    const devolvido=[...pendentes].reverse().find(d=>d.status==='devolvido'&&sfMesmoGrupo(d,_sfTurma,_sfGrupo));
+    const aguardando=[...pendentes].reverse().find(d=>d.status==='pendente'&&sfMesmoGrupo(d,_sfTurma,_sfGrupo));
+    if(devolvido){
+      bloquearFormularioSF(false);_sfRegistroId=devolvido.id;preencherFormularioSF(devolvido);
+      if(notes)notes.textContent=devolvido.apontamentos||'Revise o formulário conforme orientação do professor.';
+      if(banner)banner.classList.add('show');
+      if(btn)btn.textContent='📤 Reenviar correções para o professor';
+      if(msg){msg.style.display='block';msg.style.color='#92400e';msg.textContent='O formulário foi reaberto com todas as informações já preenchidas. Faça os ajustes e reenvie.'}
+      setSfSaveState('Edição reaberta · salvamento automático ativo');
+      return;
+    }
+    if(aguardando){
+      preencherFormularioSF(aguardando);bloquearFormularioSF(true);
+      if(btn){btn.textContent='⏳ Aguardando revisão do professor';btn.disabled=true}
+      if(msg){msg.style.display='block';msg.style.color='var(--blue)';msg.textContent='Este medicamento já foi enviado e está aguardando revisão. Se o professor devolver, a edição será liberada novamente com os apontamentos.'}
+      setSfSaveState('Enviado · aguardando revisão');
+      return;
+    }
+    bloquearFormularioSF(false);
+    const chave=sfGrupoKey(_sfTurma,_sfGrupo);
+    const remoto=await window.FB.fbGetDoc('drogas_pendentes',`__rascunho__${chave}`);
+    const local=lerBackupLocalSF();
+    const rascunho=(!remoto||String(local?.atualizadoEm||'')>String(remoto?.atualizadoEm||''))?local:remoto;
+    if(rascunho && Object.values(rascunho).some(v=>v!==''&&v!=null)){
+      preencherFormularioSF(rascunho);
+      if(btn)btn.textContent='📤 Enviar para revisão do professor';
+      if(msg){msg.style.display='block';msg.style.color='var(--primary)';msg.textContent='✓ Recuperamos automaticamente o rascunho deste grupo. Você pode continuar de onde parou.'}
+      setSfSaveState('✓ Rascunho recuperado');
+    } else {
+      if(btn)btn.textContent='📤 Enviar para revisão do professor';
+      setSfSaveState('Salvamento automático ativo');
+    }
+  }catch(e){console.warn('Não foi possível restaurar o trabalho do grupo:',e);setSfSaveState('Falha ao verificar rascunho',true)}
+}
 
+async function submeterDroga() {
+  const nome=getFieldSF('sf-nome'), turma=_sfTurma||getFieldSF('sf-turma'), grupo=_sfGrupo||getFieldSF('sf-grupo');
+  const autor=getFieldSF('sf-autor'),ind=getFieldSF('sf-ind'),dose=getFieldSF('sf-dose'),frequencia=getFieldSF('sf-frequencia'),modouso=getFieldSF('sf-modouso');
+  const estoque=parseInt(document.getElementById('sf-estoque')?.value),msg=document.getElementById('sf-msg');
+  const showMsg=(txt,cor)=>{if(msg){msg.textContent=txt;msg.style.color=cor;msg.style.display='block'}};
+  if(!nome||!turma||!grupo||!autor||!ind||(!dose&&!frequencia&&!modouso)||isNaN(estoque)){
+    showMsg('⚠️ Preencha os campos obrigatórios: nome, turma, grupo, integrantes, indicação, ao menos um campo de posologia e estoque.','var(--red)');return;
+  }
+  if(!window.FB){showMsg('❌ Banco de dados não disponível. Tente novamente.','var(--red)');return}
   mostrarLoading(true);
-  try {
-    const d = {
-      nome, sub: getFieldSF('sf-sub'),
-      turma, grupo, autor,
-      cat: getFieldSF('sf-cat'),
-      estoque, img: sfImgUrl, emoji: '💊',
-      ind, comp: getFieldSF('sf-comp'),
-      dose, frequencia, modouso,
-      efeitos: [...sfEfs],
-      contraQuem: getFieldSF('sf-contra-quem'),
-      contraAvisos: getFieldSF('sf-contra-avisos'),
-      contraInteracoes: getFieldSF('sf-contra-interacoes'),
-      fab: getFieldSF('sf-fab'),
-      obs: getFieldSF('sf-obs'),
-      enviadoEm: new Date().toLocaleString('pt-BR'),
-      status: 'pendente'
-    };
-    await window.FB.fbAdd('drogas_pendentes', d);
-    mostrarLoading(false);
-    // Success: clear form and show message
-    limparFormSF();
-    showMsg('✅ Droga enviada com sucesso! Aguarde a aprovação do professor para aparecer na vitrine.', 'var(--primary)');
-    // Scroll to message
-    msg?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  } catch(e) {
-    mostrarLoading(false);
-    showMsg('❌ Erro ao enviar: ' + e.message, 'var(--red)');
-  }
+  try{
+    const d={...coletarDadosSF('pendente'),estoque,enviadoEm:new Date().toLocaleString('pt-BR'),reenviadoEm:_sfRegistroId?new Date().toLocaleString('pt-BR'):null};
+    delete d.apontamentos;
+    if(_sfRegistroId){
+      const anterior=await window.FB.fbGetDoc('drogas_pendentes',_sfRegistroId);
+      await window.FB.fbSet('drogas_pendentes',_sfRegistroId,{...anterior,...d,status:'pendente',apontamentos:'',devolvidoEm:null});
+    } else {
+      _sfRegistroId=`__rascunho__${sfGrupoKey(turma,grupo)}`;
+      const anterior=await window.FB.fbGetDoc('drogas_pendentes',_sfRegistroId);
+      await window.FB.fbSet('drogas_pendentes',_sfRegistroId,{...(anterior||{}),...d,status:'pendente'});
+    }
+    try{localStorage.removeItem(sfLocalStorageKey())}catch(e){}
+    mostrarLoading(false);limparFormSF();
+    const banner=document.getElementById('sf-returned-banner');if(banner)banner.classList.remove('show');
+    const btn=document.getElementById('sf-submit-btn');if(btn)btn.textContent='📤 Enviar para revisão do professor';
+    _sfRegistroId=null;setSfSaveState('');
+    showMsg('✅ Droga enviada com sucesso! Aguarde a revisão do professor. Se ela for devolvida, o formulário será reaberto com os apontamentos sem perder nenhum dado.','var(--primary)');
+    msg?.scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(e){mostrarLoading(false);showMsg('❌ Erro ao enviar: '+e.message,'var(--red)')}
 }
 
 
@@ -4070,7 +4195,8 @@ async function renderPendentes() {
   }
   mostrarLoading(true);
   try {
-    const pendentes = await window.FB.fbGetAll('drogas_pendentes');
+    const pendentesRaw = await window.FB.fbGetAll('drogas_pendentes');
+    const pendentes = pendentesRaw.filter(d => d.status !== 'rascunho');
     mostrarLoading(false);
     const el = document.getElementById('pendentesList');
     const empty = document.getElementById('pendentesEmpty');
@@ -4107,7 +4233,7 @@ async function renderPendentes() {
       const pClass = pPreco === 20 ? 'p20' : pPreco === 40 ? 'p40' : 'p60';
       const pLabel = pPreco === 20 ? 'Completo — preço mínimo' : pPreco === 40 ? 'Metade preenchida' : 'Poucos campos';
       const pPct = Math.round(pFilled / 8 * 100);
-      return `<div class="pending-item">
+      return `<div class="pending-item ${d.status==='devolvido'?'pending-returned':''}">
         <div class="price-fields-bar">
           <span class="price-badge ${pClass}">🪙 ${pPreco} FLiSS Coins</span>
           <span style="font-size:11px;color:var(--gray5)">${pFilled}/8 campos extras · ${pPct}% · ${pLabel}</span>
@@ -4118,14 +4244,14 @@ async function renderPendentes() {
         <div class="pending-item-top">
           <div style="flex:1;min-width:0">
             ${d.img ? `<div style="width:52px;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--gray2);float:right;margin:0 0 8px 12px"><img src="${d.img}" style="width:100%;height:100%;object-fit:contain"></div>` : ''}
-            <div class="pending-nome">💊 ${d.nome}</div>
+            <div class="pending-nome">💊 ${d.nome}${d.status==='devolvido'?'<span class="pending-status returned">↩ devolvido</span>':''}</div>
             <div class="pending-meta">
               por <strong>${d.autor||'—'}</strong> · ${d.grupo||'—'} · ${TL[d.turma]||d.turma||'—'} · enviado em ${d.enviadoEm||'—'}
             </div>
+            ${d.status==='devolvido'&&d.apontamentos?`<div style="margin-top:8px;padding:9px 11px;background:#fffbeb;border-radius:8px;font-size:10px;color:#92400e;line-height:1.55"><b>Apontamentos:</b> ${escFliss(d.apontamentos)}</div>`:''}
           </div>
           <div class="pending-btns">
-            <button class="btn-aprovar" onclick="aprovarDroga('${d.id}')">✅ Aprovar (🪙 ${pPreco})</button>
-            <button class="btn-editar-aprovar" onclick="aprovarComEdicao('${d.id}')">✏️ Editar e aprovar</button>
+            ${d.status==='devolvido' ? `<button class="btn-devolver" onclick="devolverDroga('${d.id}')">↩️ Atualizar apontamentos</button>` : `<button class="btn-aprovar" onclick="aprovarDroga('${d.id}')">✅ Aprovar (🪙 ${pPreco})</button><button class="btn-editar-aprovar" onclick="aprovarComEdicao('${d.id}')">✏️ Editar e aprovar</button><button class="btn-devolver" onclick="devolverDroga('${d.id}')">↩️ Devolver</button>`}
             <button class="btn-rejeitar" onclick="rejeitarDroga('${d.id}')">❌ Rejeitar</button>
           </div>
         </div>
@@ -4145,6 +4271,7 @@ async function aprovarDroga(id) {
   const pendentes = await window.FB.fbGetAll('drogas_pendentes');
   const d = pendentes.find(x => x.id === id);
   if (!d) { alert('Droga não encontrada.'); return; }
+  if(d.status==='devolvido'){ alert('Este medicamento está devolvido ao grupo. Aguarde o reenvio das correções antes de aprovar.'); return; }
   mostrarLoading(true);
   try {
     // Calculate auto-price
@@ -4198,6 +4325,33 @@ function aprovarComEdicao(id) {
 }
 
 // pending approval handled in aprovarComEdicao
+
+function devolverDroga(id) {
+  if(!window.FB)return;
+  let ov=document.getElementById('devolverDrogaOverlay');
+  if(!ov){
+    ov=document.createElement('div');ov.id='devolverDrogaOverlay';ov.className='f3-overlay';
+    ov.innerHTML=`<div class="f3-modal" style="width:min(600px,96vw)"><div class="f3-head"><b>↩️ Devolver medicamento para correção</b><button onclick="fecharF3('devolverDrogaOverlay')" style="background:none;color:#fff;font-size:20px">×</button></div><div class="f3-body"><p style="font-size:11px;color:var(--gray5);line-height:1.6;margin-bottom:10px">Descreva objetivamente o que o grupo precisa corrigir. Os alunos vinculados ao grupo verão este apontamento na carteira e poderão reabrir o mesmo formulário sem perder os dados.</p><textarea id="devolverDrogaNotas" rows="6" style="width:100%;padding:12px;border:1.5px solid var(--gray2);border-radius:10px;resize:vertical" placeholder="Ex.: corrigir a frequência; revisar ortografia da indicação; completar as contraindicações..."></textarea><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px"><button class="f3-btn" onclick="fecharF3('devolverDrogaOverlay')">Cancelar</button><button class="f3-btn primary" id="devolverDrogaConfirmar">Devolver com apontamentos</button></div></div></div>`;
+    document.body.appendChild(ov);
+  }
+  const ta=document.getElementById('devolverDrogaNotas');if(ta)ta.value='';
+  const btn=document.getElementById('devolverDrogaConfirmar');
+  btn.onclick=()=>confirmarDevolucaoDroga(id);
+  ov.classList.add('open');setTimeout(()=>ta?.focus(),50);
+}
+async function confirmarDevolucaoDroga(id){
+  const notas=document.getElementById('devolverDrogaNotas')?.value.trim();
+  if(!notas){alert('Informe os apontamentos antes de devolver.');return}
+  mostrarLoading(true);
+  try{
+    const d=await window.FB.fbGetDoc('drogas_pendentes',id);if(!d)throw new Error('Medicamento não encontrado.');
+    const historico=Array.isArray(d.historicoDevolucoes)?d.historicoDevolucoes:[];
+    const registro={apontamentos:notas,em:new Date().toISOString(),por:typeof operadorFliss==='function'?operadorFliss():'Professor'};
+    await window.FB.fbUpdate('drogas_pendentes',id,{status:'devolvido',apontamentos:notas,devolvidoEm:new Date().toLocaleString('pt-BR'),devolvidoPor:registro.por,historicoDevolucoes:[...historico,registro]});
+    fecharF3('devolverDrogaOverlay');await renderPendentes();
+    alert(`↩️ “${d.nome}” foi devolvido ao grupo com os apontamentos. O formulário poderá ser reaberto pelo mesmo PIN.`);
+  }catch(e){alert('Erro ao devolver: '+e.message)}finally{mostrarLoading(false)}
+}
 
 async function rejeitarDroga(id) {
   if (!window.FB) return;
@@ -4265,7 +4419,7 @@ async function salvarPins() {
   setTimeout(() => { if(msg) msg.style.display='none'; }, 4000);
 }
 
-function verificarPinAluno() {
+async function verificarPinAluno() {
   const input = document.getElementById('sf-pin-input');
   const err = document.getElementById('sf-pin-error');
   const pin = input?.value.trim().toUpperCase();
@@ -4302,8 +4456,10 @@ function verificarPinAluno() {
       grupoEl.disabled = true;
     }, 50);
   }
-  // Show welcome
+  // Show welcome + restore draft/returned submission
   if(err) { err.style.color = 'var(--primary)'; err.textContent = `✅ Bem-vindo(a)! ${grupo} — acesso liberado.`; }
+  habilitarAutosaveSF();
+  await carregarTrabalhoGrupoSF();
 }
 
 // Override atualizarGruposSF to use full group names matching pins
@@ -4335,6 +4491,8 @@ function atualizarGruposSF() {
 // Reset after successful submission
 
 function limparFormSF() {
+  _sfRestoring = true;
+  _sfReadOnly = false;
   // Clear all student form fields
   ['sf-nome','sf-sub','sf-cat','sf-autor','sf-ind','sf-comp',
    'sf-dose','sf-frequencia','sf-modouso',
@@ -4358,6 +4516,7 @@ function limparFormSF() {
       }
     }, 60);
   }
+  setTimeout(()=>{ _sfRestoring = false; }, 90);
 }
 
 
@@ -8081,8 +8240,11 @@ async function renderInicioPortalAlunoFliss(box){
   <section class="pa-section compact"><div class="pa-section-head"><h4>Continue sua experiência</h4><span>Acesso rápido</span></div><div class="pa-mini-actions"><button class="f3-btn primary" onclick="navPortalAlunoFliss('comprar')">Ver medicamentos</button><button class="f3-btn" onclick="navPortalAlunoFliss('carteira')">Abrir carteira</button><button class="f3-btn" onclick="navPortalAlunoFliss('medicamentos')">Minhas compras</button></div></section>`;
 }
 async function renderCarteiraPortalAlunoFliss(box){
-  const {movs}=await dadosAlunoPortalFliss();const lista=[...movs].sort((a,b)=>String(b.criadoEm||'').localeCompare(String(a.criadoEm||'')));
-  box.innerHTML=`<section class="pa-section" style="margin-top:0"><div class="pa-section-head"><h4>Carteira digital</h4><span>Identificação individual do aluno</span></div><div class="pa-qr"><div class="pa-qr-box" id="pa-qrcode"></div><div><div class="pa-code">${escFliss(f3Carteira.codigo)}</div><p style="font-size:10px;color:var(--gray5);line-height:1.6;margin:8px 0 0">Apresente este QR Code no balcão para identificar sua carteira e retirar seus medicamentos.</p><p style="font-size:9px;color:var(--gray5);line-height:1.5;margin:8px 0 0">Não compartilhe seu PIN individual.</p></div></div></section>
+  const [{movs},pendentes]=await Promise.all([dadosAlunoPortalFliss(),window.FB.fbGetAll('drogas_pendentes')]);
+  const lista=[...movs].sort((a,b)=>String(b.criadoEm||'').localeCompare(String(a.criadoEm||'')));
+  const devolvidos=pendentes.filter(d=>d.status==='devolvido'&&sfMesmoGrupo(d,f3Carteira.turma,f3Carteira.grupo));
+  const avisos=devolvidos.map(d=>`<div class="fliss-return-note"><h4>↩️ ${escFliss(d.nome||'Medicamento')} foi devolvido para correção</h4><p>${escFliss(d.apontamentos||'Há ajustes solicitados pelo professor.')}</p><small>Devolvido em ${escFliss(d.devolvidoEm||'—')} · Entre novamente no formulário de cadastro com o PIN do grupo para continuar a edição. Nenhuma informação foi apagada.</small></div>`).join('');
+  box.innerHTML=`${avisos}<section class="pa-section" style="margin-top:0"><div class="pa-section-head"><h4>Carteira digital</h4><span>Identificação individual do aluno${devolvidos.length?` · ${devolvidos.length} pendência(s)`:''}</span></div><div class="pa-qr"><div class="pa-qr-box" id="pa-qrcode"></div><div><div class="pa-code">${escFliss(f3Carteira.codigo)}</div><p style="font-size:10px;color:var(--gray5);line-height:1.6;margin:8px 0 0">Apresente este QR Code no balcão para identificar sua carteira e retirar seus medicamentos.</p><p style="font-size:9px;color:var(--gray5);line-height:1.5;margin:8px 0 0">Não compartilhe seu PIN individual.</p></div></div></section>
   <section class="pa-section"><div class="pa-section-head"><h4>Extrato completo</h4><span>${lista.length} movimentação(ões)</span></div><div class="pa-list">${lista.length?lista.map(m=>`<div class="pa-row"><div><b>${escFliss(rotuloMovimentoPortalFliss(m))}</b><small>${f3Data(m.criadoEm)} · saldo após: ${Number(m.saldoPosterior??0)} · Responsável: ${escFliss(responsavelMovimentoPortalFliss(m))}</small></div><div class="pa-value ${Number(m.valor||0)>=0?'pa-positive':'pa-negative'}">${Number(m.valor||0)>=0?'+':''}${Number(m.valor||0)}</div></div>`).join(''):'<div class="pa-empty">Seu extrato ainda está vazio.</div>'}</div></section>`;
   setTimeout(()=>{const el=document.getElementById('pa-qrcode');if(el&&window.QRCode)new QRCode(el,{text:`FLISS-ALUNO:${f3Carteira.id}`,width:132,height:132});else if(el)el.textContent=f3Carteira.codigo},50);
 }
