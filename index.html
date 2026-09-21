@@ -100,6 +100,13 @@
   function authListen(cb) {
     return onAuthStateChanged(auth,u=>cb(u?{uid:u.uid,email:u.email}:null));
   }
+  async function authVerifyPassword(currentPassword){
+    const user=auth.currentUser;
+    if(!user?.email)throw new Error('Nenhuma conta da equipe está autenticada.');
+    const credential=EmailAuthProvider.credential(user.email,currentPassword);
+    await reauthenticateWithCredential(user,credential);
+    return true;
+  }
   async function authChangePassword(currentPassword,newPassword){
     const user=auth.currentUser;
     if(!user?.email)throw new Error('Nenhuma conta da equipe está autenticada.');
@@ -112,7 +119,7 @@
   }
 
   // ── Expõe para o código global ────────────────────────────
-  window.FB = { fbGetAll, fbSet, fbAdd, fbUpdate, fbDelete, fbGetDoc, fbListen, authSignIn, authSignOut, authCurrent, authListen, authChangePassword, authTouchLastLogin };
+  window.FB = { fbGetAll, fbSet, fbAdd, fbUpdate, fbDelete, fbGetDoc, fbListen, authSignIn, authSignOut, authCurrent, authListen, authVerifyPassword, authChangePassword, authTouchLastLogin };
   window.dispatchEvent(new Event('fb-ready'));
 
 
@@ -1220,7 +1227,7 @@ footer strong{color:rgba(255,255,255,.85)}
       <input type="text" id="searchInput" placeholder="Buscar droga, autor, categoria..." oninput="buscar(this.value)">
     </div>
     <div class="header-actions">
-      <button type="button" class="btn-admin" onclick="abrirAdmin()">👥 Área da equipe<span class="pending-badge" id="pendingBadge"></span></button>
+      <button type="button" class="btn-admin" onclick="abrirAdmin()">👥 Área da equipe</button>
     </div>
   </div>
 </header>
@@ -1657,6 +1664,12 @@ footer strong{color:rgba(255,255,255,.85)}
 
       <!-- CADASTRAR -->
       <div class="tab-pane active" id="tab-cadastrar">
+        <div id="pendingReviewBanner" style="display:none;margin-bottom:14px;padding:13px 15px;border:1.5px solid #93c5fd;border-radius:10px;background:#eff6ff;color:#1e3a8a">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div><b style="display:block;font-size:12px;margin-bottom:3px">✏️ Revisando medicamento pendente</b><span id="pendingReviewName" style="font-size:10px;line-height:1.5">Faça as correções necessárias e clique em “Aprovar e publicar”.</span></div>
+            <button type="button" onclick="fecharEdicaoPendente()" style="padding:7px 11px;border-radius:7px;background:#fff;color:#1e3a8a;border:1px solid #bfdbfe;font-size:10px;font-weight:800">✕ Fechar revisão</button>
+          </div>
+        </div>
         <div class="fg">
           <div class="fl ff"><label>Nome da Droga *</label><input type="text" id="f-nome" placeholder="Ex: Neurocienzol 500mg"></div>
           <div class="fl ff"><label>Subtítulo / Forma farmacêutica</label><input type="text" id="f-sub" placeholder="Ex: Comprimido revestido de liberação prolongada"></div>
@@ -2517,12 +2530,7 @@ window.addEventListener('fb-ready', async () => {
     // Real-time listener for pending drugs (badge counter)
     window.FB.fbListen('drogas_pendentes', (data) => {
       const count = data.filter(d => d.status !== 'rascunho').length;
-      const badge = document.getElementById('pendingBadge');
       const tabBadge = document.getElementById('pendingTabBadge');
-      if (badge) {
-        badge.textContent = count > 0 ? count : '';
-        badge.classList.toggle('show', count > 0);
-      }
       if (tabBadge) {
         tabBadge.textContent = count > 0 ? count : '';
         tabBadge.style.display = count > 0 ? 'inline' : 'none';
@@ -3230,14 +3238,23 @@ async function salvar() {
       obs,
       updatedAt: new Date().toISOString()
     };
-    if (editId) {
+    const pendingApprovalId = window._savingFromPending ? window._pendingApprovalId : null;
+    if (pendingApprovalId) {
+      const original = await window.FB.fbGetDoc('drogas_pendentes', pendingApprovalId);
+      if (!original) throw new Error('O medicamento pendente não foi encontrado. Atualize a lista e tente novamente.');
+      const { id:_pid, status:_ps, enviadoEm:_pe, apontamentos:_pa, devolvidoEm:_pd, devolvidoPor:_pdp, historicoDevolucoes:_ph, ...basePendente } = original;
+      await window.FB.fbAdd('drogas', { ...basePendente, ...d, aprovadoEm: new Date().toLocaleString('pt-BR') });
+      await window.FB.fbDelete('drogas_pendentes', pendingApprovalId);
+    } else if (editId) {
       await window.FB.fbUpdate('drogas', editId, d);
       editId = null; document.getElementById('btnSalvar').textContent = '💾 Cadastrar';
     } else {
       await window.FB.fbAdd('drogas', d);
     }
-    limpar();
-    mostrarMsg('formMsg', `✅ Droga cadastrada com sucesso! Preço: 🪙 ${preco} FLiSS Coins`, 'var(--primary)');
+    const veioDePendente = Boolean(pendingApprovalId);
+    await limpar(true);
+    mostrarMsg('formMsg', veioDePendente ? `✅ Medicamento aprovado e publicado! Preço: 🪙 ${preco} FLiSS Coins` : `✅ Droga cadastrada com sucesso! Preço: 🪙 ${preco} FLiSS Coins`, 'var(--primary)');
+    if (veioDePendente) renderPendentes();
   } catch(e) {
     mostrarMsg('formMsg', '❌ Erro ao salvar: ' + e.message + ' — Verifique as regras do Firebase.', 'var(--red)');
     console.error('Erro ao salvar droga:', e);
@@ -3245,21 +3262,83 @@ async function salvar() {
   mostrarLoading(false);
 }
 
-function limpar() {
-  ['f-nome','f-sub','f-cat','f-autor','f-estoque',
-   'f-ind','f-comp','f-dose','f-frequencia','f-modouso',
-   'f-contra-quem','f-contra-avisos','f-contra-interacoes','f-fab','f-obs','f-preco']
-    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-  document.getElementById('f-turma').value = '';
+async function solicitarSenhaLimpezaFliss() {
+  if (!window.FB?.authVerifyPassword) {
+    alert('Não foi possível validar a conta autenticada. Feche e abra novamente a área da equipe.');
+    return false;
+  }
+  return await new Promise(resolve => {
+    const ov=document.createElement('div');
+    ov.className='f3-overlay open';
+    ov.style.zIndex='5000';
+    ov.innerHTML=`<div class="f3-modal" style="width:min(430px,96vw)">
+      <div class="f3-head"><b>🔐 Confirmar limpeza do formulário</b></div>
+      <div class="f3-body">
+        <p style="font-size:11px;color:var(--gray5);line-height:1.6;margin-bottom:12px">Para evitar apagamentos acidentais, digite a senha da conta da equipe atualmente autenticada.</p>
+        <input id="senhaLimpezaFormularioFliss" type="password" autocomplete="current-password" placeholder="Senha atual" style="width:100%;padding:11px 12px;border:1.5px solid var(--gray2);border-radius:9px;font-size:12px">
+        <div id="senhaLimpezaErroFliss" style="display:none;margin-top:8px;font-size:10px;color:var(--red);font-weight:700"></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">
+          <button type="button" class="f3-btn" id="senhaLimpezaCancelarFliss">Cancelar</button>
+          <button type="button" class="f3-btn primary" id="senhaLimpezaConfirmarFliss">Confirmar e limpar</button>
+        </div>
+      </div>
+    </div>`;
+    document.body.appendChild(ov);
+    const input=ov.querySelector('#senhaLimpezaFormularioFliss');
+    const erro=ov.querySelector('#senhaLimpezaErroFliss');
+    const cancelar=()=>{ov.remove();resolve(false)};
+    const confirmar=async()=>{
+      const senha=input.value;
+      if(!senha){erro.textContent='Digite sua senha.';erro.style.display='block';input.focus();return}
+      const btn=ov.querySelector('#senhaLimpezaConfirmarFliss');
+      btn.disabled=true;btn.textContent='Validando...';erro.style.display='none';
+      try{
+        await window.FB.authVerifyPassword(senha);
+        ov.remove();resolve(true);
+      }catch(e){
+        erro.textContent='Senha incorreta ou sessão expirada. O formulário não foi limpo.';
+        erro.style.display='block';btn.disabled=false;btn.textContent='Confirmar e limpar';input.select();
+      }
+    };
+    ov.querySelector('#senhaLimpezaCancelarFliss').onclick=cancelar;
+    ov.querySelector('#senhaLimpezaConfirmarFliss').onclick=confirmar;
+    input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();confirmar()}else if(e.key==='Escape'){e.preventDefault();cancelar()}};
+    setTimeout(()=>input.focus(),50);
+  });
+}
+
+async function limpar(forcar=false) {
+  const ids=['f-nome','f-sub','f-cat','f-autor','f-estoque','f-ind','f-comp','f-dose','f-frequencia','f-modouso','f-contra-quem','f-contra-avisos','f-contra-interacoes','f-fab','f-obs','f-preco'];
+  const preenchido=ids.some(id=>String(document.getElementById(id)?.value||'').trim()) || efs.length>0 || Boolean(imgUrl);
+  if(preenchido && !forcar){
+    const autorizado=await solicitarSenhaLimpezaFliss();
+    if(!autorizado)return false;
+  }
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  const turma=document.getElementById('f-turma');if(turma)turma.value='';
   const ov = document.getElementById('f-preco-override');
   if(ov) { ov.checked = false; togglePrecoOverride(); }
   efs = []; imgUrl = ''; renderEfChips();
-  const p = document.getElementById('imgPreview'); p.style.display = 'none'; p.src = '';
-  document.getElementById('imgFile').value = '';
-  document.getElementById('formMsg').style.display = 'none';
-  editId = null; document.getElementById('btnSalvar').textContent = '💾 Cadastrar';
+  const p = document.getElementById('imgPreview'); if(p){p.style.display = 'none'; p.src = '';}
+  const imgFile=document.getElementById('imgFile');if(imgFile)imgFile.value='';
+  const formMsg=document.getElementById('formMsg');if(formMsg)formMsg.style.display='none';
+  editId = null;
+  window._pendingApprovalId=null;
+  window._savingFromPending=false;
+  const btnSalvar=document.getElementById('btnSalvar');if(btnSalvar)btnSalvar.textContent='💾 Cadastrar';
+  const review=document.getElementById('pendingReviewBanner');if(review)review.style.display='none';
   atualizarPrecoIndicator();
+  return true;
 }
+
+async function fecharEdicaoPendente(){
+  if(!window._savingFromPending){await limpar(true);return}
+  if(!confirm('Fechar esta revisão? As alterações feitas aqui não serão publicadas e o medicamento continuará pendente.'))return;
+  await limpar(true);
+  const btn=document.querySelector('.cad-hub-tab[data-cadview="gerenciar"]');
+  if(btn)switchCadastroHubFliss('gerenciar',btn);
+}
+
 
 function renderAList() {
   const list = document.getElementById('aList');
@@ -4298,13 +4377,15 @@ function aprovarComEdicao(id) {
   window.FB.fbGetAll('drogas_pendentes').then(pendentes => {
     const d = pendentes.find(x => x.id === id);
     if (!d) { alert('Droga não encontrada.'); return; }
-    // Switch to cadastrar tab and fill form
+    // Abre diretamente a área de revisão/cadastro e posiciona o formulário na tela.
     const tab = document.querySelector(".a-tab[onclick*='cadastrar']");
     if (tab) switchTab('cadastrar', tab);
+    const hubBtn=document.querySelector('.cad-hub-tab[data-cadview="cadastrar"]');
+    if(hubBtn)switchCadastroHubFliss('cadastrar',hubBtn);
     // Fill admin form
     const setF = (fid, val) => { const el = document.getElementById(fid); if(el) el.value = val || ''; };
     setF('f-nome', d.nome); setF('f-sub', d.sub); setF('f-cat', d.cat);
-    setF('f-autor', `${d.autor} (${d.grupo||''})`);
+    setF('f-autor', d.autor);
     setF('f-ind', d.ind); setF('f-comp', d.comp); setF('f-fab', d.fab); setF('f-obs', d.obs);
     setF('f-dose', d.dose); setF('f-frequencia', d.frequencia); setF('f-modouso', d.modouso);
     setF('f-contra-quem', d.contraQuem); setF('f-contra-avisos', d.contraAvisos);
@@ -4318,9 +4399,17 @@ function aprovarComEdicao(id) {
     // Store pending id to delete after save
     window._pendingApprovalId = id;
     document.getElementById('btnSalvar').textContent = '✅ Aprovar e publicar';
+    const review=document.getElementById('pendingReviewBanner');
+    const reviewName=document.getElementById('pendingReviewName');
+    if(reviewName)reviewName.textContent=`Você está revisando “${d.nome||'medicamento'}”. Faça as correções necessárias e clique em “Aprovar e publicar”.`;
+    if(review)review.style.display='block';
     atualizarPrecoIndicator();
-    // Override save to also delete from pendentes
+    // Ao salvar, publica a versão corrigida e remove somente esta pendência.
     window._savingFromPending = true;
+    requestAnimationFrame(()=>{
+      review?.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(()=>document.getElementById('f-nome')?.focus(),250);
+    });
   });
 }
 
@@ -7169,7 +7258,7 @@ async function imprimirLoteFliss(lote){
  const w=window.open('','_blank');if(!w){alert('O navegador bloqueou a janela. Permita pop-ups para este site.');return}
  const fronts=preparados.map(c=>{const data=c.dataEvento?new Date(c.dataEvento+'T12:00:00').toLocaleDateString('pt-BR'):'';return `<div class="front"><div class="brand">${escFliss(c.evento||'FARMÁCIA LITERÁRIA - SESIVerso')}</div><h2>Você foi convidado(a)!</h2><p>Escaneie para realizar seu check-in.</p><img class="qr" src="${c.qrData}" alt="QR Code"><div class="printed">${escFliss(c.codigo||c.id)}</div><b>Convite único</b><small>Válido somente no dia do evento - ${data}<br>Escola SESI Uberaba - Alberto Martins Fontoura Borges<br><span class="resp">Prof. Thales Garcia e Profa. Thamiris Borralho</span></small></div>`}).join('');
  const backs=preparados.map(c=>`<div class="back"><div class="brand">FARMÁCIA LITERÁRIA - SESIVerso</div><h3>Sua experiência começa aqui</h3><p>Este convite cria uma carteira anônima de FLiSS Coins.</p><ul><li>É de uso individual e de ativação única;</li><li>Não possui valor em dinheiro;</li><li>Pode ser utilizado pelo celular ou com o atendimento de um professor.</li></ul><p class="note">Guarde o convite. Se o QR Code estiver danificado, informe o código <b>${escFliss(c.codigo||c.id)}</b>.</p><div class="resp">Prof. Thales Garcia e Profa. Thamiris Borralho</div></div>`).join('');
- w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${lote} — Convites</title><style>@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;color:#123;background:#eef2f7}.instructions{max-width:194mm;margin:8mm auto;background:#fff;padding:7mm;border-radius:10px;line-height:1.5}.print-btn{padding:10px 16px;border:0;border-radius:8px;background:#067047;color:#fff;font-weight:800}.sheet{width:190mm;height:277mm;margin:6mm auto;background:#fff;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3mm;page-break-after:always;break-after:page}.front,.back{min-width:0;min-height:0;border:1.4px solid #0b6657;border-radius:10px;padding:5mm;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}.brand{font-weight:900;letter-spacing:.03em;color:#07594d;font-size:13px}.front h2{font-size:20px;margin:8px 0 3px}.front p{font-size:11px;margin:0 0 6px}.qr{width:112px;height:112px;object-fit:contain}.printed{font-family:monospace;font-size:13px;font-weight:900;letter-spacing:.06em;margin:6px}.front small{font-size:9px;line-height:1.45;margin-top:5px}.back{background:#073d37;color:#fff}.back .brand{color:#a7f3d0}.back h3{font-size:18px;margin:9px 0 3px}.back p,.back li{font-size:10px;line-height:1.45}.back ul{text-align:left;margin:5px 0;padding-left:18px}.back .note{border-top:1px solid rgba(255,255,255,.3);padding-top:7px}.resp{font-size:8.5px;font-weight:700;margin-top:7px;line-height:1.35}@media print{body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.instructions{display:none}.sheet{margin:0}}</style></head><body><div class="instructions"><h2>Lote ${escFliss(lote)}</h2><p><b>4 convites por folha.</b> Primeiro serão impressas todas as frentes e, em seguida, os versos na mesma posição.</p><p>Na impressora: <b>frente e verso</b> → <b>virar na borda longa</b>. Para teste, imprima a primeira página de frente e a primeira página de verso.</p><button class="print-btn" onclick="window.print()">Imprimir / Salvar em PDF</button></div><div id="pages"></div><script>const fronts=[...document.createRange().createContextualFragment(${JSON.stringify(fronts)}).children],backs=[...document.createRange().createContextualFragment(${JSON.stringify(backs)}).children],pages=document.getElementById('pages');function add(items){for(let i=0;i<items.length;i+=4){const sh=document.createElement('section');sh.className='sheet';items.slice(i,i+4).forEach(x=>sh.appendChild(x));while(sh.children.length<4){const e=document.createElement('div');e.style.border='1px dashed #ddd';e.style.borderRadius='10px';sh.appendChild(e)}pages.appendChild(sh)}}add(fronts);add(backs);<\/script></body></html>`);w.document.close()
+ w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${lote} — Convites</title><style>@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box}html,body{margin:0;padding:0}body{font-family:Arial,sans-serif;color:#123;background:#eef2f7}.instructions{max-width:194mm;margin:8mm auto;background:#fff;padding:7mm;border-radius:10px;line-height:1.5}.print-btn{padding:10px 16px;border:0;border-radius:8px;background:#067047;color:#fff;font-weight:800}.sheet{width:194mm;height:281mm;margin:6mm auto;background:#fff;display:grid;grid-template-columns:92mm 92mm;grid-template-rows:136mm 136mm;column-gap:6mm;row-gap:6mm;justify-content:center;align-content:center;page-break-after:always;break-after:page}.front,.back{min-width:0;min-height:0;border:1.4px solid #0b6657;border-radius:0;padding:5mm;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}.brand{font-weight:900;letter-spacing:.03em;color:#07594d;font-size:13px}.front h2{font-size:20px;margin:8px 0 3px}.front p{font-size:11px;margin:0 0 6px}.qr{width:112px;height:112px;object-fit:contain}.printed{font-family:monospace;font-size:13px;font-weight:900;letter-spacing:.06em;margin:6px}.front small{font-size:9px;line-height:1.45;margin-top:5px}.back{background:#073d37;color:#fff}.back .brand{color:#a7f3d0}.back h3{font-size:18px;margin:9px 0 3px}.back p,.back li{font-size:10px;line-height:1.45}.back ul{text-align:left;margin:5px 0;padding-left:18px}.back .note{border-top:1px solid rgba(255,255,255,.3);padding-top:7px}.resp{font-size:8.5px;font-weight:700;margin-top:7px;line-height:1.35}@media print{html,body{width:194mm;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.instructions{display:none}.sheet{width:194mm;height:281mm;margin:0}.sheet:last-child{page-break-after:auto;break-after:auto}}</style></head><body><div class="instructions"><h2>Lote ${escFliss(lote)}</h2><p><b>4 convites por folha.</b> Primeiro serão impressas todas as frentes e, em seguida, os versos na mesma posição.</p><p>Na impressora: <b>frente e verso</b> → <b>virar na borda longa</b> → <b>escala 100% / tamanho real</b>. Não use “ajustar à página”. Para teste, imprima a primeira página de frente e a primeira página de verso.</p><button class="print-btn" onclick="window.print()">Imprimir / Salvar em PDF</button></div><div id="pages"></div><script>const fronts=[...document.createRange().createContextualFragment(${JSON.stringify(fronts)}).children],backs=[...document.createRange().createContextualFragment(${JSON.stringify(backs)}).children],pages=document.getElementById('pages');function add(items){for(let i=0;i<items.length;i+=4){const sh=document.createElement('section');sh.className='sheet';items.slice(i,i+4).forEach(x=>sh.appendChild(x));while(sh.children.length<4){const e=document.createElement('div');e.style.border='1px dashed #ddd';e.style.borderRadius='0';sh.appendChild(e)}pages.appendChild(sh)}}add(fronts);add(backs);<\/script></body></html>`);w.document.close()
  }catch(e){console.error(e);alert('Erro ao preparar impressão: '+e.message)}finally{mostrarLoading(false)}}
 async function excluirLoteConvitesFliss(lote){if(!exigirOperadorFliss())return;const itens=await carregarLoteConvitesFliss(lote);if(!itens.length)return;const usados=itens.filter(x=>x.usado),removiveis=itens.filter(x=>!x.usado);const texto=usados.length?`Este lote possui ${usados.length} convite(s) já utilizado(s). Eles serão preservados; somente ${removiveis.length} não utilizados serão excluídos.`:`Excluir definitivamente os ${itens.length} convites deste lote?`;if(!confirm(texto))return;mostrarLoading(true);try{await Promise.all(removiveis.map(x=>window.FB.fbDelete('tokens',x.id||x.codigo)));await renderConvitesFliss();alert(removiveis.length+' convite(s) excluído(s).')}catch(e){alert('Erro ao excluir lote: '+e.message)}finally{mostrarLoading(false)}}
 async function localizarConviteAssistidoFliss(){const code=document.getElementById('cv-checkin-code').value.trim().toUpperCase();if(!code)return;const c=await window.FB.fbGetDoc('tokens',code);const box=document.getElementById('cv-checkin-result');if(!c){box.innerHTML='<div class="hyb-result">Convite não encontrado.</div>';return}box.innerHTML=`<div class="hyb-result"><h5>Convite ${escFliss(c.codigo||code)}</h5><div class="meta">Origem: ${escFliss(c.turma||'Institucional')} ${c.grupo?'· '+escFliss(c.grupo):''}<br>Crédito: 🪙 ${Number(c.valor||0)}<br>Situação: ${c.cancelado?'Cancelado':c.usado?'Já utilizado':'Disponível'}</div>${!c.usado&&!c.cancelado?`<button class="f3-btn primary" style="margin-top:10px" onclick="ativarCarteiraAssistidaFliss('${escFliss(code)}')">Realizar check-in assistido</button>`:''}</div>`}
