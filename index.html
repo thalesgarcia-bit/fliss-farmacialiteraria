@@ -2027,7 +2027,9 @@ footer strong{color:rgba(255,255,255,.85)}
         <div class="fliss-section">
           <div class="fliss-toolbar">
             <div><h4 style="margin:0">Medicamentos, preços e quantidades</h4><div style="font-size:10px;color:var(--gray5);margin-top:3px">Somente os professores definem preço, grupo responsável, quantidade e disponibilidade.</div></div>
+            <button type="button" id="fpm-save-all" class="btn-save" style="max-width:220px;margin:0;padding:10px 14px" onclick="salvarTodosMedicamentosPreparacao()">💾 Salvar todos</button>
           </div>
+          <div id="fpm-save-msg" style="display:none;margin:0 0 10px;font-size:11px;font-weight:700"></div>
           <div id="fpm-lista"></div>
         </div>
 
@@ -5426,7 +5428,7 @@ function opcoesGrupoPreparacao(turma,selecionado){
   const qtd=Math.max(1,quantidadeGruposSalvos(turma),gruposVisiveis[turma]||1);for(let i=1;i<=qtd;i++){const val=`Grupo ${i} — ${turma}`;const nome=cfg?.grupos?.[turma]?.[i];out+=`<option value="${val}" ${val===selecionado?'selected':''}>${nome?nome+' (G'+i+')':val}</option>`}
   return out;
 }
-function precoNivelFliss(nivel){return nivel==='completo'?40:nivel==='intermediario'?80:nivel==='basico'?120:null}
+function precoNivelFliss(nivel){return nivel==='completo'?20:nivel==='intermediario'?40:nivel==='basico'?60:null}
 
 async function renderPreparacaoFliss(){
   if(!window.FB)return;
@@ -5460,23 +5462,67 @@ async function fecharFaseSemanalFliss(){
 function renderMedicamentosPreparacao(){
   const box=document.getElementById('fpm-lista');if(!box)return;const arr=preparacaoDrogasCache;
   if(!arr.length){box.innerHTML='<div class="fliss-empty">Nenhum medicamento encontrado.</div>';return}
-  box.innerHTML=arr.map(d=>{const nivel=d.nivelFliss||({40:'completo',80:'intermediario',120:'basico'}[Number(d.preco)]||'');const status=d.statusVenda||'disponivel';return `<div class="fliss-row" style="align-items:flex-start">
+  box.innerHTML=arr.map(d=>{const nivel=d.nivelFliss||({20:'completo',40:'intermediario',60:'basico'}[Number(d.preco)]||'');const precoExibido=precoNivelFliss(nivel)??Number(d.preco||0);const status=d.statusVenda||'disponivel';return `<div class="fliss-row" style="align-items:flex-start">
     <div style="flex:1;min-width:190px"><div style="font-weight:900;color:var(--ink)">${escFliss(d.nome||'Sem nome')}</div><div style="font-size:10px;color:var(--gray5);margin-top:3px">${escFliss(d.autor||'')} · ${escFliss(d.turma||'Sem turma')}</div></div>
     <div style="display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:7px;flex:3;min-width:620px">
       <select id="pm-grupo-${d.id}" style="padding:7px;border:1px solid var(--gray2);border-radius:7px;font-size:10px">${opcoesGrupoPreparacao(d.turma||'7A',d.grupoFliss||'')}</select>
-      <select id="pm-nivel-${d.id}" onchange="sincronizarPrecoPreparacao('${d.id}')" style="padding:7px;border:1px solid var(--gray2);border-radius:7px;font-size:10px"><option value="">Nível</option><option value="completo" ${nivel==='completo'?'selected':''}>Completo — 40</option><option value="intermediario" ${nivel==='intermediario'?'selected':''}>Intermediário — 80</option><option value="basico" ${nivel==='basico'?'selected':''}>Básico — 120</option></select>
-      <input id="pm-preco-${d.id}" type="number" value="${Number(d.preco||0)}" readonly title="Definido pelo nível" style="padding:7px;border:1px solid var(--gray2);border-radius:7px;font-size:10px;background:var(--gray1)">
+      <select id="pm-nivel-${d.id}" onchange="sincronizarPrecoPreparacao('${d.id}')" style="padding:7px;border:1px solid var(--gray2);border-radius:7px;font-size:10px"><option value="">Nível</option><option value="completo" ${nivel==='completo'?'selected':''}>Completo — 20</option><option value="intermediario" ${nivel==='intermediario'?'selected':''}>Intermediário — 40</option><option value="basico" ${nivel==='basico'?'selected':''}>Básico — 60</option></select>
+      <input id="pm-preco-${d.id}" type="number" value="${precoExibido}" readonly title="Definido pelo nível" style="padding:7px;border:1px solid var(--gray2);border-radius:7px;font-size:10px;background:var(--gray1)">
       <input id="pm-qtd-${d.id}" type="number" min="0" value="${Number(d.estoque||0)}" placeholder="Quantidade" style="padding:7px;border:1px solid var(--gray2);border-radius:7px;font-size:10px">
       <select id="pm-status-${d.id}" style="padding:7px;border:1px solid var(--gray2);border-radius:7px;font-size:10px"><option value="disponivel" ${status==='disponivel'?'selected':''}>Disponível</option><option value="pausado" ${status==='pausado'?'selected':''}>Pausado</option><option value="esgotado" ${status==='esgotado'?'selected':''}>Esgotado</option></select>
     </div>
-    <button onclick="salvarMedicamentoPreparacao('${d.id}')" style="padding:8px 11px;border-radius:7px;background:var(--primary);color:#fff;font-size:10px;font-weight:800">Salvar</button>
   </div>`}).join('');
 }
 function sincronizarPrecoPreparacao(id){const n=document.getElementById('pm-nivel-'+id).value;const p=precoNivelFliss(n);document.getElementById('pm-preco-'+id).value=p??0}
+function dadosMedicamentoPreparacao(id){
+  const nivel=document.getElementById('pm-nivel-'+id)?.value||'';
+  const preco=precoNivelFliss(nivel);
+  const quantidade=Math.max(0,Number(document.getElementById('pm-qtd-'+id)?.value||0));
+  if(!nivel||!preco)return null;
+  return {
+    grupoFliss:document.getElementById('pm-grupo-'+id)?.value||'',
+    nivelFliss:nivel,
+    preco,
+    estoque:quantidade,
+    statusVenda:quantidade===0?'esgotado':(document.getElementById('pm-status-'+id)?.value||'disponivel'),
+    configuradoPor:operadorFliss(),
+    configuradoEm:new Date().toISOString()
+  };
+}
 async function salvarMedicamentoPreparacao(id){
-  if(!exigirOperadorFliss())return;const nivel=document.getElementById('pm-nivel-'+id).value;const preco=precoNivelFliss(nivel);const quantidade=Math.max(0,Number(document.getElementById('pm-qtd-'+id).value||0));if(!nivel||!preco){alert('Selecione o nível do medicamento.');return}
-  const data={grupoFliss:document.getElementById('pm-grupo-'+id).value,nivelFliss:nivel,preco,estoque:quantidade,statusVenda:quantidade===0?'esgotado':document.getElementById('pm-status-'+id).value,configuradoPor:operadorFliss(),configuradoEm:new Date().toISOString()};
-  await window.FB.fbUpdate('drogas',id,data);const d=preparacaoDrogasCache.find(x=>x.id===id);if(d)Object.assign(d,data);renderMedicamentosPreparacao();renderGruposPreparacao();
+  if(!exigirOperadorFliss())return;
+  const data=dadosMedicamentoPreparacao(id);
+  if(!data){alert('Selecione o nível do medicamento.');return}
+  await window.FB.fbUpdate('drogas',id,data);
+  const d=preparacaoDrogasCache.find(x=>x.id===id);if(d)Object.assign(d,data);
+  renderGruposPreparacao();
+}
+async function salvarTodosMedicamentosPreparacao(){
+  if(!exigirOperadorFliss()||!window.FB)return;
+  const msg=document.getElementById('fpm-save-msg');
+  const btn=document.getElementById('fpm-save-all');
+  const invalidos=[];
+  const itens=preparacaoDrogasCache.map(d=>{
+    const data=dadosMedicamentoPreparacao(d.id);
+    if(!data)invalidos.push(d.nome||'Sem nome');
+    return {d,data};
+  });
+  if(invalidos.length){
+    if(msg){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='⚠️ Selecione o nível de: '+invalidos.join(', ');}
+    return;
+  }
+  if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+  if(msg){msg.style.display='block';msg.style.color='var(--gray5)';msg.textContent='Salvando todos os medicamentos...';}
+  try{
+    await Promise.all(itens.map(({d,data})=>window.FB.fbUpdate('drogas',d.id,data)));
+    itens.forEach(({d,data})=>Object.assign(d,data));
+    renderGruposPreparacao();
+    if(msg){msg.style.color='var(--primary)';msg.textContent=`✅ ${itens.length} medicamento(s) salvo(s) com sucesso.`;}
+  }catch(e){
+    if(msg){msg.style.color='var(--red)';msg.textContent='❌ Erro ao salvar: '+e.message;}
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='💾 Salvar todos';}
+  }
 }
 
 function renderGruposPreparacao(){
