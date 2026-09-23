@@ -1249,6 +1249,7 @@ footer strong{color:rgba(255,255,255,.85)}
       <span class="hero-tag">🏫 Escola SESI Uberaba</span>
       <span class="hero-tag">📚 7º Ano A e B</span>
       <span class="hero-tag">⚗️ FLiSS 2026</span>
+      <span class="hero-tag">🎭 SESIVerso 2026</span>
     </div>
   </div>
 </div>
@@ -1258,7 +1259,7 @@ footer strong{color:rgba(255,255,255,.85)}
     <button class="cat-btn active" onclick="filtrarCat('todas',this)">Todas</button>
     <button class="cat-btn" onclick="filtrarCat('7A',this)">7º Ano A</button>
     <button class="cat-btn" onclick="filtrarCat('7B',this)">7º Ano B</button>
-    <button class="cat-btn" onclick="filtrarCat('Outros',this)">Outros</button>
+    <button class="cat-btn" id="catOutrosBtn" onclick="filtrarCat('Outros',this)">Outros</button>
   </div>
 </div>
 
@@ -2395,7 +2396,7 @@ footer strong{color:rgba(255,255,255,.85)}
             <div class="fl ff"><label>Eyebrow (tag pequena)</label><input type="text" id="pc-eyebrow" placeholder="📕 A Droga da Obediência — Pedro Bandeira"></div>
             <div class="fl ff"><label>Título principal</label><input type="text" id="pc-h1" placeholder="Farmácia Literária"></div>
             <div class="fl ff"><label>Descrição</label><textarea id="pc-desc" placeholder="Drogas modernas criadas pelos alunos..."></textarea></div>
-            <div class="fl ff"><label>Tags (separadas por |)</label><input type="text" id="pc-tags" placeholder="🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2026"></div>
+            <div class="fl ff"><label>Tags (separadas por |)</label><input type="text" id="pc-tags" placeholder="🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2026 | 🎭 SESIVerso 2026"></div>
           </div>
         </div>
 
@@ -2562,6 +2563,16 @@ async function carregarConfig() {
   if (cfg.grupos) atualizarNomesGrupos(cfg.grupos);
 }
 
+function normalizarHeroTagsFliss(valor='') {
+  const padrao = '🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2026 | 🎭 SESIVerso 2026';
+  const bruto = String(valor || '').trim();
+  if (!bruto) return padrao;
+  const partes = bruto.split('|').map(t => t.trim()).filter(Boolean);
+  const temSesiverso = partes.some(t => /sesiverso\s*2026/i.test(t));
+  if (!temSesiverso) partes.push('🎭 SESIVerso 2026');
+  return partes.join(' | ');
+}
+
 function aplicarConfig(c) {
   if (!c) return;
   // cores
@@ -2581,9 +2592,10 @@ function aplicarConfig(c) {
   if (c.eyebrow) { const el = document.getElementById('heroEyebrow'); if(el) el.textContent = c.eyebrow; }
   if (c.h1) { const el = document.getElementById('heroH1'); if(el) el.innerHTML = c.h1; }
   if (c.desc) { const el = document.getElementById('heroP'); if(el) el.textContent = c.desc; }
-  if (c.tags) {
+  {
     const el = document.getElementById('heroTags');
-    if (el) el.innerHTML = c.tags.split('|').map(t => `<span class="hero-tag">${t.trim()}</span>`).join('');
+    const tags = normalizarHeroTagsFliss(c.tags);
+    if (el) el.innerHTML = tags.split('|').map(t => `<span class="hero-tag">${t.trim()}</span>`).join('');
   }
   // sobre — card farmácia
   if (c.sobreTitulo) setText('sobreTitulo', c.sobreTitulo);
@@ -2679,7 +2691,7 @@ function popularFormPersonalizar() {
   setV('pc-eyebrow', c.eyebrow || '📕 A Droga da Obediência — Pedro Bandeira');
   setV('pc-h1', c.h1 || 'Farmácia <em>Literária</em>');
   setV('pc-desc', c.desc || '');
-  setV('pc-tags', c.tags || '🏫 Escola SESI Uberaba | 📚 7º Ano A e B | ⚗️ FLiSS 2026');
+  setV('pc-tags', normalizarHeroTagsFliss(c.tags));
   setV('pc-sobreTitulo', c.sobreTitulo || 'A Farmácia Literária');
   setV('pc-sobreP1', c.sobreP1 || '');
   setV('pc-sobreP2', c.sobreP2 || '');
@@ -2755,9 +2767,29 @@ async function salvarPersonalizacao() {
 }
 
 // ── RENDER VITRINE ───────────────────────────────────────────
+function turmaVitrineFliss(valor) {
+  const t = String(valor || '').trim().toUpperCase()
+    .replace(/[º°ª]/g, '')
+    .replace(/\s+/g, '');
+  if (t === '7A' || t === '7ANOA') return '7A';
+  if (t === '7B' || t === '7ANOB') return '7B';
+  return 'Outros';
+}
+
 function render() {
   const cats = [...new Set(drogas.map(d => d.cat).filter(Boolean))];
   const row = document.getElementById('catsRow');
+
+  // “Outros” é uma turma de escape: só fica visível quando existe
+  // medicamento sem turma ou pertencente a turma diferente de 7A/7B.
+  const outrosBtn = document.getElementById('catOutrosBtn');
+  const temOutros = drogas.some(d => turmaVitrineFliss(d.turma) === 'Outros');
+  if (outrosBtn) outrosBtn.style.display = temOutros ? '' : 'none';
+  if (filtro === 'Outros' && !temOutros) {
+    filtro = 'todas';
+    document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('active'));
+    row.querySelector('.cat-btn')?.classList.add('active');
+  }
   [...row.querySelectorAll('[data-dyn]')].forEach(b => b.remove());
   cats.forEach(c => {
     const b = document.createElement('button');
@@ -2769,13 +2801,17 @@ function render() {
   const lista = drogas.filter(d => {
     let ok;
     if (filtro === 'todas') ok = true;
-    else if (filtro === '7A' || filtro === '7B' || filtro === 'Outros') ok = d.turma === filtro;
+    else if (filtro === '7A' || filtro === '7B' || filtro === 'Outros') ok = turmaVitrineFliss(d.turma) === filtro;
     else ok = d.cat === filtro;
     const b = !busca || d.nome.toLowerCase().includes(busca) ||
       (d.ind||'').toLowerCase().includes(busca) ||
       (d.autor||'').toLowerCase().includes(busca) ||
       (d.cat||'').toLowerCase().includes(busca);
     return ok && b;
+  }).sort((a,b)=>{
+    const pa=Number.isFinite(Number(a.preco))?Number(a.preco):Number.MAX_SAFE_INTEGER;
+    const pb=Number.isFinite(Number(b.preco))?Number(b.preco):Number.MAX_SAFE_INTEGER;
+    return pa-pb || String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR');
   });
 
   document.getElementById('countBadge').textContent = lista.length + ' produto' + (lista.length !== 1 ? 's' : '');
@@ -2809,7 +2845,7 @@ function render() {
         <span class="card-autor">por ${d.autor||'—'}</span>
         <div style="display:flex;gap:6px">
           <button class="btn-bula" onclick="event.stopPropagation();abrirBula('${d.id}')">Ver bula</button>
-          ${p!==null && !sem ? `<button class="btn-comprar" onclick="event.stopPropagation();abrirReserva('${d.id}')">🛒 Comprar</button>` : ''}
+          ${p!==null && !sem ? `<button class="btn-comprar" onclick="event.stopPropagation();abrirCompraFarmaciaFliss('${d.id}')">🛒 Comprar</button>` : ''}
         </div>
       </div>
     </div>`;
@@ -2881,7 +2917,7 @@ function abrirBula(id) {
         <div class="bula-coin">🪙 ${p} <span style="font-size:13px;font-weight:500;color:var(--amber)">${moeda}</span></div>
         <div class="bula-stock">${sem?'<span style="color:var(--red);font-weight:600">Esgotado</span>':`${d.estoque} unidades disponíveis`}</div>
       </div>
-      <button class="btn-comprar-bula" onclick="fecharBula();abrirReserva('${d.id}')" ${sem?'disabled':''}>🛒 ${sem?'Esgotado':'Reservar agora'}</button>
+      <button class="btn-comprar-bula" onclick="fecharBula();abrirCompraFarmaciaFliss('${d.id}')" ${sem?'disabled':''}>🛒 ${sem?'Esgotado':'Reservar agora'}</button>
     </div>`:''
     }
     <div class="bula-bar"><span class="bula-stamp">⚗️ Farmácia Literária · FLiSS · SESI Uberaba</span></div>`;
@@ -2892,6 +2928,59 @@ function fecharBula(e) {
   if (e && e.target !== document.getElementById('bulaOverlay')) return;
   document.getElementById('bulaOverlay').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+// ── COMPRA PÚBLICA → CARTEIRA FLISS OFICIAL ────────────────────
+// A vitrine pública não cria carteira por nome. Preserva o medicamento
+// selecionado e continua a compra depois da autenticação oficial.
+let compraFarmaciaPendenteId = null;
+
+async function abrirCompraFarmaciaFliss(id) {
+  const d = (drogas || []).find(x => x.id === id);
+  if (!d) { alert('Medicamento não encontrado.'); return; }
+  if (Number(d.estoque || 0) <= 0) { alert('Produto esgotado!'); return; }
+
+  compraFarmaciaPendenteId = id;
+  try {
+    await abrirPortalComprasFliss();
+    if (f3Carteira) await continuarCompraFarmaciaFliss();
+  } catch (e) {
+    console.error(e);
+    compraFarmaciaPendenteId = null;
+    alert(e.message || 'Não foi possível abrir sua carteira.');
+  }
+}
+
+async function continuarCompraFarmaciaFliss() {
+  const id = compraFarmaciaPendenteId;
+  if (!id || !f3Carteira) return false;
+
+  if (f3Carteira.tipo === 'visitante') await renderPortalVisitanteFliss('comprar');
+  else await renderPortalAlunoFliss('comprar');
+
+  if (String(f3Evento?.status || '').toLowerCase() !== 'aberto') {
+    compraFarmaciaPendenteId = null;
+    return false;
+  }
+
+  const box = document.getElementById(f3Carteira.tipo === 'visitante' ? 'pv-conteudo' : 'pa-conteudo');
+  if (box) await renderComprasPortalAlunoFliss(box);
+
+  const atual = (f3Drogas || []).find(x => x.id === id);
+  if (!atual || !medicamentoPublicadoPortalFliss(atual)) {
+    compraFarmaciaPendenteId = null;
+    alert('Este medicamento não está disponível para compra no momento.');
+    return false;
+  }
+
+  compraFarmaciaPendenteId = null;
+  abrirConfirmacaoCompraFliss(id);
+  return true;
+}
+
+async function entrarPortalAposAtivacaoVisitanteFliss() {
+  if (compraFarmaciaPendenteId) return continuarCompraFarmaciaFliss();
+  return renderPortalVisitanteFliss('inicio');
 }
 
 // ── RESERVA ──────────────────────────────────────────────────
@@ -3391,11 +3480,28 @@ function editarDroga(id) {
 }
 
 async function deletarDroga(id) {
-  if (!confirm('Remover esta droga do Firebase?')) return;
+  const alvo=(drogas||[]).find(x=>x.id===id);
+  if (!confirm(`Remover ${alvo?.nome?`“${alvo.nome}”`:'este medicamento'} do catálogo?\n\nO histórico financeiro de compras já realizadas será preservado, mas o medicamento deixará de aparecer no catálogo, nos vínculos atuais e no ranking.`)) return;
   mostrarLoading(true);
-  await window.FB.fbDelete('drogas', id);
-  mostrarLoading(false);
-  renderAList();
+  try{
+    await window.FB.fbDelete('drogas', id);
+    drogas=(drogas||[]).filter(x=>x.id!==id);
+    if(Array.isArray(f3Drogas))f3Drogas=f3Drogas.filter(x=>x.id!==id);
+    if(Array.isArray(preparacaoDrogasCache))preparacaoDrogasCache=preparacaoDrogasCache.filter(x=>x.id!==id);
+    if(Array.isArray(carteirasDrogasCache))carteirasDrogasCache=carteirasDrogasCache.filter(x=>x.id!==id);
+    render();
+    renderAList();
+    if(document.getElementById('tab-preparacao-fliss')?.classList.contains('active')){
+      renderMedicamentosPreparacao();
+      renderGruposPreparacao();
+    }
+    if(document.getElementById('tab-carteiras')?.classList.contains('active'))renderCarteiras();
+    if(document.getElementById('tab-ranking')?.classList.contains('active'))renderRanking();
+  }catch(e){
+    alert('Erro ao remover medicamento: '+e.message);
+  }finally{
+    mostrarLoading(false);
+  }
 }
 
 async function apagarTudo() {
@@ -3788,12 +3894,26 @@ function grupoRankingMedicamentoFliss(pedido,droga){
 function turmaRankingMedicamentoFliss(pedido,droga){
   return String(pedido?.turmaVendedor || droga?.turma || pedido?.turma || '');
 }
+function normalizarNomeMedicamentoFliss(v=''){
+  return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase().replace(/\s+/g,' ');
+}
+function resolverMedicamentoAtivoRankingFliss(pedido,listaDrogas=[]){
+  const id=String(pedido?.medicamentoId||pedido?.droId||'');
+  if(id){
+    const porId=(listaDrogas||[]).find(d=>String(d.id)===id);
+    if(porId)return porId;
+    return null; // havia ID, mas o medicamento foi excluído do catálogo
+  }
+  const nome=normalizarNomeMedicamentoFliss(pedido?.medicamentoNome||pedido?.droNome||'');
+  if(!nome)return null;
+  return (listaDrogas||[]).find(d=>normalizarNomeMedicamentoFliss(d.nome)===nome)||null;
+}
 function montarRankingMedicamentosFliss(pedidos,listaDrogas=[]){
-  const drogasPorId=new Map((listaDrogas||[]).map(d=>[String(d.id),d]));
   const mapa=new Map();
   (pedidos||[]).filter(p=>WorkflowPedidosFliss.apareceNoRanking(p)).forEach(p=>{
-    const id=chaveRankingMedicamentoFliss(p);
-    const droga=drogasPorId.get(String(p.medicamentoId||p.droId||''))||{};
+    const droga=resolverMedicamentoAtivoRankingFliss(p,listaDrogas);
+    if(!droga)return;
+    const id=String(droga.id||chaveRankingMedicamentoFliss(p));
     const atual=mapa.get(id)||{
       id,
       nome:p.medicamentoNome||p.droNome||droga.nome||'Medicamento',
@@ -5418,7 +5538,29 @@ Deseja registrar mesmo assim?`))return}
 
 function fmtNumFliss(n){return Number(n||0).toLocaleString('pt-BR')}
 function grupoNumeroFliss(v){const m=String(v||'').match(/(\d+)/);return m?m[1]:String(v||'')}
-function chaveGrupoFliss(turma,grupo){return `${turma||'—'}|${grupoNumeroFliss(grupo)||'—'}`}
+function turmaCanonicaFliss(v){
+  const s=String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/º/g,'').replace(/\s+/g,'');
+  if(/7(?:ANO)?A/.test(s))return '7A';
+  if(/7(?:ANO)?B/.test(s))return '7B';
+  return s;
+}
+function numeroGrupoCanonicoFliss(v){
+  const bruto=String(v??'').trim();
+  let m=bruto.match(/grupo\s*(\d+)/i)||bruto.match(/(?:^|\W)g\s*(\d+)(?:\W|$)/i);
+  if(m)return Number(m[1])||0;
+  if(/^\d+$/.test(bruto))return Number(bruto)||0;
+  return 0;
+}
+function medicamentoVinculadoAoGrupoFliss(lista,turma,grupo){
+  const tc=turmaCanonicaFliss(turma),gc=numeroGrupoCanonicoFliss(grupo);
+  if(!tc||!gc)return null;
+  return (lista||[]).find(d=>{
+    const td=turmaCanonicaFliss(d.turmaVinculo||d.turmaGrupoFliss||d.turma);
+    const gd=Number(d.numeroGrupo||d.grupoNumero||0)||numeroGrupoCanonicoFliss(d.grupoFliss||d.grupo);
+    return td===tc&&gd===gc;
+  })||null;
+}
+function chaveGrupoFliss(turma,grupo){return `${turmaCanonicaFliss(turma)||'—'}|${grupoNumeroFliss(grupo)||'—'}`}
 function nomeGrupoPreparacao(turma,grupo){
   const n=grupoNumeroFliss(grupo); const custom=cfg?.grupos?.[turma]?.[n];
   return custom ? `${custom} — ${turma}` : `Grupo ${n||'—'} — ${turma||'—'}`;
@@ -5479,8 +5621,12 @@ function dadosMedicamentoPreparacao(id){
   const preco=precoNivelFliss(nivel);
   const quantidade=Math.max(0,Number(document.getElementById('pm-qtd-'+id)?.value||0));
   if(!nivel||!preco)return null;
+  const grupoFliss=document.getElementById('pm-grupo-'+id)?.value||'';
+  const medicamento=preparacaoDrogasCache.find(x=>x.id===id);
   return {
-    grupoFliss:document.getElementById('pm-grupo-'+id)?.value||'',
+    grupoFliss,
+    numeroGrupo:numeroGrupoCanonicoFliss(grupoFliss)||null,
+    turmaVinculo:turmaCanonicaFliss(medicamento?.turma||''),
     nivelFliss:nivel,
     preco,
     estoque:quantidade,
@@ -5502,13 +5648,29 @@ async function salvarTodosMedicamentosPreparacao(){
   const msg=document.getElementById('fpm-save-msg');
   const btn=document.getElementById('fpm-save-all');
   const invalidos=[];
+  const semGrupo=[];
   const itens=preparacaoDrogasCache.map(d=>{
     const data=dadosMedicamentoPreparacao(d.id);
     if(!data)invalidos.push(d.nome||'Sem nome');
+    else if(!data.grupoFliss||!data.numeroGrupo)semGrupo.push(d.nome||'Sem nome');
     return {d,data};
   });
   if(invalidos.length){
     if(msg){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='⚠️ Selecione o nível de: '+invalidos.join(', ');}
+    return;
+  }
+  if(semGrupo.length){
+    if(msg){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='⚠️ Vincule um grupo para: '+semGrupo.join(', ');}
+    return;
+  }
+  const usados=new Map(),duplicados=[];
+  itens.forEach(({d,data})=>{
+    const k=`${turmaCanonicaFliss(data.turmaVinculo||d.turma)}|${data.numeroGrupo}`;
+    if(usados.has(k))duplicados.push(`${usados.get(k)} / ${d.nome||'Sem nome'}`);
+    else usados.set(k,d.nome||'Sem nome');
+  });
+  if(duplicados.length){
+    if(msg){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='⚠️ Há grupos vinculados a mais de um medicamento: '+duplicados.join('; ');}
     return;
   }
   if(btn){btn.disabled=true;btn.textContent='Salvando...';}
@@ -6184,7 +6346,8 @@ async function entrarAlunoF3(){
     f3Carteira={tipo:'aluno',id:a.id,nome:a.nome,saldo:Number(a.saldo||0),grupo:a.grupo,turma:a.turma,numero:a.numero,codigo:`${a.turma}-${a.numero}`};
     sessionStorage.setItem('fliss_aluno_sessao',JSON.stringify({id:a.id,turma:a.turma,numero:a.numero}));
     await registrarAuditoriaFliss('PORTAL_ALUNO_LOGIN',{entidadeTipo:'aluno',entidadeId:a.id,alunoId:a.id,detalhes:{turma:a.turma,numero:a.numero}});
-    renderPortalAlunoFliss('inicio');
+    if(compraFarmaciaPendenteId) await continuarCompraFarmaciaFliss();
+    else await renderPortalAlunoFliss('inicio');
   }finally{mostrarLoading(false)}
 }
 
@@ -6292,7 +6455,8 @@ async function entrarVisitanteFliss(modo='completo'){
       detalhes:{modo:modo==='pin'?'pin_local':'codigo_pin'}
     });
 
-    renderPortalVisitanteFliss('inicio');
+    if(compraFarmaciaPendenteId) await continuarCompraFarmaciaFliss();
+    else await renderPortalVisitanteFliss('inicio');
   }finally{mostrarLoading(false)}
 }
 
@@ -6389,7 +6553,7 @@ function mostrarAtivacaoVisitanteFliss(){
         <div class="pv-credential"><span>PIN</span><b>${escFliss(f3Carteira.pin)}</b></div>
       </div>
       <div class="pv-note"><strong>Salve estes dados agora.</strong> Neste dispositivo, os próximos acessos poderão ser feitos apenas com o PIN. Em outro aparelho, use o código do convite/carteira + PIN ou leia o QR Code.</div>
-      <button class="f3-btn primary" onclick="renderPortalVisitanteFliss('inicio')">Entrar no portal</button>
+      <button class="f3-btn primary" onclick="entrarPortalAposAtivacaoVisitanteFliss()">Entrar no portal</button>
     </div>`;
 }
 
@@ -6696,7 +6860,7 @@ function filtrarProdutosPortalAlunoFliss(){
     const publicado=medicamentoPublicadoPortalFliss(d);
     const filtroOk=filtro==='todos'||(filtro==='disponivel'&&estoque>3)||(filtro==='baixo'&&estoque>0&&estoque<=3);
     return publicado&&busca&&filtroOk;
-  });
+  }).sort((a,b)=>Number(a.preco||0)-Number(b.preco||0)||String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR'));
   const box=document.getElementById('pa-produtos');if(!box)return;
   box.innerHTML=ds.length?ds.map(d=>{
     const estoque=statusEstoqueCatalogoFliss(d);
@@ -6872,17 +7036,13 @@ async function renderMedicamentosPortalAlunoFliss(box){
 async function renderRankingPortalAlunoFliss(box){
   const [pedidos,listaDrogas]=await Promise.all([window.FB.fbGetAll('pedidos_fliss'),window.FB.fbGetAll('drogas')]);
   const ranking=montarRankingMedicamentosFliss(pedidos,listaDrogas);
-  const turmaAluno=String(f3Carteira?.turma||'').toUpperCase();
-  const grupoAluno=Number(f3Carteira?.grupo||0);
-  const drogaGrupo=(listaDrogas||[]).find(d=>{
-    const turma=String(d.turma||'').toUpperCase();
-    const grupoNum=Number(d.grupo||d.numeroGrupo||String(d.grupoFliss||'').match(/Grupo\s*(\d+)/i)?.[1]||0);
-    return turma===turmaAluno&&grupoNum===grupoAluno;
-  });
+  const turmaAluno=turmaCanonicaFliss(f3Carteira?.turma||'');
+  const grupoAluno=numeroGrupoCanonicoFliss(f3Carteira?.grupo||0);
+  const drogaGrupo=medicamentoVinculadoAoGrupoFliss(listaDrogas,turmaAluno,grupoAluno);
   const chavePropria=drogaGrupo?String(drogaGrupo.id):'';
   let proprio=ranking.find(r=>r.id===chavePropria);
   if(!proprio){
-    proprio=ranking.find(r=>String(r.turma).toUpperCase()===turmaAluno&&String(r.grupo).toLowerCase().includes(`grupo ${grupoAluno}`));
+    proprio=ranking.find(r=>turmaCanonicaFliss(r.turma)===turmaAluno&&numeroGrupoCanonicoFliss(r.grupo)===grupoAluno);
   }
   const pos=proprio?ranking.indexOf(proprio)+1:0;
   const anterior=pos>1?ranking[pos-2]:null;
@@ -8407,7 +8567,7 @@ function garantirModalGrupoPreparacaoFliss(){
 async function abrirDetalhesGrupoPreparacaoFliss(turma,grupo){
   const ov=garantirModalGrupoPreparacaoFliss(),body=document.getElementById('grupoPreparacaoBody');ov.classList.add('open');document.getElementById('grupoPreparacaoTitulo').textContent=nomeGrupoPreparacao(turma,grupo);body.innerHTML='<div class="fliss-empty">Carregando...</div>';
   if(!preparacaoAlunosCache.length)preparacaoAlunosCache=await window.FB.fbGetAll('alunos_fliss');if(!preparacaoDrogasCache.length)preparacaoDrogasCache=await window.FB.fbGetAll('drogas');
-  const membros=preparacaoAlunosCache.filter(a=>a.ativo!==false&&String(a.turma)===String(turma)&&grupoNumeroFliss(a.grupo)===grupoNumeroFliss(grupo));const ids=new Set(membros.map(a=>a.id));const movs=(await window.FB.fbGetAll('movimentacoes_fliss')).filter(m=>ids.has(m.alunoId)||(m.entidadeTipo==='aluno'&&ids.has(m.entidadeId))).sort((a,b)=>String(b.criadoEm||'').localeCompare(String(a.criadoEm||'')));const droga=preparacaoDrogasCache.find(d=>String(d.turma)===String(turma)&&grupoNumeroFliss(d.grupoFliss)===grupoNumeroFliss(grupo));const saldo=membros.reduce((s,a)=>s+Number(a.saldo||0),0);
+  const membros=preparacaoAlunosCache.filter(a=>a.ativo!==false&&String(a.turma)===String(turma)&&grupoNumeroFliss(a.grupo)===grupoNumeroFliss(grupo));const ids=new Set(membros.map(a=>a.id));const movs=(await window.FB.fbGetAll('movimentacoes_fliss')).filter(m=>ids.has(m.alunoId)||(m.entidadeTipo==='aluno'&&ids.has(m.entidadeId))).sort((a,b)=>String(b.criadoEm||'').localeCompare(String(a.criadoEm||'')));const droga=medicamentoVinculadoAoGrupoFliss(preparacaoDrogasCache,turma,grupo);const saldo=membros.reduce((s,a)=>s+Number(a.saldo||0),0);
   body.innerHTML=`<div class="group-prep-modal-grid"><div class="group-prep-stat"><span>Integrantes</span><b>${membros.length}</b></div><div class="group-prep-stat"><span>Saldo do grupo</span><b>🪙 ${fmtNumFliss(saldo)}</b></div><div class="group-prep-stat"><span>Medicamento</span><b style="font-size:13px">${escFliss(droga?.nome||'Não vinculado')}</b></div></div><div class="fliss-section"><h4>Informações gerais</h4><div style="font-size:11px;color:var(--gray6);line-height:1.8">Turma: <b>${escFliss(turma)}</b><br>Grupo: <b>${escFliss(nomeGrupoPreparacao(turma,grupo))}</b><br>Medicamento: <b>${escFliss(droga?.nome||'Não vinculado')}</b>${droga?`<br>Preço: <b>${Number(droga.preco||0)} FLiSS Coins</b> · Estoque: <b>${Number(droga.estoque||0)}</b>`:''}</div></div><div class="fliss-section"><h4>Integrantes</h4>${membros.map(a=>`<div class="a-item"><div class="a-item-info"><div class="a-item-name">${escFliss(a.nome)}</div><div class="a-item-meta">Nº ${escFliss(a.numero||'—')} · saldo 🪙 ${Number(a.saldo||0)}</div></div></div>`).join('')||'<div class="fliss-empty">Sem integrantes.</div>'}</div><div class="fliss-section"><h4>Transações recentes</h4>${movs.slice(0,30).map(m=>`<div class="a-item"><div class="a-item-info"><div class="a-item-name">${escFliss(m.alunoNome||'Aluno')}</div><div class="a-item-meta">${f3Data(m.criadoEm)} · ${escFliss(rotuloMovimentoPortalFliss(m))} · Responsável: ${escFliss(responsavelMovimentoPortalFliss(m))}</div></div><b style="color:${Number(m.valor||0)>=0?'var(--primary)':'var(--red)'}">${Number(m.valor||0)>=0?'+':''}${Number(m.valor||0)}</b></div>`).join('')||'<div class="fliss-empty">Sem transações.</div>'}</div>`;
 }
 
@@ -8421,7 +8581,7 @@ document.addEventListener('click',()=>setTimeout(ajustarGradesPorPermissaoFliss,
 async function imprimirConvitesGruposFliss(){
   const pins=cfg.pins||{},grupos=cfg.grupos||{},keys=Object.keys(pins);if(!keys.length){alert('Nenhum grupo com PIN cadastrado.');return}
   const drogas=await window.FB.fbGetAll('drogas');
-  const cards=keys.map(key=>{const turma=key.includes('7A')?'7A':'7B',num=Number(key.match(/Grupo (\d+)/)?.[1]||0),nome=grupos?.[turma]?.[num]||`Grupo ${num}`,droga=drogas.find(d=>String(d.turma||'').toUpperCase()===turma&&grupoNumeroFliss(d.grupoFliss||d.grupo)===String(num));return `<article class="convite"><div class="marca">💊 FARMÁCIA LITERÁRIA <span>FLiSS</span></div><div class="nome">${escFliss(nome)}</div><div class="meta">Turma ${turma} · Grupo ${num}</div><div class="medicamento">${droga?`Medicamento: <b>${escFliss(droga.nome)}</b>`:'Medicamento ainda não vinculado'}</div><div class="pin-label">PIN DE ACESSO DO GRUPO</div><div class="pin">${escFliss(pins[key])}</div><div class="instrucao">Entregue este convite somente aos integrantes deste grupo.</div></article>`}).join('');
+  const cards=keys.map(key=>{const turma=key.includes('7A')?'7A':'7B',num=Number(key.match(/Grupo (\d+)/)?.[1]||0),nome=grupos?.[turma]?.[num]||`Grupo ${num}`,droga=medicamentoVinculadoAoGrupoFliss(drogas,turma,num);return `<article class="convite"><div class="marca">💊 FARMÁCIA LITERÁRIA <span>FLiSS</span></div><div class="nome">${escFliss(nome)}</div><div class="meta">Turma ${turma} · Grupo ${num}</div><div class="medicamento">${droga?`Medicamento: <b>${escFliss(droga.nome)}</b>`:'Medicamento ainda não vinculado'}</div><div class="pin-label">PIN DE ACESSO DO GRUPO</div><div class="pin">${escFliss(pins[key])}</div><div class="instrucao">Entregue este convite somente aos integrantes deste grupo.</div></article>`}).join('');
   abrirImpressaoFliss('Convites dos grupos — FLiSS',`<h1>Convites individuais dos grupos</h1><p class="sub">Um convite para cada grupo, com nome, medicamento e PIN de acesso.</p><section class="grade">${cards}</section>`,`.grade{display:grid;grid-template-columns:repeat(2,1fr);gap:5mm}.convite{height:66mm;border:1px dashed #98A2B3;border-radius:4mm;padding:6mm;break-inside:avoid}.marca{font-size:10px;font-weight:900;color:#05603A}.nome{font-size:17px;font-weight:900;margin-top:7mm}.meta{font-size:10px;color:#667085;margin-top:1.5mm}.medicamento{font-size:10px;color:#344054;margin-top:3mm}.pin-label{font-size:8px;font-weight:900;margin-top:5mm}.pin{font:900 22px monospace;letter-spacing:.14em;color:#05603A}.instrucao{font-size:9px;color:#667085;margin-top:4mm}`);
 }
 
