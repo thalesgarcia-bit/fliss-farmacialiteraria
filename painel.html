@@ -61,7 +61,7 @@ button{font:inherit}
 @media(max-width:650px){.topbar{padding:0 15px}.shell{padding:17px}.book{grid-template-columns:1fr;text-align:center}.book-cover{width:145px;margin:auto}.hero{flex-direction:column}.clock{text-align:left;align-items:flex-start}}
 
 .medicine-dynamic{display:grid;grid-template-columns:190px minmax(0,1fr);gap:32px;align-items:center;max-width:920px}
-.medicine-image{width:190px;height:240px;object-fit:cover;border-radius:20px;border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 50px rgba(0,0,0,.28)}
+.medicine-image{width:190px;height:240px;object-fit:contain;padding:6px;background:rgba(255,255,255,.96);border-radius:20px;border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 50px rgba(0,0,0,.28)}
 .medicine-meta{font-size:13px;color:#b9d8d1;margin:-2px 0 14px;font-weight:700}
 @media(max-width:650px){.medicine-dynamic{grid-template-columns:1fr;text-align:center}.medicine-image{width:145px;height:185px;margin:auto}}
 
@@ -192,7 +192,7 @@ function editorialHtml(){
     if(!ativos.length)return `<div class="editorial"><div class="editorial-content medicine"><div class="kicker">💊 Medicamento literário</div><h2>Novas fórmulas estão sendo preparadas</h2><p>Cadastre medicamentos no sistema para que eles apareçam automaticamente nesta rotação.</p></div></div>`;
     const med=ativos[Math.floor(editorialIndex/2)%ativos.length];
     const descricao=med.descricaoCurta||med.subtitulo||med.descricao||med.indicacao||'Medicamento literário disponível na Farmácia Literária.';
-    const imagem=med.imagemUrl||med.imagem||med.fotoUrl||med.capaUrl||'';
+    const imagem=med.img||med.imagemUrl||med.imagem||med.fotoUrl||med.capaUrl||'';
     const meta=[med.autor,med.livro,med.categoria,med.turma].filter(Boolean).slice(0,2).join(' · ');
     return `<div class="editorial"><div class="editorial-content medicine medicine-dynamic">
       ${imagem?`<img class="medicine-image" src="${esc(imagem)}" alt="${esc(med.nome)}">`:'<div class="editorial-icon">💊</div>'}
