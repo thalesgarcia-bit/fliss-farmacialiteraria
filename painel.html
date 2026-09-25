@@ -75,7 +75,9 @@ button{font:inherit}
 .shell{height:calc(100vh - 70px)}
 .hero{display:grid;grid-template-columns:minmax(430px,1fr) minmax(420px,.95fr) auto;align-items:start;gap:28px}
 .hero-copy{max-width:850px}
-.hero-kicker{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#8fd0c1;font-weight:900;margin-bottom:8px}
+.hero-kicker{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#8fd0c1;font-weight:900;margin-bottom:8px}
+.hero-kicker-text{display:inline-block}
+.hero-badge-sesiverso{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(143,208,193,.35);color:#d7fff4;font-size:9px;letter-spacing:.14em;font-weight:900;line-height:1;text-transform:uppercase}
 .hero h1{font-size:44px}
 .institutional-credit{display:grid;gap:8px;margin:0;padding:18px 0 0;max-width:none}
 .credit-line{display:flex;align-items:center;gap:8px;font-size:10px;line-height:1.35}
@@ -143,23 +145,34 @@ let conhecidos=new Set();
 let painelModo='pedidos';
 let alternanciaTimer=null;
 const TEMPO_PEDIDOS=12000;
-const TEMPO_EDITORIAL=10000;
+const TEMPO_PROJETO=8000;
+const TEMPO_LIVRO=8000;
+const TEMPO_MEDICAMENTO=6000;
 
-const editorial=[
-  {tipo:'frase',icone:'📖',kicker:'Uma pausa para a leitura',texto:'A leitura também pode curar.',autor:'Farmácia Literária'},
-  {tipo:'medicamento-dinamico'},
-  {tipo:'frase',icone:'✨',kicker:'Entre páginas e possibilidades',texto:'Cada livro abre uma porta para um mundo que ainda não conhecemos.',autor:'Farmácia Literária'},
-  {tipo:'livro'},
-  {tipo:'medicamento-dinamico'},
-  {tipo:'frase',icone:'💚',kicker:'Receita literária',texto:'Há histórias que acolhem, inspiram e permanecem conosco.',autor:'Farmácia Literária'},
-  {tipo:'medicamento-dinamico'}
-];
+function medicamentosAtivosPainel(){
+  return medicamentos.filter(m=>{
+    const status=String(m.statusVenda||m.status||'disponivel').toLowerCase();
+    return m.nome&&m.ativo!==false&&m.publicado!==false&&!['inativo','rascunho','arquivado'].includes(status);
+  });
+}
 
 function itemEditorialAtual(){
-  const posicaoNoBloco=editorialIndex%4;
-  if(posicaoNoBloco===3)return {tipo:'projeto'};
-  const bloco=Math.floor(editorialIndex/4);
-  return editorial[(bloco*3+posicaoNoBloco)%editorial.length];
+  const ativos=medicamentosAtivosPainel();
+  const total=Math.max(2,2+ativos.length);
+  const pos=((editorialIndex%total)+total)%total;
+
+  if(pos===0)return {tipo:'projeto'};
+  if(pos===1)return {tipo:'livro'};
+  if(!ativos.length)return {tipo:'projeto'};
+
+  return {tipo:'medicamento-dinamico',med:ativos[pos-2],indice:pos-2,total:ativos.length};
+}
+
+function tempoEditorialAtual(){
+  const item=itemEditorialAtual();
+  if(item.tipo==='projeto')return TEMPO_PROJETO;
+  if(item.tipo==='livro')return TEMPO_LIVRO;
+  return TEMPO_MEDICAMENTO;
 }
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -185,21 +198,17 @@ function editorialHtml(){
     <div class="book-info"><div class="kicker">📚 O livro que inspirou tudo</div><h2>A Droga da Obediência</h2><h3>Pedro Bandeira</h3><div class="stars">★★★★★</div><p>Uma aventura que marcou gerações de leitores e inspirou a criação da Farmácia Literária.</p></div>
   </div></div>`;
   if(item.tipo==='medicamento-dinamico'){
-    const ativos=medicamentos.filter(m=>{
-      const status=String(m.statusVenda||m.status||'disponivel').toLowerCase();
-      return m.nome&&m.ativo!==false&&m.publicado!==false&&!['inativo','rascunho','arquivado'].includes(status);
-    });
-    if(!ativos.length)return `<div class="editorial"><div class="editorial-content medicine"><div class="kicker">💊 Medicamento literário</div><h2>Novas fórmulas estão sendo preparadas</h2><p>Cadastre medicamentos no sistema para que eles apareçam automaticamente nesta rotação.</p></div></div>`;
-    const med=ativos[Math.floor(editorialIndex/2)%ativos.length];
+    const med=item.med;
+    if(!med)return `<div class="editorial"><div class="editorial-content medicine"><div class="kicker">💊 Medicamento literário</div><h2>Novas fórmulas estão sendo preparadas</h2><p>Cadastre medicamentos no sistema para que eles apareçam automaticamente nesta rotação.</p></div></div>`;
     const descricao=med.descricaoCurta||med.subtitulo||med.descricao||med.indicacao||'Medicamento literário disponível na Farmácia Literária.';
     const imagem=med.img||med.imagemUrl||med.imagem||med.fotoUrl||med.capaUrl||'';
     const meta=[med.autor,med.livro,med.categoria,med.turma].filter(Boolean).slice(0,2).join(' · ');
     return `<div class="editorial"><div class="editorial-content medicine medicine-dynamic">
       ${imagem?`<img class="medicine-image" src="${esc(imagem)}" alt="${esc(med.nome)}">`:'<div class="editorial-icon">💊</div>'}
-      <div><div class="kicker">Medicamento cadastrado na Farmácia Literária</div><h2>${esc(med.nome)}</h2>${meta?`<div class="medicine-meta">${esc(meta)}</div>`:''}<p>${esc(descricao)}</p></div>
+      <div><div class="kicker">Medicamento ${item.indice+1} de ${item.total} · Farmácia Literária</div><h2>${esc(med.nome)}</h2>${meta?`<div class="medicine-meta">${esc(meta)}</div>`:''}<p>${esc(descricao)}</p></div>
     </div></div>`;
   }
-  return `<div class="editorial"><div class="editorial-content"><div class="editorial-icon">${item.icone}</div><div class="kicker">${esc(item.kicker)}</div><div class="quote">“${esc(item.texto)}”</div><div class="author">${esc(item.autor)}</div></div></div>`;
+  return '';
 }
 
 function dados(){
@@ -244,8 +253,16 @@ function filaCompactaHtml(aguardando){
 function agendarAlternancia(){
   clearTimeout(alternanciaTimer);
   const temFila=dados().aguardando.length>0;
-  if(!temFila){painelModo='editorial';alternanciaTimer=setTimeout(()=>{editorialIndex+=1;render();agendarAlternancia()},TEMPO_EDITORIAL);return}
-  const espera=painelModo==='pedidos'?TEMPO_PEDIDOS:TEMPO_EDITORIAL;
+  if(!temFila){
+    painelModo='editorial';
+    alternanciaTimer=setTimeout(()=>{
+      editorialIndex+=1;
+      render();
+      agendarAlternancia();
+    },tempoEditorialAtual());
+    return;
+  }
+  const espera=painelModo==='pedidos'?TEMPO_PEDIDOS:tempoEditorialAtual();
   alternanciaTimer=setTimeout(()=>{
     painelModo=painelModo==='pedidos'?'editorial':'pedidos';
     if(painelModo==='editorial')editorialIndex+=1;
@@ -259,7 +276,7 @@ function render(){
   const mostrarPedidos=d.aguardando.length&&painelModo==='pedidos';
   app.innerHTML=`<div class="hero">
     <div class="hero-copy">
-      <div class="hero-kicker">Projeto literário · FLiSS</div>
+      <div class="hero-kicker"><span class="hero-kicker-text">Projeto literário · FLiSS</span><span class="hero-badge-sesiverso">SESIVerso</span></div>
       <h1>Farmácia Literária</h1>
       <p>Pedidos, ranking e indicadores atualizados em tempo real.</p>
       <p class="signature">A leitura também pode curar.</p>
