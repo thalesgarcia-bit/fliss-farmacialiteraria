@@ -300,7 +300,7 @@
 /* FASE 4.1 — ajustes de usabilidade */
 .team-rolebar{position:sticky;top:-18px;z-index:20;background:#fff;border-color:var(--gray2);box-shadow:0 5px 14px rgba(15,23,42,.06)}
 .team-rolebar button{padding:7px 12px}
-.f3-operation-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.f3-operation-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
 .f3-action-card{border:1px solid var(--gray2);border-radius:12px;background:#fff;padding:14px;text-align:left;min-height:92px;box-shadow:var(--shadow-sm)}
 .f3-action-card.primary{background:linear-gradient(135deg,var(--primary),#07594d);color:#fff;border-color:transparent}
 .f3-action-card b{display:block;font-size:13px;margin-bottom:5px}.f3-action-card span{font-size:10px;line-height:1.45;color:var(--gray5)}.f3-action-card.primary span{color:rgba(255,255,255,.8)}
@@ -1564,6 +1564,17 @@ footer strong{color:rgba(255,255,255,.85)}
 <div class="f3-overlay" id="f3PortalOverlay" onclick="if(event.target===this)fecharF3('f3PortalOverlay')"><div class="f3-modal flpa-auth"><div class="f3-head"><div><b>Farmácia Literária</b><div style="font-size:10px;opacity:.8">Carteira e compras</div></div><button onclick="fecharF3('f3PortalOverlay')" style="background:none;color:#fff;font-size:20px">×</button></div><div class="f3-body" id="f3PortalBody"></div></div></div>
 <div class="f3-overlay" id="f3ScannerOverlay"><div class="f3-modal"><div class="f3-head"><b>Leitor de QR Code</b><button onclick="pararLeitorFliss();fecharF3('f3ScannerOverlay')" style="background:none;color:#fff;font-size:20px">×</button></div><div class="f3-body"><div class="f3-scanner"><video id="f3ScannerVideo" playsinline></video></div><div id="f3ScannerMsg" class="f3-result">Autorize o uso da câmera e aponte para o QR Code do pedido.</div><div style="display:flex;gap:8px;margin-top:10px"><input id="f3ManualCode" placeholder="Ex.: PED-AB12CD" style="flex:1;padding:10px;border:1px solid var(--gray2);border-radius:8px"><button class="f3-btn primary" onclick="localizarPedidoFliss(document.getElementById('f3ManualCode').value)">Localizar</button></div></div></div></div>
 <div class="f3-overlay" id="f3ManualOverlay" onclick="if(event.target===this)fecharF3('f3ManualOverlay')"><div class="f3-modal" style="width:min(520px,96vw)"><div class="f3-head"><div><b>Digitar código do pedido</b><div style="font-size:10px;opacity:.8">Use quando o QR Code não puder ser lido</div></div><button onclick="fecharF3('f3ManualOverlay')" style="background:none;color:#fff;font-size:20px">×</button></div><div class="f3-body"><div class="manual-code-box"><label style="display:block;font-size:10px;font-weight:800;margin-bottom:6px">CÓDIGO DO PEDIDO</label><input id="f3OnlyManualCode" placeholder="Ex.: PED-AB12CD" onkeydown="if(event.key==='Enter')localizarPedidoManualFliss()"><button class="f3-btn primary" onclick="localizarPedidoManualFliss()">Localizar pedido</button><div id="f3ManualMsg" class="f3-result" style="display:none"></div></div></div></div></div>
+<div class="f3-overlay" id="flissConviteRapidoOverlay" onclick="if(event.target===this)fecharF3('flissConviteRapidoOverlay')">
+  <div class="f3-modal" style="width:min(560px,96vw)">
+    <div class="f3-head">
+      <div><b>🎟️ Liberar visitante</b><div style="font-size:10px;opacity:.8">Convite digital avulso · Balcão</div></div>
+      <button onclick="fecharF3('flissConviteRapidoOverlay')" style="background:none;color:#fff;font-size:20px">×</button>
+    </div>
+    <div class="f3-body" id="flissConviteRapidoBody">
+      <div class="fliss-empty">Preparando liberação...</div>
+    </div>
+  </div>
+</div>
 
 
 <div class="f3-overlay" id="flissReceiptOverlay" onclick="if(event.target===this)fecharF3('flissReceiptOverlay')">
@@ -2070,6 +2081,7 @@ footer strong{color:rgba(255,255,255,.85)}
         <div class="f3-operation-actions">
           <button class="f3-action-card primary" onclick="iniciarLeitorFliss()"><b>📷 Ler QR Code</b><span>Abre a câmera e mantém a digitação manual como contingência.</span></button>
           <button class="f3-action-card" onclick="abrirBuscaPedidoFliss()"><b>⌨️ Digitar código</b><span>Abre somente o campo para localizar um pedido pelo código impresso.</span></button>
+          <button class="f3-action-card" onclick="abrirConviteRapidoFliss()"><b>🎟️ Liberar visitante</b><span>Gere um convite digital na hora para quem chegou sem convite impresso.</span></button>
           <button class="f3-action-card" onclick="abrirAtendimentoAssistidoFliss()"><b>🤝 Atendimento sem celular</b><span>Faça o check-in e a compra para o visitante na mesma tela.</span></button>
         </div>
         <div class="f3-dashboard-grid">
@@ -6444,7 +6456,10 @@ async function ativarVisitanteF3(){
     await window.FB.fbUpdate('tokens',cod,{usado:true,usadoPor:id,usadoEm:agora,modoCheckin:'autonomo',operacaoCheckinId:operacaoId});
     await registrarAuditoriaFliss('CHECKIN_VISITANTE',{operacaoId,entidadeTipo:'carteira',entidadeId:id,carteiraId:id,valor:saldo,detalhes:{modo:'autonomo',conviteId:cod}});
     f3Carteira={tipo:'visitante',id,nome:'Visitante',saldo,grupo:tok.grupo||'',turma:tok.turma||'',codigo:id,pin};
+    // Mantém a sessão atual e também lembra esta carteira neste dispositivo.
+    // Assim, nos próximos acessos, o visitante pode usar somente o PIN de 4 dígitos.
     sessionStorage.setItem('fliss_visitante_sessao',JSON.stringify({id}));
+    localStorage.setItem('fliss_visitante_lembrado',JSON.stringify({id,codigo:id}));
     mostrarAtivacaoVisitanteFliss();
   }finally{mostrarLoading(false)}
 }
@@ -7204,6 +7219,145 @@ function mostrarComprovanteF3(p){document.getElementById('f3PortalBody').innerHT
 function cvCodeFliss(turma,grupo){const r=Math.random().toString(36).slice(2,6).toUpperCase();const g=String(grupo||'INST').replace(/[^A-Z0-9]/gi,'').toUpperCase().slice(0,5)||'INST';return `CVT-${turma||'INST'}-${g}-${r}`}
 function cvPinFliss(){return String(Math.floor(1000+Math.random()*9000))}
 function cvWalletFliss(){return 'VIS-'+String(Math.floor(10000+Math.random()*90000))}
+
+let ultimoConviteRapidoFliss=null;
+
+async function abrirConviteRapidoFliss(){
+  if(!['monitor','professor','admin'].includes(perfilEquipeFliss)){
+    alert('Esta ação está disponível para Monitor, Professor e Administrador.');
+    return;
+  }
+  if(!exigirOperadorFliss()||!window.FB)return;
+
+  abrirF3('flissConviteRapidoOverlay');
+  const body=document.getElementById('flissConviteRapidoBody');
+  if(!body)return;
+  body.innerHTML='<div class="fliss-empty">Carregando configuração do evento...</div>';
+
+  try{
+    const cfg=await window.FB.fbGetDoc('config','evento_fliss')||{};
+    const valor=Math.max(1,Number(cfg.moedasVisitante||100));
+    const evento=cfg.nome||cfg.evento||'FARMÁCIA LITERÁRIA - SESIVerso';
+    const dataEvento=cfg.data||new Date().toISOString().slice(0,10);
+
+    body.innerHTML=`
+      <div style="padding:13px 14px;border-radius:11px;background:var(--primary-bg);border:1px solid rgba(5,96,58,.18);margin-bottom:14px">
+        <b style="display:block;font-size:13px;color:var(--primary);margin-bottom:4px">Visitante sem convite?</b>
+        <span style="font-size:10px;line-height:1.55;color:var(--gray6)">O monitor pode gerar um convite digital individual na hora. O visitante escaneia o QR Code e ativa a própria carteira normalmente.</span>
+      </div>
+      <div class="f3-form">
+        <div class="full">
+          <label style="display:block;font-size:10px;font-weight:900;margin-bottom:6px">Evento</label>
+          <input id="cvr-evento" value="${escFliss(evento)}" readonly style="background:var(--gray1)">
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;font-weight:900;margin-bottom:6px">Crédito inicial</label>
+          <input id="cvr-valor" type="number" value="${valor}" readonly style="background:var(--gray1)">
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;font-weight:900;margin-bottom:6px">Data</label>
+          <input id="cvr-data" value="${escFliss(dataEvento)}" readonly style="background:var(--gray1)">
+        </div>
+        <div class="full">
+          <label style="display:block;font-size:10px;font-weight:900;margin-bottom:6px">Origem / observação <span style="font-weight:500;color:var(--gray5)">(opcional)</span></label>
+          <input id="cvr-origem" maxlength="60" placeholder="Ex.: visitante espontâneo, convidado da comunidade...">
+        </div>
+      </div>
+      <button class="f3-btn primary" style="width:100%;margin-top:12px;padding:12px" onclick="gerarConviteRapidoFliss()">🎟️ Gerar convite agora</button>
+      <div id="cvr-resultado"></div>`;
+  }catch(e){
+    body.innerHTML=`<div class="f3-result" style="background:var(--red-bg);color:var(--red)">Não foi possível carregar a configuração: ${escFliss(e.message)}</div>`;
+  }
+}
+
+async function gerarConviteRapidoFliss(){
+  if(!['monitor','professor','admin'].includes(perfilEquipeFliss)){
+    alert('Perfil sem permissão para liberar visitantes.');
+    return;
+  }
+  if(!exigirOperadorFliss()||!window.FB)return;
+
+  const box=document.getElementById('cvr-resultado');
+  const cfg=await window.FB.fbGetDoc('config','evento_fliss').catch(()=>null)||{};
+  const valor=Math.max(1,Number(cfg.moedasVisitante||document.getElementById('cvr-valor')?.value||100));
+  const evento=cfg.nome||cfg.evento||document.getElementById('cvr-evento')?.value||'FARMÁCIA LITERÁRIA - SESIVerso';
+  const dataEvento=cfg.data||new Date().toISOString().slice(0,10);
+  const origem=String(document.getElementById('cvr-origem')?.value||'').trim();
+  const agora=new Date().toISOString();
+
+  if(box)box.innerHTML='<div class="f3-result">Gerando convite seguro...</div>';
+
+  try{
+    let codigo=cvCodeFliss('INSTITUCIONAL','BALCAO');
+    while(await window.FB.fbGetDoc('tokens',codigo))codigo=cvCodeFliss('INSTITUCIONAL','BALCAO');
+
+    const item={
+      codigo,
+      tipo:'convite_visitante',
+      lote:'BALCAO-'+agora.slice(0,10),
+      evento,
+      dataEvento,
+      turma:'INSTITUCIONAL',
+      grupo:origem||'Balcão',
+      valor,
+      usoUnico:true,
+      usado:false,
+      cancelado:false,
+      emissao:'balcao_avulso',
+      criadoEm:agora,
+      criadoPor:operadorFliss(),
+      criadoPorPerfil:perfilEquipeFliss
+    };
+
+    await window.FB.fbSet('tokens',codigo,item);
+    ultimoConviteRapidoFliss=item;
+
+    try{
+      await registrarAuditoriaFliss('CONVITE_RAPIDO_VISITANTE',{
+        entidadeTipo:'convite',
+        entidadeId:codigo,
+        valor,
+        detalhes:{origem:origem||'Balcão',perfil:perfilEquipeFliss}
+      });
+    }catch(e){console.warn('Auditoria do convite rápido não registrada.',e)}
+
+    const url=conviteUrlFliss(item);
+    if(box){
+      box.innerHTML=`
+        <div style="margin-top:14px;border:1.5px solid rgba(5,96,58,.22);border-radius:14px;padding:16px;text-align:center;background:#f8fcfa">
+          <div style="font-size:28px;margin-bottom:4px">✅</div>
+          <b style="display:block;font-size:15px;color:var(--primary)">Convite liberado</b>
+          <div style="font-size:10px;color:var(--gray5);margin:4px 0 12px">Uso único · ${valor} FLiSS Coins</div>
+          <div id="cvr-qr" style="width:190px;height:190px;margin:0 auto 10px;background:#fff;padding:6px;border-radius:10px"></div>
+          <div style="font-family:monospace;font-size:15px;font-weight:900;letter-spacing:.05em;color:var(--ink);word-break:break-all">${escFliss(codigo)}</div>
+          <div style="font-size:10px;color:var(--gray5);line-height:1.5;margin-top:8px">Peça ao visitante para escanear o QR Code. Ele fará a ativação da carteira no próprio aparelho.</div>
+          <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+            <button class="f3-btn primary" onclick="copiarConviteRapidoFliss()">⧉ Copiar link</button>
+            <button class="f3-btn" onclick="gerarConviteRapidoFliss()">＋ Gerar outro</button>
+          </div>
+        </div>`;
+      const qr=document.getElementById('cvr-qr');
+      if(qr&&window.QRCode)new QRCode(qr,{text:url,width:178,height:178,correctLevel:QRCode.CorrectLevel.M});
+      else if(qr)qr.innerHTML='<div class="fliss-empty">QR Code indisponível. Use o código acima.</div>';
+    }
+  }catch(e){
+    console.error(e);
+    if(box)box.innerHTML=`<div class="f3-result" style="background:var(--red-bg);color:var(--red)">Erro ao liberar visitante: ${escFliss(e.message)}</div>`;
+  }
+}
+
+async function copiarConviteRapidoFliss(){
+  const c=ultimoConviteRapidoFliss;
+  if(!c)return;
+  const url=conviteUrlFliss(c);
+  try{
+    await navigator.clipboard.writeText(url);
+    alert('Link do convite copiado.');
+  }catch{
+    prompt('Copie o link do convite:',url);
+  }
+}
+
 function abrirSecaoHibrida(nome){['gerar','checkin','carteiras','creditar'].forEach(x=>{const e=document.getElementById('hyb-'+x);if(e)e.style.display=x===nome?'block':'none'})}
 let convitesFlissCache=[];
 let carteirasConvitesFlissCache=[];
