@@ -2818,7 +2818,7 @@ function render() {
         <span class="card-autor">por ${d.autor||'—'}</span>
         <div style="display:flex;gap:6px">
           <button class="btn-bula" onclick="event.stopPropagation();abrirBula('${d.id}')">Ver bula</button>
-          ${p!==null && !sem ? `<button class="btn-comprar" onclick="event.stopPropagation();abrirReserva('${d.id}')">🛒 Comprar</button>` : ''}
+          ${p!==null && !sem ? `<button class="btn-comprar" onclick="event.stopPropagation();comprarDaVitrineFliss('${d.id}')">🛒 Comprar</button>` : ''}
         </div>
       </div>
     </div>`;
@@ -2890,7 +2890,7 @@ function abrirBula(id) {
         <div class="bula-coin">🪙 ${p} <span style="font-size:13px;font-weight:500;color:var(--amber)">${moeda}</span></div>
         <div class="bula-stock">${sem?'<span style="color:var(--red);font-weight:600">Esgotado</span>':`${d.estoque} unidades disponíveis`}</div>
       </div>
-      <button class="btn-comprar-bula" onclick="fecharBula();abrirReserva('${d.id}')" ${sem?'disabled':''}>🛒 ${sem?'Esgotado':'Reservar agora'}</button>
+      <button class="btn-comprar-bula" onclick="fecharBula();comprarDaVitrineFliss('${d.id}')" ${sem?'disabled':''}>🛒 ${sem?'Esgotado':'Comprar'}</button>
     </div>`:''
     }
     <div class="bula-bar"><span class="bula-stamp">⚗️ Farmácia Literária · FLiSS · SESI Uberaba</span></div>`;
@@ -6151,6 +6151,54 @@ async function cancelarPedidoFliss(id){
   fecharF3('f3PedidoOverlay');renderOperacaoFliss()
 }
 
+
+async function comprarDaVitrineFliss(id){
+  const d=drogas.find(x=>x.id===id);
+  if(!d){alert('Medicamento não encontrado.');return}
+  if(Number(d.estoque||0)<=0){alert('Este medicamento está esgotado.');return}
+  window.flissCompraPendenteId=id;
+  await abrirPortalComprasFliss();
+}
+
+async function continuarCompraPendenteFliss(){
+  const id=window.flissCompraPendenteId;
+  if(!id||!f3Carteira)return;
+
+  try{
+    if(f3Carteira.tipo==='visitante'){
+      await renderPortalVisitanteFliss('comprar');
+    }else{
+      await renderPortalAlunoFliss('comprar');
+    }
+
+    // A renderização da aba Comprar carrega a coleção de medicamentos em f3Drogas.
+    const d=(f3Drogas||[]).find(x=>x.id===id);
+    if(!d){
+      window.flissCompraPendenteId=null;
+      return;
+    }
+
+    if(f3Evento?.status!=='aberto'){
+      // Mantém o usuário no portal, onde a mensagem de evento fechado já é exibida.
+      window.flissCompraPendenteId=null;
+      return;
+    }
+
+    window.flissCompraPendenteId=null;
+    setTimeout(()=>abrirConfirmacaoCompraFliss(id),80);
+  }catch(e){
+    console.error('Não foi possível continuar a compra iniciada na vitrine.',e);
+  }
+}
+
+async function continuarAposAtivacaoVisitanteFliss(){
+  if(window.flissCompraPendenteId){
+    await continuarCompraPendenteFliss();
+  }else{
+    await renderPortalVisitanteFliss('inicio');
+  }
+}
+
 function modoModalPortalFliss(modo){
   const modal=document.querySelector('#f3PortalOverlay .f3-modal');
   const body=document.querySelector('#f3PortalOverlay .f3-body');
@@ -6180,13 +6228,21 @@ async function abrirPortalComprasFliss(){
   if(sessaoAluno?.id){
     modoModalPortalFliss('app');
     body.innerHTML='<div class="pa-empty">Carregando seu portal...</div>';
-    if(await restaurarSessaoAlunoFliss()){abrirF3('f3PortalOverlay');return}
+    if(await restaurarSessaoAlunoFliss()){
+      abrirF3('f3PortalOverlay');
+      if(window.flissCompraPendenteId)setTimeout(continuarCompraPendenteFliss,120);
+      return
+    }
     sessionStorage.removeItem('fliss_aluno_sessao');
   }
   if(sessaoVisitante?.id){
     modoModalPortalFliss('app');
     body.innerHTML='<div class="pa-empty">Carregando sua carteira...</div>';
-    if(await restaurarSessaoVisitanteFliss()){abrirF3('f3PortalOverlay');return}
+    if(await restaurarSessaoVisitanteFliss()){
+      abrirF3('f3PortalOverlay');
+      if(window.flissCompraPendenteId)setTimeout(continuarCompraPendenteFliss,120);
+      return
+    }
     sessionStorage.removeItem('fliss_visitante_sessao');
   }
 
@@ -6223,7 +6279,8 @@ async function entrarAlunoF3(){
     f3Carteira={tipo:'aluno',id:a.id,nome:a.nome,saldo:Number(a.saldo||0),grupo:a.grupo,turma:a.turma,numero:a.numero,codigo:`${a.turma}-${a.numero}`};
     sessionStorage.setItem('fliss_aluno_sessao',JSON.stringify({id:a.id,turma:a.turma,numero:a.numero}));
     await registrarAuditoriaFliss('PORTAL_ALUNO_LOGIN',{entidadeTipo:'aluno',entidadeId:a.id,alunoId:a.id,detalhes:{turma:a.turma,numero:a.numero}});
-    renderPortalAlunoFliss('inicio');
+    await renderPortalAlunoFliss(window.flissCompraPendenteId?'comprar':'inicio');
+    if(window.flissCompraPendenteId)setTimeout(continuarCompraPendenteFliss,100);
   }finally{mostrarLoading(false)}
 }
 
@@ -6331,7 +6388,8 @@ async function entrarVisitanteFliss(modo='completo'){
       detalhes:{modo:modo==='pin'?'pin_local':'codigo_pin'}
     });
 
-    renderPortalVisitanteFliss('inicio');
+    await renderPortalVisitanteFliss(window.flissCompraPendenteId?'comprar':'inicio');
+    if(window.flissCompraPendenteId)setTimeout(continuarCompraPendenteFliss,100);
   }finally{mostrarLoading(false)}
 }
 
@@ -6399,6 +6457,7 @@ async function atualizarCarteiraPortalVisitanteFliss(){
   return w;
 }
 function sairPortalVisitanteFliss(){
+  window.flissCompraPendenteId=null;
   sessionStorage.removeItem('fliss_visitante_sessao');
   f3Carteira=null;
   fecharF3('f3PortalOverlay');
@@ -6428,7 +6487,7 @@ function mostrarAtivacaoVisitanteFliss(){
         <div class="pv-credential"><span>PIN</span><b>${escFliss(f3Carteira.pin)}</b></div>
       </div>
       <div class="pv-note"><strong>Salve estes dados agora.</strong> Neste dispositivo, os próximos acessos poderão ser feitos apenas com o PIN. Em outro aparelho, use o código do convite/carteira + PIN ou leia o QR Code.</div>
-      <button class="f3-btn primary" onclick="renderPortalVisitanteFliss('inicio')">Entrar no portal</button>
+      <button class="f3-btn primary" onclick="continuarAposAtivacaoVisitanteFliss()">${window.flissCompraPendenteId?'Continuar para a compra':'Entrar no portal'}</button>
     </div>`;
 }
 
@@ -6570,6 +6629,7 @@ async function atualizarCarteiraPortalAlunoFliss(){
   return a;
 }
 function sairPortalAlunoFliss(){
+  window.flissCompraPendenteId=null;
   sessionStorage.removeItem('fliss_aluno_sessao');
   f3Carteira=null;
   fecharF3('f3PortalOverlay');
@@ -6721,7 +6781,7 @@ function medicamentoPublicadoPortalFliss(d){
   return ativo&&!bloqueado&&Number(d.preco||0)>0&&Number(d.estoque||0)>0;
 }
 function imagemMedicamentoPortalFliss(d){
-  return d.imagemUrl||d.imagem||d.fotoUrl||d.capaUrl||'';
+  return d.img||d.imagemUrl||d.imagem||d.fotoUrl||d.capaUrl||'';
 }
 function descricaoMedicamentoPortalFliss(d){
   return d.descricaoCurta||d.subtitulo||d.descricao||d.indicacao||'Medicamento literário disponível para aquisição.';
